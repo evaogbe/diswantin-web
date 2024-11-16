@@ -18,7 +18,7 @@ jobs:
       - name: Install packages
         run: npm install
       - name: Migrate database
-        run: npm db:push --force
+        run: npm run db:push --force
       - name: Build app
         run: npm build
       - name: Install Railway
