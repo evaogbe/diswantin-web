@@ -22,7 +22,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Build app
-        run: npm build
+        run: npm run build
       - name: Install Railway
         run: npm i -g @railway/cli
       - name: Deploy
