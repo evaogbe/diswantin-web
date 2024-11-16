@@ -1,40 +1,33 @@
-# Welcome to Remix!
+# Diswantin Web
 
-- 📖 [Remix docs](https://remix.run/docs)
+The web app for Diswantin, a productivity app that shows you the one thing to do
+right now.
 
 ## Development
 
-Run the dev server:
+### Requirements
 
-```shellscript
+- [NodeJS](https://nodejs.org)
+- [Docker](https://www.docker.com)
+
+### Setup
+
+To setup the local postgres database run:
+
+```sh
+docker-compose up -d
+npm run db:push
+```
+
+### Dev server
+
+```sh
 npm run dev
 ```
 
-## Deployment
+## License
 
-First, build your app for production:
+Copyright © 2024 Evawere Ogbe
 
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+Distributed under the MIT License. See LICENSE or
+http://opensource.org/licenses/MIT.
