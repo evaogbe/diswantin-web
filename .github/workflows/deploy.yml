@@ -19,6 +19,8 @@ jobs:
         run: npm install
       - name: Migrate database
         run: npm run db:push --force
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Build app
         run: npm build
       - name: Install Railway
