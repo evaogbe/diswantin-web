@@ -1,31 +1,103 @@
-name: Deploy
+name: 🚀 Deploy
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
 
 jobs:
-  deploy:
+  format:
+    name: 🎨 Format
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout
+      - name: ⬇️ Checkout repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
-      - name: Use Node.js
+        with:
+          ref: ${{ github.head_ref }}
+      - name: ⎔ Set up Node.js
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # 4.1.0
         with:
-          node-version: "22"
-      - name: Install packages
-        run: npm install
-      - name: Migrate database
+          cache: npm
+          node-version: 22
+      - name: 📥 Install dependencies
+        run: npm ci
+      - name: 🎨 Format
+        run: npm run format
+      - name: ✔️ Commit changes
+        uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # 5.0.1
+        with:
+          commit_message: 🎨 Apply formatting changes
+          branch: ${{ github.head_ref }}
+
+  typecheck:
+    name: ʦ Type check
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+      - name: ⎔ Set up Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # 4.1.0
+        with:
+          cache: npm
+          node-version: 22
+      - name: 📥 Install dependencies
+        run: npm ci
+      - name: 🔎 Type check
+        run: npm run typecheck
+
+  lint:
+    name: ⬣ Lint
+    runs-on: ubuntu-latest
+    needs: [format]
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+      - name: ⎔ Set up Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # 4.1.0
+        with:
+          cache: npm
+          node-version: 22
+      - name: 📥 Install dependencies
+        run: npm ci
+      - name: 🔬 Lint
+        run: npm run lint
+
+  spellcheck:
+    name: ✏️ Spell check
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+      - name: ✏️ Spell check
+        uses: streetsidesoftware/cspell-action@9759be9ad475fe8145f8d2a1bf29a1c4d1c6f18d # 6.9.0
+
+  deploy:
+    name: 🚀 Deploy
+    runs-on: ubuntu-latest
+    needs: [format, typecheck, lint, spellcheck]
+    # only deploy main branch on pushes
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+      - name: ⎔ Set up Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # 4.1.0
+        with:
+          cache: npm
+          node-version: 22
+      - name: 📥 Install dependencies
+        run: npm ci
+      - name: 🗃️ Migrate database
         run: npm run db:push -- --force
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      - name: Build app
+      - name: ⚙️ Build app
         run: npm run build
-      - name: Install Railway
+      - name: 🚆 Install Railway
         run: npm i -g @railway/cli
-      - name: Deploy
+      - name: 🚀 Deploy
         run: railway up --service diswantin-web
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
