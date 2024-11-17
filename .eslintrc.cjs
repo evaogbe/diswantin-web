@@ -22,7 +22,7 @@ module.exports = {
   ignorePatterns: ["!**/.server", "!**/.client"],
 
   // Base config
-  extends: ["eslint:recommended"],
+  extends: ["eslint:recommended", "prettier"],
 
   overrides: [
     // React
@@ -44,7 +44,7 @@ module.exports = {
           { name: "Link", linkAttribute: "to" },
           { name: "NavLink", linkAttribute: "to" },
         ],
-        "import/resolver": {
+        "import-x/resolver": {
           typescript: {},
         },
       },
@@ -53,11 +53,15 @@ module.exports = {
     // Typescript
     {
       files: ["**/*.{ts,tsx}"],
-      plugins: ["@typescript-eslint", "import"],
+      plugins: ["@typescript-eslint", "import-x"],
       parser: "@typescript-eslint/parser",
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: __dirname,
+      },
       settings: {
-        "import/internal-regex": "^~/",
-        "import/resolver": {
+        "import-x/internal-regex": "^~/",
+        "import-x/resolver": {
           node: {
             extensions: [".ts", ".tsx"],
           },
@@ -67,10 +71,48 @@ module.exports = {
         },
       },
       extends: [
-        "plugin:@typescript-eslint/recommended",
-        "plugin:import/recommended",
-        "plugin:import/typescript",
+        "plugin:@typescript-eslint/strict-type-checked",
+        "plugin:@typescript-eslint/stylistic-type-checked",
+        "plugin:import-x/recommended",
+        "plugin:import-x/typescript",
       ],
+      rules: {
+        eqeqeq: ["error", "smart"],
+        "no-lonely-if": "error",
+        "no-useless-concat": "error",
+        "no-useless-rename": "error",
+        "object-shorthand": "error",
+        "prefer-object-spread": "error",
+        "prefer-template": "error",
+        "import-x/consistent-type-specifier-style": "error",
+        "import-x/no-useless-path-segments": [
+          "error",
+          { noUselessIndex: true },
+        ],
+        "import-x/order": ["error", { alphabetize: { order: "asc" } }],
+        "@typescript-eslint/array-type": ["error", { default: "array-simple" }],
+        "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            args: "all",
+            argsIgnorePattern: "^_",
+            caughtErrorsIgnorePattern: "^_",
+            destructuredArrayIgnorePattern: "^_",
+            varsIgnorePattern: "^_",
+            ignoreRestSiblings: true,
+          },
+        ],
+        "@typescript-eslint/parameter-properties": [
+          "error",
+          { prefer: "parameter-property" },
+        ],
+        "@typescript-eslint/prefer-readonly": "error",
+        "@typescript-eslint/restrict-template-expressions": [
+          "error",
+          { allowNumber: true },
+        ],
+      },
     },
 
     // Node

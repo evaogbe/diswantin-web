@@ -12,6 +12,8 @@ right now.
 
 ### Setup
 
+Copy [.env.example](./.env.example) into .env and fill in the values.
+
 To setup the local postgres database run:
 
 ```sh
