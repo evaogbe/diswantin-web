@@ -90,7 +90,7 @@ jobs:
       - name: 📥 Install dependencies
         run: npm ci
       - name: 🗃️ Migrate database
-        run: npm run db:push -- --force
+        run: npm run db:migrate
         env:
           APP_ENV: production
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
