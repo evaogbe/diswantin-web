@@ -3,6 +3,8 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 declare module "@remix-run/node" {
+  // Use interface in library module declarations
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Future {
     v3_singleFetch: true;
   }
