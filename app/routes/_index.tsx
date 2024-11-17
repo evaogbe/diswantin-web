@@ -9,7 +9,7 @@ export async function loader() {
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  await markTaskDone(parseInt(String(formData.get("id")), 10));
+  await markTaskDone(String(formData.get("id")));
   return null;
 }
 
