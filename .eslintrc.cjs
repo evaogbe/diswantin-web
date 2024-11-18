@@ -103,6 +103,8 @@ module.exports = {
             ignoreRestSiblings: true,
           },
         ],
+        // Remix throws responses
+        "@typescript-eslint/only-throw-error": "off",
         "@typescript-eslint/parameter-properties": [
           "error",
           { prefer: "parameter-property" },

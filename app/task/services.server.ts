@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import { uid } from "uid";
+import type { Task } from "./model";
 import { db } from "~/system.server/db";
 import * as table from "~/system.server/db/schema";
 
@@ -13,15 +14,10 @@ export async function getCurrentTask() {
 }
 
 export function getNewTaskForm() {
-  return { id: uid() };
+  return { id: uid(), name: "" };
 }
 
-type TaskForm = {
-  id: string;
-  name: string;
-};
-
-export async function createTask(task: TaskForm) {
+export async function createTask(task: Task) {
   await db
     .insert(table.task)
     .values({ taskId: task.id, name: task.name })
