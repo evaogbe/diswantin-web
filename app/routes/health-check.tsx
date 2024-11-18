@@ -1,16 +1,12 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
 import { db } from "~/system.server/db";
 import * as table from "~/system.server/db/schema";
+import { env } from "~/system.server/env";
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const host =
-    request.headers.get("X-Forwarded-Host") ?? request.headers.get("host");
-
+export async function loader() {
   try {
-    const url = new URL("/", `http://${host}`);
     await Promise.all([
       db.$count(table.task),
-      fetch(url.toString(), { method: "HEAD" }).then((res) => {
+      fetch(env.PUBLIC_HOST, { method: "HEAD" }).then((res) => {
         if (!res.ok) {
           throw res;
         }
