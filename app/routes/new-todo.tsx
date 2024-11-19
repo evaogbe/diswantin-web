@@ -3,8 +3,12 @@ import { redirect } from "@remix-run/node";
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
+import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { CSRFError } from "remix-utils/csrf/server";
+import { csrf } from "~/system.server/csrf";
 import { taskSchema } from "~/task/model";
 import { createTask, getNewTaskForm } from "~/task/services.server";
+import { genericError } from "~/utils/validation";
 
 export function loader() {
   const taskForm = getNewTaskForm();
@@ -17,10 +21,22 @@ export async function action({ request }: ActionFunctionArgs) {
     schema: taskSchema,
   });
 
+  try {
+    await csrf.validate(formData, request.headers);
+  } catch (error) {
+    if (error instanceof CSRFError) {
+      throw new Response("Invalid CSRF token", { status: 403 });
+    }
+
+    return submission.reply({
+      formErrors: [genericError("create the task")],
+    });
+  }
+
   if (submission.status !== "success") {
     console.warn("Validation failure for create task", submission.error);
     if (submission.error?.id != null) {
-      throw new Response(null, { status: 404 });
+      throw new Response("Invalid id", { status: 403 });
     }
 
     return submission.reply();
@@ -31,9 +47,7 @@ export async function action({ request }: ActionFunctionArgs) {
   } catch (e) {
     console.error(e);
     return submission.reply({
-      formErrors: [
-        "We were unable to create the task due to a technical issue on our end. Try again later. Thank you for your patience.",
-      ],
+      formErrors: [genericError("create the task")],
     });
   }
 
@@ -78,6 +92,7 @@ export default function NewTask() {
         </section>
       )}
       <div hidden>
+        <AuthenticityTokenInput />
         <input
           type="hidden"
           name={fields.id.name}

@@ -7,6 +7,7 @@ const envSchema = v.object({
     "development",
   ),
   DATABASE_URL: v.pipe(v.string(), v.url()),
+  CSRF_SECRET: v.string(),
 });
 
 export const env = v.parse(envSchema, process.env);
