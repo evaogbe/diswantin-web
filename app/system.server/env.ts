@@ -7,7 +7,6 @@ const envSchema = v.object({
     "development",
   ),
   DATABASE_URL: v.pipe(v.string(), v.url()),
-  HOST: v.optional(v.string()),
 });
 
 export const env = v.parse(envSchema, process.env);
