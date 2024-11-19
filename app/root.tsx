@@ -6,8 +6,11 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { useNonce } from "~/nonce";
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const nonce = useNonce();
+
   return (
     <html lang="en">
       <head>
@@ -18,8 +21,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        <ScrollRestoration />
-        <Scripts />
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );

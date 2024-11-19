@@ -1,5 +1,12 @@
+# Dependencies
 node_modules
 
+# Caching
 /.cache
+
+# Build artifacts
 /build
+/dist
+
+# Secrets
 .env

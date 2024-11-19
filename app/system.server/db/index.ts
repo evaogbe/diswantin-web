@@ -13,7 +13,7 @@ const pool =
   new pg.Pool({
     connectionString: env.DATABASE_URL,
   });
-if (env.APP_ENV === "development") {
+if (env.NODE_ENV === "development") {
   globalForDb.dbPool = pool;
 }
 
