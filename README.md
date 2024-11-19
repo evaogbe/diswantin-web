@@ -18,7 +18,7 @@ To setup the local postgres database run:
 
 ```sh
 docker-compose up -d
-npm run db:push
+npm run db:migrate
 ```
 
 ### Dev server
