@@ -9,5 +9,11 @@
     }
   ],
   "dictionaries": ["project-words"],
-  "ignorePaths": ["/build", "/drizzle", "node_modules", "/project-words.txt"]
+  "ignorePaths": [
+    "/build",
+    "/dist",
+    "/drizzle",
+    "node_modules",
+    "/project-words.txt"
+  ]
 }

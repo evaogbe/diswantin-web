@@ -71,7 +71,7 @@ async function run() {
             viteDevServer.ssrLoadModule(
               "virtual:remix/server-build",
             ) as Promise<ServerBuild>
-        : ((await import("./build/server")) as unknown as ServerBuild),
+        : ((await import("../build/server")) as unknown as ServerBuild),
       getLoadContext(_req, res) {
         return { cspNonce: res.locals.cspNonce };
       },

@@ -5,6 +5,7 @@ isbot
 Ogbe
 dbaeumer
 esbenp
+lightningcss
 pgdata
 picklist
 pipeable
