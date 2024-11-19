@@ -1,3 +1,4 @@
+import { data } from "@remix-run/node";
 import {
   Link,
   Links,
@@ -5,8 +6,19 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
-import { useNonce } from "~/nonce";
+import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
+import { csrf } from "~/system.server/csrf";
+import { useNonce } from "~/utils/nonce";
+
+export async function loader() {
+  const [csrfToken, csrfCookie] = await csrf.commitToken();
+  return data(
+    { csrfToken },
+    csrfCookie != null ? { headers: { "Set-Cookie": csrfCookie } } : undefined,
+  );
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const nonce = useNonce();
@@ -29,8 +41,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const { csrfToken } = useLoaderData<typeof loader>();
   return (
-    <>
+    <AuthenticityTokenProvider token={csrfToken}>
       <header>
         <h1>
           <Link to="/">Diswantin</Link>
@@ -46,6 +59,6 @@ export default function App() {
       <main>
         <Outlet />
       </main>
-    </>
+    </AuthenticityTokenProvider>
   );
 }
