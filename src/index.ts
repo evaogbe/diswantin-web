@@ -5,6 +5,7 @@ import closeWithGrace from "close-with-grace";
 import compression from "compression";
 import * as express from "express";
 import type { Response } from "express";
+import { rateLimit } from "express-rate-limit";
 import getPort, { portNumbers } from "get-port";
 import helmet from "helmet";
 import * as morgan from "morgan";
@@ -60,6 +61,17 @@ async function run() {
   app.use(
     morgan.default("tiny", {
       skip: (req, res) => res.statusCode === 200 && req.url === "/health-check",
+    }),
+  );
+
+  app.use(
+    rateLimit({
+      limit: 100,
+      standardHeaders: "draft-7",
+      legacyHeaders: false,
+      keyGenerator(req) {
+        return req.get("x-envoy-external-address") ?? req.ip ?? "";
+      },
     }),
   );
 
