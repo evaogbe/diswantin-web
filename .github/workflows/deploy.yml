@@ -92,9 +92,7 @@ jobs:
       - name: 🗃️ Migrate database
         run: npm run db:migrate
         env:
-          APP_ENV: production
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          PUBLIC_HOST: http://localhost:5173
       - name: ⚙️ Build app
         run: npm run build
       - name: 🚆 Install Railway
