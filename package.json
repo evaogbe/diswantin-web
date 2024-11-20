@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@remix-run/dev": "^2.14.0",
+    "@remix-run/route-config": "^2.14.0",
     "@sentry/vite-plugin": "^2.22.6",
     "@types/compression": "^1.7.5",
     "@types/express": "^5.0.0",
