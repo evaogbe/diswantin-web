@@ -4,11 +4,10 @@ import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
-import { CSRFError } from "remix-utils/csrf/server";
-import { csrf } from "~/system.server/csrf";
+import { formAction } from "~/form/action.server";
+import { genericError } from "~/form/validation";
 import { taskSchema } from "~/task/model";
 import { createTask, getNewTaskForm } from "~/task/services.server";
-import { genericError } from "~/utils/validation";
 
 export function loader() {
   const taskForm = getNewTaskForm();
@@ -16,42 +15,15 @@ export function loader() {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const submission = parseWithValibot(formData, {
-    schema: taskSchema,
-  });
-
-  try {
-    await csrf.validate(formData, request.headers);
-  } catch (error) {
-    if (error instanceof CSRFError) {
-      throw new Response("Invalid CSRF token", { status: 403 });
-    }
-
-    return submission.reply({
-      formErrors: [genericError("create the task")],
-    });
-  }
-
-  if (submission.status !== "success") {
-    console.warn("Validation failure for create task", submission.error);
-    if (submission.error?.id != null) {
-      throw new Response("Invalid id", { status: 403 });
-    }
-
-    return submission.reply();
-  }
-
-  try {
-    await createTask(submission.value);
-  } catch (e) {
-    console.error(e);
-    return submission.reply({
-      formErrors: [genericError("create the task")],
-    });
-  }
-
-  return redirect("/");
+  return formAction(
+    request,
+    taskSchema,
+    async (values) => {
+      await createTask(values);
+      return redirect("/");
+    },
+    { humanName: "create the to-do", hiddenFields: ["id"] },
+  );
 }
 
 export const meta: MetaFunction = () => {
@@ -70,6 +42,9 @@ export default function NewTask() {
     },
     defaultValue: taskForm,
   });
+  const formError =
+    form.errors?.[0] ??
+    (fields.id.errors != null ? genericError("create the to-do") : null);
 
   return (
     <Form
@@ -77,18 +52,18 @@ export default function NewTask() {
       autoComplete="off"
       id={form.id}
       aria-labelledby={`${form.id}-title`}
-      aria-describedby={form.errors != null ? form.errorId : undefined}
+      aria-describedby={formError != null ? form.errorId : undefined}
       onSubmit={form.onSubmit}
     >
       <h2 id={`${form.id}-title`}>New to-do</h2>
-      {form.errors != null && (
+      {formError != null && (
         <section
           id={form.errorId}
           role="alert"
           aria-labelledby={`${form.errorId}-heading`}
         >
           <h3 id={`${form.errorId}-heading`}>Error adding to-do</h3>
-          <p>{form.errors[0]}</p>
+          <p>{formError}</p>
         </section>
       )}
       <div hidden>

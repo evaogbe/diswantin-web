@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
-import { env } from "~/system.server/env";
+import { env } from "~/env/private.server";
 
 const globalForDb = globalThis as unknown as {
   dbPool: pg.Pool | undefined;

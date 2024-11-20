@@ -85,6 +85,9 @@ module.exports = {
         "prefer-object-spread": "error",
         "prefer-template": "error",
         "import-x/consistent-type-specifier-style": "error",
+        // Broken for conditional imports
+        // https://github.com/getsentry/sentry-javascript/issues/12706
+        "import-x/namespace": "off",
         "import-x/no-useless-path-segments": [
           "error",
           { noUselessIndex: true },

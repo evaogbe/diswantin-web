@@ -95,6 +95,9 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: ⚙️ Build app
         run: npm run build
+        env:
+          SENTRY_RELEASE: ${{ github.sha }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       - name: 🚆 Install Railway
         run: npm i -g @railway/cli
       - name: 🚀 Deploy
