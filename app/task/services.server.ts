@@ -1,16 +1,16 @@
 import { eq } from "drizzle-orm";
 import { uid } from "uid";
 import type { Task } from "./model";
-import { db } from "~/system.server/db";
-import * as table from "~/system.server/db/schema";
+import { db } from "~/db.server";
+import * as table from "~/db.server/schema";
 
 export async function getCurrentTask() {
-  const rows = await db
+  const [currentTask] = await db
     .select({ id: table.task.taskId, name: table.task.name })
     .from(table.task)
     .orderBy(table.task.createdAt, table.task.id)
     .limit(1);
-  return rows.length > 0 ? rows[0] : null;
+  return currentTask;
 }
 
 export function getNewTaskForm() {

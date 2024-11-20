@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { createRequestHandler } from "@remix-run/express";
 import type { ServerBuild } from "@remix-run/node";
+import Sentry from "@sentry/remix";
 import closeWithGrace from "close-with-grace";
 import compression from "compression";
 import * as express from "express";
@@ -38,14 +39,15 @@ async function run() {
         directives: {
           scriptSrc: [
             "'self'",
+            "'strict-dynamic'",
             (_req, res) => `'nonce-${(res as Response).locals.cspNonce}'`,
           ],
           fontSrc: ["'self'"],
           styleSrc: ["'self'"],
-          connectSrc:
-            process.env.NODE_ENV === "development"
-              ? ["'self'", "ws:"]
-              : ["'self'"],
+          connectSrc: [
+            "'self'",
+            process.env.NODE_ENV === "development" ? "ws:" : null,
+          ].filter((dir) => dir != null),
           imgSrc: ["'self'"],
           baseUri: ["'none'"],
           "upgrade-insecure-requests": null,
@@ -60,7 +62,7 @@ async function run() {
 
   app.use(
     morgan.default("tiny", {
-      skip: (req, res) => res.statusCode === 200 && req.url === "/health-check",
+      skip: (req, res) => res.statusCode === 200 && req.url === "/_health",
     }),
   );
 
@@ -83,7 +85,8 @@ async function run() {
             viteDevServer.ssrLoadModule(
               "virtual:remix/server-build",
             ) as Promise<ServerBuild>
-        : // @ts-expect-error: Build file is generated
+        : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore: Build file is generated
           // eslint-disable-next-line import-x/no-unresolved
           ((await import("../build/server")) as unknown as ServerBuild),
       getLoadContext(_req, res) {
@@ -117,11 +120,11 @@ async function run() {
     console.log(`🚀 App listening on http://localhost:${port}`);
   });
 
-  closeWithGrace(async ({ err, signal }) => {
+  closeWithGrace(async ({ err }) => {
     if (err) {
       console.error("Server closing with error", err);
-    } else {
-      console.log(`${signal} received, server closing`);
+      Sentry.captureException(err);
+      await Sentry.flush(500);
     }
 
     await new Promise((resolve, reject) => {

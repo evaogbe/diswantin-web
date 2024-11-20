@@ -1,12 +1,9 @@
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import { parseWithValibot } from "conform-to-valibot";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
-import { CSRFError } from "remix-utils/csrf/server";
-import { csrf } from "~/system.server/csrf";
+import { formAction } from "~/form/action.server";
 import { markDoneSchema } from "~/task/model";
 import { getCurrentTask, markTaskDone } from "~/task/services.server";
-import { genericError } from "~/utils/validation";
 
 export async function loader() {
   const currentTask = await getCurrentTask();
@@ -14,38 +11,15 @@ export async function loader() {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const submission = parseWithValibot(formData, {
-    schema: markDoneSchema,
-  });
-
-  try {
-    await csrf.validate(formData, request.headers);
-  } catch (error) {
-    if (error instanceof CSRFError) {
-      throw new Response("Invalid CSRF token", { status: 403 });
-    }
-
-    return submission.reply({
-      formErrors: [genericError("mark the task done")],
-    });
-  }
-
-  if (submission.status !== "success") {
-    console.warn("Validation failure for mark done", submission.error);
-    throw new Response("Invalid id", { status: 403 });
-  }
-
-  try {
-    await markTaskDone(submission.value.id);
-  } catch (e) {
-    console.error(e);
-    return submission.reply({
-      formErrors: [genericError("mark the task done")],
-    });
-  }
-
-  return null;
+  return formAction(
+    request,
+    markDoneSchema,
+    async (values) => {
+      await markTaskDone(values.id);
+      return null;
+    },
+    { humanName: "mark the to-do done", hiddenFields: ["id"] },
+  );
 }
 
 export const meta: MetaFunction = () => {

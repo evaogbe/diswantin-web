@@ -2,9 +2,9 @@ import * as esbuild from "esbuild";
 
 console.log(
   await esbuild.build({
-    entryPoints: ["src/index.ts"],
+    entryPoints: ["src/index.ts", "src/monitoring.ts"],
     bundle: true,
-    outfile: "dist/index.js",
+    outdir: "dist",
     target: ["node22"],
     platform: "node",
     sourcemap: true,
