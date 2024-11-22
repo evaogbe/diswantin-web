@@ -1,12 +1,12 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Outlet, useRouteLoaderData } from "@remix-run/react";
-import { getAuthenticatedUserId } from "./services.server";
+import { getAuthenticatedUser } from "./services.server";
 import { AppHead } from "~/components/app-head";
 import { GenericErrorBoundary } from "~/error/generic-error-boundary";
 import { getTitle } from "~/utils/meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await getAuthenticatedUserId(request);
+  await getAuthenticatedUser(request);
   return { isAuthenticated: true };
 }
 

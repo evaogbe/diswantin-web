@@ -6,7 +6,7 @@ import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { taskSchema } from "./model";
 import { createTask, getNewTaskForm } from "./services.server";
-import { getAuthenticatedUserId } from "~/auth/services.server";
+import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
 import { genericError } from "~/form/validation";
 import { getTitle } from "~/utils/meta";
@@ -17,12 +17,12 @@ export function loader() {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const userId = await getAuthenticatedUserId(request);
+  const user = await getAuthenticatedUser(request);
   return formAction(
     request,
     taskSchema,
     async (values) => {
-      await createTask(values, userId);
+      await createTask(values, user.id);
       return redirect("/home");
     },
     { humanName: "create the to-do", hiddenFields: ["id"] },

@@ -18,7 +18,7 @@ export async function redirectAuthenticated(request: Request) {
   return null;
 }
 
-export async function getAuthenticatedUserId(request: Request) {
+export async function getAuthenticatedUser(request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
   const userId: unknown = session.get("userId");
   if (typeof userId !== "string") {
@@ -26,7 +26,7 @@ export async function getAuthenticatedUserId(request: Request) {
   }
 
   const [user] = await db
-    .select({ id: table.user.id })
+    .select({ id: table.user.id, email: table.user.email })
     .from(table.user)
     .where(eq(table.user.userId, userId))
     .limit(1);
@@ -39,35 +39,29 @@ export async function getAuthenticatedUserId(request: Request) {
     });
   }
 
-  return user.id;
+  return user;
 }
 
-export async function getOrCreateAccountByGoogleId(googleId: string) {
-  const [existingAccount] = await db
+export async function getUserIdByGoogleId(googleId: string) {
+  const [account] = await db
     .select({ userId: table.user.userId })
     .from(table.user)
     .where(eq(table.user.googleId, googleId))
     .limit(1);
-  if (existingAccount != null) {
-    return existingAccount;
-  }
-
-  const [newAccount] = await db
-    .insert(table.user)
-    .values({ userId: uid(), googleId })
-    .returning({ userId: table.user.userId });
-  if (newAccount == null) {
-    throw new Error("Could not create user");
-  }
-  return newAccount;
+  return account?.userId;
 }
 
-export async function authenticate(
-  request: Request,
-  account: { userId: string },
-) {
+export async function createUser(user: { googleId: string; email: string }) {
+  const userId = uid();
+  await db
+    .insert(table.user)
+    .values({ userId, googleId: user.googleId, email: user.email });
+  return userId;
+}
+
+export async function authenticate(request: Request, userId: string) {
   const session = await getSession(request.headers.get("Cookie"));
-  session.set("userId", account.userId);
+  session.set("userId", userId);
   return redirect("/home", {
     headers: {
       "Set-Cookie": await commitSession(session),
