@@ -7,23 +7,23 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { markDoneSchema } from "./model";
 import { getCurrentTask, markTaskDone } from "./services.server";
-import { getAuthenticatedUserId } from "~/auth/services.server";
+import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
 import { getTitle } from "~/utils/meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const userId = await getAuthenticatedUserId(request);
-  const currentTask = await getCurrentTask(userId);
+  const user = await getAuthenticatedUser(request);
+  const currentTask = await getCurrentTask(user.id);
   return { currentTask };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const userId = await getAuthenticatedUserId(request);
+  const user = await getAuthenticatedUser(request);
   return formAction(
     request,
     markDoneSchema,
     async (values) => {
-      await markTaskDone(values.id, userId);
+      await markTaskDone(values.id, user.id);
       return null;
     },
     { humanName: "mark the to-do done", hiddenFields: ["id"] },

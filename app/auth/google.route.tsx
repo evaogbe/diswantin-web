@@ -1,8 +1,18 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { decodeIdToken } from "arctic";
 import type { OAuth2Tokens } from "arctic";
+import * as v from "valibot";
 import { google, stateCookie, codeVerifierCookie } from "./google.server";
-import { authenticate, getOrCreateAccountByGoogleId } from "./services.server";
+import {
+  authenticate,
+  createUser,
+  getUserIdByGoogleId,
+} from "./services.server";
+
+const claimsSchema = v.object({
+  sub: v.string(),
+  email: v.pipe(v.string(), v.email()),
+});
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -29,11 +39,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
     throw new Response(null, { status: 400 });
   }
 
-  const claims = decodeIdToken(tokens.idToken());
-  if (!("sub" in claims) || typeof claims.sub !== "string") {
+  const parseResult = v.safeParse(
+    claimsSchema,
+    decodeIdToken(tokens.idToken()),
+  );
+  if (!parseResult.success) {
     throw new Response(null, { status: 400 });
   }
 
-  const account = await getOrCreateAccountByGoogleId(claims.sub);
-  return authenticate(request, account);
+  let userId = await getUserIdByGoogleId(parseResult.output.sub);
+  if (userId == null) {
+    userId = await createUser({
+      googleId: parseResult.output.sub,
+      email: parseResult.output.email,
+    });
+  }
+
+  return authenticate(request, userId);
 }

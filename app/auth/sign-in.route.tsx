@@ -16,6 +16,7 @@ export async function action() {
   const url = google.createAuthorizationURL(state, codeVerifier, [
     "openid",
     "profile",
+    "email",
   ]);
   return redirect(url.toString(), {
     headers: [
