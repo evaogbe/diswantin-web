@@ -1,39 +1,40 @@
-import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { markDoneSchema } from "./model";
+import { getCurrentTask, markTaskDone } from "./services.server";
+import { getAuthenticatedUserId } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
-import { markDoneSchema } from "~/task/model";
-import { getCurrentTask, markTaskDone } from "~/task/services.server";
+import { getTitle } from "~/utils/meta";
 
-export async function loader() {
-  const currentTask = await getCurrentTask();
+export async function loader({ request }: LoaderFunctionArgs) {
+  const userId = await getAuthenticatedUserId(request);
+  const currentTask = await getCurrentTask(userId);
   return { currentTask };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const userId = await getAuthenticatedUserId(request);
   return formAction(
     request,
     markDoneSchema,
     async (values) => {
-      await markTaskDone(values.id);
+      await markTaskDone(values.id, userId);
       return null;
     },
     { humanName: "mark the to-do done", hiddenFields: ["id"] },
   );
 }
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "Diswantin" },
-    {
-      name: "description",
-      content:
-        "Diswantin is a productivity app that shows you the one thing to do right now",
-    },
-  ];
+export const meta: MetaFunction = ({ error }) => {
+  return [{ title: getTitle({ error }) }];
 };
 
-export default function Index() {
+export default function CurrentTask() {
   const { currentTask } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const lastResult = fetcher.data;

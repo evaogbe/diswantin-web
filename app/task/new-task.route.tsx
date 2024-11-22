@@ -4,10 +4,12 @@ import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { taskSchema } from "./model";
+import { createTask, getNewTaskForm } from "./services.server";
+import { getAuthenticatedUserId } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
 import { genericError } from "~/form/validation";
-import { taskSchema } from "~/task/model";
-import { createTask, getNewTaskForm } from "~/task/services.server";
+import { getTitle } from "~/utils/meta";
 
 export function loader() {
   const taskForm = getNewTaskForm();
@@ -15,19 +17,20 @@ export function loader() {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const userId = await getAuthenticatedUserId(request);
   return formAction(
     request,
     taskSchema,
     async (values) => {
-      await createTask(values);
-      return redirect("/");
+      await createTask(values, userId);
+      return redirect("/home");
     },
     { humanName: "create the to-do", hiddenFields: ["id"] },
   );
 }
 
-export const meta: MetaFunction = () => {
-  return [{ title: "New task | Diswantin" }];
+export const meta: MetaFunction = ({ error }) => {
+  return [{ title: getTitle({ page: "New task", error }) }];
 };
 
 export default function NewTask() {

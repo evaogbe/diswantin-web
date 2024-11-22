@@ -5,17 +5,20 @@ import { RemixServer } from "@remix-run/react";
 import * as Sentry from "@sentry/remix";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
-import { NonceProvider } from "~/utils/nonce";
+import { extendSession } from "~/auth/session.server";
+import { NonceProvider } from "~/components/nonce";
 
 const ABORT_DELAY = 5_000;
 
-export default function handleRequest(
+export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
   loadContext: AppLoadContext,
 ) {
+  await extendSession(request, responseHeaders);
+
   const callbackName = isbot(request.headers.get("user-agent"))
     ? "onAllReady"
     : "onShellReady";

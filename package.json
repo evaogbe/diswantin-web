@@ -26,6 +26,7 @@
     "@remix-run/node": "^2.14.0",
     "@remix-run/react": "^2.14.0",
     "@sentry/remix": "^8.39.0",
+    "arctic": "^2.2.2",
     "close-with-grace": "^2.1.0",
     "compression": "^1.7.5",
     "conform-to-valibot": "^1.11.0",

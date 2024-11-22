@@ -3,7 +3,7 @@ import { parseWithValibot } from "conform-to-valibot";
 import { CSRFError } from "remix-utils/csrf/server";
 import type { GenericSchema, InferOutput } from "valibot";
 import { genericError } from "./validation";
-import { csrf } from "~/utils/csrf.server";
+import { csrf } from "~/services.server/csrf";
 
 export async function formAction<S extends GenericSchema, Out>(
   request: Request,
