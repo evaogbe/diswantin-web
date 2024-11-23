@@ -19,15 +19,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
   const user = await getAuthenticatedUser(request);
-  return formAction(
-    request,
-    markDoneSchema,
-    async (values) => {
+  const formData = await request.formData();
+  return formAction({
+    formData,
+    requestHeaders: request.headers,
+    schema: markDoneSchema,
+    mutation: async (values) => {
       await markTaskDone(values.id, user.id);
       return null;
     },
-    { humanName: "mark the to-do done", hiddenFields: ["id"] },
-  );
+    humanName: "mark the to-do done",
+    hiddenFields: ["id"],
+  });
 }
 
 export const meta: MetaFunction = ({ error }) => {

@@ -1,13 +1,15 @@
-import { redirect } from "@remix-run/node";
+import { data, redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { generateState, generateCodeVerifier } from "arctic";
 import { google, stateCookie, codeVerifierCookie } from "./google.server";
-import { redirectAuthenticated } from "./services.server";
+import { getFlashMessage, redirectAuthenticated } from "./services.server";
 import { getTitle } from "~/utils/meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  return await redirectAuthenticated(request);
+  await redirectAuthenticated(request);
+  const [flashMessage, flashCookie] = await getFlashMessage(request);
+  return data({ flashMessage }, { headers: { "Set-Cookie": flashCookie } });
 }
 
 export async function action() {
@@ -38,10 +40,18 @@ export const meta: MetaFunction = ({ error }) => {
 };
 
 export default function SignIn() {
+  const { flashMessage } = useLoaderData<typeof loader>();
+
   return (
     <main>
       <h1>Diswantin</h1>
       <p>The app that shows you the one thing to do right now</p>
+      {flashMessage != null && (
+        <section aria-labelledby="flash-heading">
+          <h2 id="flash-heading">Success</h2>
+          <p>{flashMessage}</p>
+        </section>
+      )}
       <Form method="post">
         <p>
           <button>Sign in with Google</button>

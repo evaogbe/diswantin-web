@@ -18,15 +18,19 @@ export function loader() {
 
 export async function action({ request }: ActionFunctionArgs) {
   const user = await getAuthenticatedUser(request);
-  return formAction(
-    request,
-    taskSchema,
-    async (values) => {
+  const formData = await request.formData();
+  const result = await formAction({
+    formData,
+    requestHeaders: request.headers,
+    schema: taskSchema,
+    mutation: async (values) => {
       await createTask(values, user.id);
-      return redirect("/home");
+      return null;
     },
-    { humanName: "create the to-do", hiddenFields: ["id"] },
-  );
+    humanName: "create the to-do",
+    hiddenFields: ["id"],
+  });
+  return result ?? redirect("/home");
 }
 
 export const meta: MetaFunction = ({ error }) => {
