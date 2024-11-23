@@ -6,7 +6,7 @@ import * as table from "~/db.server/schema";
 
 export async function getCurrentTask(userId: number) {
   const [currentTask] = await db
-    .select({ id: table.task.taskId, name: table.task.name })
+    .select({ id: table.task.clientId, name: table.task.name })
     .from(table.task)
     .where(eq(table.task.userId, userId))
     .orderBy(table.task.createdAt, table.task.id)
@@ -21,12 +21,14 @@ export function getNewTaskForm() {
 export async function createTask(task: Task, userId: number) {
   await db
     .insert(table.task)
-    .values({ userId, taskId: task.id, name: task.name })
-    .onConflictDoNothing({ target: table.task.taskId });
+    .values({ userId, clientId: task.id, name: task.name })
+    .onConflictDoNothing({ target: table.task.clientId });
 }
 
-export async function markTaskDone(taskId: string, userId: number) {
+export async function markTaskDone(taskClientId: string, userId: number) {
   await db
     .delete(table.task)
-    .where(and(eq(table.task.taskId, taskId), eq(table.task.userId, userId)));
+    .where(
+      and(eq(table.task.clientId, taskClientId), eq(table.task.userId, userId)),
+    );
 }

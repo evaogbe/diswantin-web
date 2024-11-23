@@ -9,14 +9,14 @@ import {
 
 export const user = pgTable("user", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: char({ length: 11 }).notNull().unique(),
+  clientId: char({ length: 11 }).notNull().unique(),
   googleId: varchar({ length: 255 }).notNull().unique(),
   email: varchar({ length: 255 }).notNull().unique(),
 });
 
 export const task = pgTable("task", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  taskId: char({ length: 11 }).notNull().unique(),
+  clientId: char({ length: 11 }).notNull().unique(),
   createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
   userId: integer()
     .notNull()
