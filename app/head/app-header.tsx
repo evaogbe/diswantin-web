@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 
-export function AppHead({ isAuthenticated }: { isAuthenticated: boolean }) {
+export function AppHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
     <header>
       <h1>

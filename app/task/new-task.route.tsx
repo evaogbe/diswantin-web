@@ -9,7 +9,7 @@ import { createTask, getNewTaskForm } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
 import { genericError } from "~/form/validation";
-import { getTitle } from "~/utils/meta";
+import { getTitle } from "~/head/meta";
 
 export function loader() {
   const taskForm = getNewTaskForm();

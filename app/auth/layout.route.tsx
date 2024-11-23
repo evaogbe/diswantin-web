@@ -1,9 +1,9 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Outlet, useRouteLoaderData } from "@remix-run/react";
 import { getAuthenticatedUser } from "./services.server";
-import { AppHead } from "~/components/app-head";
 import { GenericErrorBoundary } from "~/error/generic-error-boundary";
-import { getTitle } from "~/utils/meta";
+import { AppHeader } from "~/head/app-header";
+import { getTitle } from "~/head/meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await getAuthenticatedUser(request);
@@ -17,7 +17,7 @@ export const meta: MetaFunction = ({ error }) => {
 export default function AuthLayout() {
   return (
     <>
-      <AppHead isAuthenticated />
+      <AppHeader isAuthenticated />
       <main>
         <Outlet />
       </main>
@@ -30,7 +30,7 @@ export function ErrorBoundary() {
 
   return (
     <>
-      <AppHead isAuthenticated={data?.isAuthenticated === true} />
+      <AppHeader isAuthenticated={data?.isAuthenticated === true} />
       <main>
         <GenericErrorBoundary />
       </main>

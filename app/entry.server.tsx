@@ -6,7 +6,7 @@ import * as Sentry from "@sentry/remix";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import { extendSession } from "~/auth/session.server";
-import { NonceProvider } from "~/components/nonce";
+import { NonceProvider } from "~/security/nonce";
 
 const ABORT_DELAY = 5_000;
 
