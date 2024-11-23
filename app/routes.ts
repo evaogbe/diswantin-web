@@ -1,7 +1,7 @@
 import { index, layout, route } from "@remix-run/route-config";
 import type { RouteConfig } from "@remix-run/route-config";
 
-export const routes: RouteConfig = [
+export default [
   index("auth/sign-in.route.tsx"),
   route("_health", "health/route.tsx"),
   route("monitoring", "monitoring/route.tsx"),
@@ -12,4 +12,4 @@ export const routes: RouteConfig = [
     route("settings", "auth/settings.route.tsx"),
   ]),
   route("*", "error/not-found.route.tsx"),
-];
+] satisfies RouteConfig;
