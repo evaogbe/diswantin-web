@@ -21,15 +21,15 @@ export async function redirectAuthenticated(request: Request) {
 
 export async function getAuthenticatedUser(request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
-  const userId: unknown = session.get("userId");
-  if (typeof userId !== "string") {
+  const userClientId: unknown = session.get("userId");
+  if (typeof userClientId !== "string") {
     throw redirect("/");
   }
 
   const [user] = await db
     .select({ id: table.user.id, email: table.user.email })
     .from(table.user)
-    .where(eq(table.user.userId, userId))
+    .where(eq(table.user.clientId, userClientId))
     .limit(1);
 
   if (user == null) {
@@ -43,9 +43,9 @@ export async function getAuthenticatedUser(request: Request) {
   return user;
 }
 
-export async function authenticate(request: Request, userId: string) {
+export async function authenticate(request: Request, userClientId: string) {
   const session = await getSession(request.headers.get("Cookie"));
-  session.set("userId", userId);
+  session.set("userId", userClientId);
   return redirect("/home", {
     headers: {
       "Set-Cookie": await commitSession(session),
@@ -74,23 +74,23 @@ export async function getFlashMessage(request: Request) {
   ] as const;
 }
 
-export async function getUserIdByGoogleId(googleId: string) {
+export async function getClientIdByGoogleId(googleId: string) {
   const [account] = await db
-    .select({ userId: table.user.userId })
+    .select({ clientId: table.user.clientId })
     .from(table.user)
     .where(eq(table.user.googleId, googleId))
     .limit(1);
-  return account?.userId;
+  return account?.clientId;
 }
 
 export async function createUser(user: { googleId: string; email: string }) {
-  const userId = uid();
+  const clientId = uid();
   await db
     .insert(table.user)
-    .values({ userId, googleId: user.googleId, email: user.email });
-  return userId;
+    .values({ clientId, googleId: user.googleId, email: user.email });
+  return clientId;
 }
 
-export async function deleteUser(pk: number) {
-  await db.delete(table.user).where(eq(table.user.id, pk));
+export async function deleteUser(userId: number) {
+  await db.delete(table.user).where(eq(table.user.id, userId));
 }
