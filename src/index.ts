@@ -49,6 +49,7 @@ async function run() {
             process.env.NODE_ENV === "development" ? "ws:" : null,
           ].filter((dir) => dir != null),
           imgSrc: ["'self'"],
+          formAction: ["'self'", "https://accounts.google.com"],
           baseUri: ["'none'"],
           "upgrade-insecure-requests": null,
         },
@@ -76,39 +77,6 @@ async function run() {
       },
     }),
   );
-
-  app.use((req, res, next) => {
-    if (["GET", "HEAD", "OPTIONS", "TRACE"].includes(req.method)) {
-      next();
-      return;
-    }
-
-    const origin = req.get("origin") ?? req.get("referer");
-    const host = req.get("x-forwarded-host") ?? req.get("host");
-
-    if (origin == null || host == null) {
-      res.statusCode = 403;
-      res.end();
-      return;
-    }
-
-    let originUrl;
-    try {
-      originUrl = new URL(origin);
-    } catch {
-      res.statusCode = 403;
-      res.end();
-      return;
-    }
-
-    if (originUrl.host !== host) {
-      res.statusCode = 403;
-      res.end();
-      return;
-    }
-
-    next();
-  });
 
   app.all(
     "*",
