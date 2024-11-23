@@ -10,12 +10,12 @@ import {
 } from "@remix-run/react";
 import { withSentry } from "@sentry/remix";
 import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
-import { AppHead } from "~/components/app-head";
-import { useNonce } from "~/components/nonce";
 import { PublicEnvScript, initPublicEnv } from "~/env/public";
 import { GenericErrorBoundary } from "~/error/generic-error-boundary";
-import { csrf } from "~/services.server/csrf";
-import { getTitle } from "~/utils/meta";
+import { AppHeader } from "~/head/app-header";
+import { getTitle } from "~/head/meta";
+import { csrf } from "~/security/csrf.server";
+import { useNonce } from "~/security/nonce";
 
 if (initPublicEnv != null) {
   await initPublicEnv();
@@ -68,7 +68,7 @@ export default withSentry(App);
 export function ErrorBoundary() {
   return (
     <>
-      <AppHead isAuthenticated={false} />
+      <AppHeader isAuthenticated={false} />
       <GenericErrorBoundary />
     </>
   );

@@ -2,8 +2,8 @@ import { data } from "@remix-run/node";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, MetaFunction, useLoaderData } from "@remix-run/react";
 import { getIsAuthenticated } from "~/auth/services.server";
-import { AppHead } from "~/components/app-head";
-import { getTitle } from "~/utils/meta";
+import { AppHeader } from "~/head/app-header";
+import { getTitle } from "~/head/meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const isAuthenticated = await getIsAuthenticated(request);
@@ -19,7 +19,7 @@ export default function NotFoundRoute() {
 
   return (
     <>
-      <AppHead isAuthenticated={isAuthenticated} />
+      <AppHeader isAuthenticated={isAuthenticated} />
       <article aria-labelledby="page-not-found-heading">
         <h2 id="page-not-found-heading">Page not found</h2>
         <p>

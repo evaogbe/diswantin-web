@@ -9,7 +9,7 @@ import { markDoneSchema } from "./model";
 import { getCurrentTask, markTaskDone } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
-import { getTitle } from "~/utils/meta";
+import { getTitle } from "~/head/meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getAuthenticatedUser(request);

@@ -4,7 +4,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { generateState, generateCodeVerifier } from "arctic";
 import { google, stateCookie, codeVerifierCookie } from "./google.server";
 import { getFlashMessage, redirectAuthenticated } from "./services.server";
-import { getTitle } from "~/utils/meta";
+import { getTitle } from "~/head/meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await redirectAuthenticated(request);

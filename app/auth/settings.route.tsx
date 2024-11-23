@@ -17,7 +17,7 @@ import {
   invalidateSession,
 } from "./services.server";
 import { formAction } from "~/form/action.server";
-import { getTitle } from "~/utils/meta";
+import { getTitle } from "~/head/meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { email } = await getAuthenticatedUser(request);
