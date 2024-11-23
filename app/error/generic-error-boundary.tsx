@@ -6,6 +6,14 @@ export function GenericErrorBoundary() {
   captureRemixErrorBoundaryError(error);
 
   switch (isRouteErrorResponse(error) ? error.status : 500) {
+    case 400: {
+      return (
+        <article aria-labelledby="incorrect-input-heading">
+          <h2 id="incorrect-input-heading">Incorrect input</h2>
+          <p>Your browser sent something we don&apos;t understand</p>
+        </article>
+      );
+    }
     case 403: {
       return (
         <article aria-labelledby="access-denied-heading">

@@ -3,6 +3,8 @@ import { isRouteErrorResponse } from "@remix-run/react";
 export function getTitle({ page, error }: { page?: string; error?: unknown }) {
   if (isRouteErrorResponse(error)) {
     switch (error.status) {
+      case 400:
+        return "Incorrect input | Diswantin";
       case 403:
         return "Access denied | Diswantin";
       default:
