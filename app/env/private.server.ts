@@ -12,7 +12,7 @@ const envSchema = v.object({
   GOOGLE_CLIENT_ID: v.string(),
   GOOGLE_CLIENT_SECRET: v.string(),
   GOOGLE_REDIRECT_URI: v.pipe(v.string(), v.url()),
-  SENTRY_DNS: v.pipe(v.string(), v.url()),
+  SENTRY_DSN: v.pipe(v.string(), v.url()),
   SENTRY_PROJECT_ID: v.string(),
 });
 
