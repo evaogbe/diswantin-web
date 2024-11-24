@@ -12,7 +12,7 @@ const headerSchema = v.object({
 
 export async function action({ request }: ActionFunctionArgs) {
   try {
-    const sentryHost = new URL(env.SENTRY_DNS).hostname;
+    const sentryHost = new URL(env.SENTRY_DSN).hostname;
     const envelopeBytes = await request.arrayBuffer();
     const envelope = new TextDecoder().decode(envelopeBytes);
     const [piece] = envelope.split("\n");

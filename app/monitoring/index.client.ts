@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export function initMonitoring() {
   Sentry.init({
-    dsn: window.ENV.SENTRY_DNS,
+    dsn: window.ENV.SENTRY_DSN,
     tracesSampleRate: 1,
     integrations: [
       Sentry.browserTracingIntegration({

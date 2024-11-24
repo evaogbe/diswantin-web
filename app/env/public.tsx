@@ -3,7 +3,7 @@ import type { Env } from "./private.server";
 
 type PublicEnv = {
   MODE: Env["NODE_ENV"];
-  SENTRY_DNS: Env["SENTRY_DNS"];
+  SENTRY_DSN: Env["SENTRY_DSN"];
 };
 
 declare global {
@@ -20,7 +20,7 @@ export const initPublicEnv = serverOnly$(async () => {
   const { env } = await import("./private.server");
   publicEnv = {
     MODE: env.NODE_ENV,
-    SENTRY_DNS: env.SENTRY_DNS,
+    SENTRY_DSN: env.SENTRY_DSN,
   };
 });
 
