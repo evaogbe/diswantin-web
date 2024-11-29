@@ -111,7 +111,7 @@ jobs:
         env:
           NODE_ENV: test
       - name: 🦉 Run end-to-end tests
-        run: xvfb-run --auto-servernum npm test:e2e -- --env chrome
+        run: xvfb-run --auto-servernum npm run test:e2e -- --env chrome
 
   deploy:
     name: 🚀 Deploy
