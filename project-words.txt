@@ -1,12 +1,14 @@
 # New Words
+auto-servernum
+dbaeumer
 Diswantin
+esbenp
 Evawere
 isbot
-Ogbe
-dbaeumer
-esbenp
 lightningcss
 nightwatch
+Ogbe
+pg_isready
 pgdata
 picklist
 pipeable
