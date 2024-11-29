@@ -107,10 +107,10 @@ jobs:
           libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3
           libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates
           fonts-liberation libnss3 lsb-release xdg-utils wget ca-certificates
-      - name: 🌐 Set up Chromedriver
+      - name: 🌐 Set up Chrome
         uses: browser-actions/setup-chrome@v1.7.2
         with:
-          install-chromedriver: true
+          chrome-version: 131
       - name: 📥 Install dependencies
         run: npm ci
       - name: 🏄 Copy test env vars
