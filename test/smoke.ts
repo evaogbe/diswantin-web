@@ -19,7 +19,7 @@ describe("Smoke test", function () {
     const session = await createAuthSession();
     const taskName = faker.lorem.words();
 
-    await browser.navigateTo(browser.baseUrl);
+    await browser.navigateTo("/");
     await browser.cookies.set({
       name: "_session",
       value: session,
@@ -27,7 +27,7 @@ describe("Smoke test", function () {
       httpOnly: true,
       sameSite: "Lax",
     });
-    await browser.navigateTo(`${browser.baseUrl}/home`);
+    await browser.navigateTo("/home");
 
     const newTaskLink = await browser.getByRole("link", { name: "New to-do" });
     await newTaskLink.click();

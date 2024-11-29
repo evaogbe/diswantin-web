@@ -84,6 +84,7 @@ jobs:
           - 5433:5432
         env:
           POSTGRES_PASSWORD: password
+          POSTGRES_DB: diswantin
         options: >-
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
@@ -114,8 +115,22 @@ jobs:
         run: npm ci
       - name: 🖥️ Install Xvfb
         run: sudo apt-get install -y xvfb
+      - name: 🏄 Copy test env vars
+        run: cp env/example.env env/test.env
+      - name: 🗃️ Push database schema
+        run: npm run db:push -- --force
+        env:
+          NODE_ENV: test
+      - name: ⚙️ Build app
+        run: npm run build
+        env:
+          NODE_ENV: test
       - name: 🦉 Run end-to-end tests
-        run: xvfb-run --auto-servernum npm run test:ci
+        run: >-
+          npx server-test start:test http://localhost:8811 'xvfb-run
+          --auto-servernum npm run test:ci'
+        env:
+          NODE_ENV: test
 
   deploy:
     name: 🚀 Deploy
