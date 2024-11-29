@@ -84,8 +84,6 @@ jobs:
           - 5433:5432
         env:
           POSTGRES_PASSWORD: password
-          POSTGRES_HOST: localhost
-          POSTGRES_DB: diswantin
         options: >-
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
@@ -108,7 +106,7 @@ jobs:
           libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3
           libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates
           fonts-liberation libnss3 lsb-release xdg-utils wget ca-certificates
-      - name: 🌐 Set up Chrome
+      - name: 🌐 Set up Chromedriver
         uses: browser-actions/setup-chrome@v1.7.2
         with:
           install-chromedriver: true
@@ -116,16 +114,6 @@ jobs:
         run: npm ci
       - name: 🖥️ Install Xvfb
         run: sudo apt-get install -y xvfb
-      - name: 🏄 Copy test env vars
-        run: cp env/example.env env/test.env
-      - name: 🗃️ Push database schema
-        run: npm run db:push -- --force
-        env:
-          NODE_ENV: test
-      - name: ⚙️ Build app
-        run: npm run build
-        env:
-          NODE_ENV: test
       - name: 🦉 Run end-to-end tests
         run: xvfb-run --auto-servernum npm run test:ci
 
