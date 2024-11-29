@@ -1,20 +1,13 @@
 # New Words
-auto-servernum
-chromedriver
 dbaeumer
 Diswantin
 esbenp
 Evawere
 isbot
-libgdk-pixbuf
-libnss
-libxss
 lightningcss
 nightwatch
 Ogbe
-pg_isready
 pgdata
 picklist
 pipeable
-stefanzweifel
 valibot

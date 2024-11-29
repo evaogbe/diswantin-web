@@ -18,6 +18,7 @@
     "node_modules",
     "/project-words.txt",
     "tests_output",
+    "deploy.yml",
     "nightwatch.conf.cjs"
   ]
 }
