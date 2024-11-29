@@ -80,6 +80,8 @@ jobs:
     services:
       postgres:
         image: postgres
+        ports:
+          - 5433:5432
         env:
           POSTGRES_PASSWORD: password
           POSTGRES_DB: diswantin
@@ -88,7 +90,7 @@ jobs:
           --health-retries 5
     steps:
       - name: 🛂 Install sudo package
-        run: apt update && apt install sudo
+        run: apt install sudo
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4.2.2
       - name: ⎔ Set up Node.js
