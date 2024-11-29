@@ -76,7 +76,7 @@ jobs:
   e2e-test:
     name: ⚫️ End-to-end test
     runs-on: ubuntu-latest
-    container: node:22-bookworm-slim
+    container: node:22-bookworm
     services:
       postgres:
         image: postgres
@@ -87,8 +87,6 @@ jobs:
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
     steps:
-      - name: 🛂 Install sudo package
-        run: apt update && apt install sudo
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4.2.2
       - name: ⎔ Set up Node.js
