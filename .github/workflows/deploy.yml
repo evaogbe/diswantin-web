@@ -87,6 +87,8 @@ jobs:
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
     steps:
+      - name: 🛂 Install sudo package
+        run: apt update && apt install sudo
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4.2.2
       - name: ⎔ Set up Node.js
