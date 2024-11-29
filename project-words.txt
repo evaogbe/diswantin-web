@@ -6,7 +6,9 @@ Diswantin
 esbenp
 Evawere
 isbot
+libgdk-pixbuf
 libnss
+libxss
 lightningcss
 nightwatch
 Ogbe
