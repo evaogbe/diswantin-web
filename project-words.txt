@@ -1,4 +1,6 @@
 # New Words
+auto-servernum
+chromedriver
 dbaeumer
 Diswantin
 esbenp
@@ -7,7 +9,9 @@ isbot
 lightningcss
 nightwatch
 Ogbe
+pg_isready
 pgdata
 picklist
 pipeable
+stefanzweifel
 valibot
