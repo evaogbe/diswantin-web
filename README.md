@@ -27,6 +27,20 @@ npm run db:migrate
 npm run dev
 ```
 
+### Tests
+
+To run all tests and checkers:
+
+```sh
+npm run validate
+```
+
+To run just tests:
+
+```sh
+npm test
+```
+
 ## License
 
 Copyright © 2024 Evawere Ogbe

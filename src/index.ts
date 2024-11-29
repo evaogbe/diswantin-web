@@ -13,13 +13,13 @@ import * as morgan from "morgan";
 
 async function run() {
   const viteDevServer =
-    process.env.NODE_ENV === "production"
-      ? null
-      : await import("vite").then((vite) =>
+    process.env.NODE_ENV === "development"
+      ? await import("vite").then((vite) =>
           vite.createServer({
             server: { middlewareMode: true },
           }),
-        );
+        )
+      : null;
 
   const app = express.default();
 

@@ -120,6 +120,19 @@ module.exports = {
       },
     },
 
+    // End-to-end tests
+    {
+      files: ["test/**"],
+      rules: {
+        "@typescript-eslint/no-non-null-assertion": "off",
+        // ESLint can't understand plugin types
+        "@typescript-eslint/no-unsafe-argument": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+      },
+    },
+
     // Node
     {
       files: [".eslintrc.cjs"],

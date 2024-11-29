@@ -6,6 +6,7 @@ Ogbe
 dbaeumer
 esbenp
 lightningcss
+nightwatch
 pgdata
 picklist
 pipeable

@@ -13,8 +13,10 @@
     "/build",
     "/dist",
     "/drizzle",
+    "/env",
     "node_modules",
     "/project-words.txt",
-    ".env.example"
+    "tests_output",
+    "nightwatch.conf.cjs"
   ]
 }

@@ -8,5 +8,11 @@ node_modules
 /build
 /dist
 
-# Secrets
-.env
+# Environment variables
+*.env
+!example.env
+
+# Testing
+chromedriver-mobile
+/logs
+tests_output
