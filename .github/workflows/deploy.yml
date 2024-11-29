@@ -80,10 +80,9 @@ jobs:
     services:
       postgres:
         image: postgres
-        ports:
-          - 5433:5432
         env:
           POSTGRES_PASSWORD: password
+          POSTGRES_DB: diswantin
         options: >-
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
@@ -101,8 +100,18 @@ jobs:
         run: npm ci
       - name: 🖥️ Install Xvfb
         run: sudo apt-get install -y xvfb
+      - name: 🏄 Copy test env vars
+        run: cp env/example.env env/test.env
+      - name: 🗃️ Push database schema
+        run: npm run db:push -- --force
+        env:
+          NODE_ENV: test
+      - name: ⚙️ Build app
+        run: npm run build
+        env:
+          NODE_ENV: test
       - name: 🦉 Run end-to-end tests
-        run: xvfb-run --auto-servernum npm test -- --env chrome
+        run: xvfb-run --auto-servernum npm test:e2e -- --env chrome
 
   deploy:
     name: 🚀 Deploy
@@ -129,6 +138,7 @@ jobs:
         env:
           SENTRY_RELEASE: ${{ github.sha }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          NODE_ENV: production
       - name: 🚆 Install Railway
         run: npm i -g @railway/cli
       - name: 🚀 Deploy
