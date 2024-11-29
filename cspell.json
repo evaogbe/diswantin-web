@@ -10,14 +10,15 @@
   ],
   "dictionaries": ["project-words"],
   "ignorePaths": [
-    ".gitignore",
     "/build",
     "/dist",
     "/drizzle",
     "/env",
     "node_modules",
-    "/project-words.txt",
     "tests_output",
-    "nightwatch.conf.cjs"
+    ".gitignore",
+    "deploy.yml",
+    "nightwatch.conf.cjs",
+    "/project-words.txt"
   ]
 }
