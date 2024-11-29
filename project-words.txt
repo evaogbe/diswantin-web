@@ -1,5 +1,4 @@
 # New Words
-chromedriver
 dbaeumer
 Diswantin
 esbenp

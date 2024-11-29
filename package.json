@@ -70,7 +70,6 @@
     "@typescript-eslint/eslint-plugin": "^8.14.0",
     "@typescript-eslint/parser": "^8.14.0",
     "autoprefixer": "^10.4.19",
-    "chromedriver": "^131.0.1",
     "cross-env": "^7.0.3",
     "cspell": "^8.16.0",
     "drizzle-kit": "^0.28.1",
