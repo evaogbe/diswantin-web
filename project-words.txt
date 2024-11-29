@@ -1,5 +1,6 @@
 # New Words
 auto-servernum
+chromedriver
 dbaeumer
 Diswantin
 esbenp
