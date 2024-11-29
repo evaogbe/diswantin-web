@@ -111,7 +111,7 @@ jobs:
         env:
           NODE_ENV: test
       - name: 🦉 Run end-to-end tests
-        run: xvfb-run --auto-servernum npm run test:e2e -- --env chrome
+        run: xvfb-run --auto-servernum npm run test:e2e
 
   deploy:
     name: 🚀 Deploy
@@ -141,7 +141,7 @@ jobs:
           NODE_ENV: production
       - name: 🚆 Install Railway
         run: npm i -g @railway/cli
-      - name: 🚀 Deploy
+      - name: 🚀 Deploy production
         run: railway up --service diswantin-web
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
