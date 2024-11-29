@@ -113,8 +113,6 @@ jobs:
           install-chromedriver: true
       - name: 📥 Install dependencies
         run: npm ci
-      - name: 🖥️ Install Xvfb
-        run: sudo apt-get install -y xvfb
       - name: 🏄 Copy test env vars
         run: cp env/example.env env/test.env
       - name: 🗃️ Push database schema
@@ -126,11 +124,7 @@ jobs:
         env:
           NODE_ENV: test
       - name: 🦉 Run end-to-end tests
-        run: >-
-          npx server-test start:test http://localhost:8811 'xvfb-run
-          --auto-servernum npm run test:ci'
-        env:
-          NODE_ENV: test
+        run: npm run test:ci
 
   deploy:
     name: 🚀 Deploy

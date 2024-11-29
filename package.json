@@ -22,7 +22,7 @@
     "spellcheck": "cspell \"**\"",
     "pretest": "cross-env NODE_ENV=test run-s test:setup build",
     "test": "cross-env NODE_ENV=test server-test start:test http://localhost:8811 'nightwatch'",
-    "test:ci": "nightwatch -e ci.chrome",
+    "test:ci": "cross-env NODE_ENV=test server-test start:test http://localhost:8811 'nightwatch -e ci.chrome'",
     "test:setup": "tsx ./scripts/setup-e2e-tests.ts",
     "validate": "run-p format:check lint typecheck spellcheck test"
   },
