@@ -137,6 +137,15 @@ module.exports = {
       },
     },
 
+    "ci.chrome": {
+      desiredCapabilities: {
+        browserName: "chrome",
+        "goog:chromeOptions": {
+          args: ["--no-sandbox"],
+        },
+      },
+    },
+
     "android.real.firefox": {
       desiredCapabilities: {
         real_mobile: true,
