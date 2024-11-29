@@ -6,8 +6,8 @@ Diswantin
 esbenp
 Evawere
 isbot
+libnss
 lightningcss
-nanasess
 nightwatch
 Ogbe
 pg_isready

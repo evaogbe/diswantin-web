@@ -94,6 +94,8 @@ jobs:
         with:
           cache: npm
           node-version: 22
+      - name: Install libnss
+        run: sudo apt-get install -y libnss3
       - name: 🌐 Set up Chromedriver
         uses: browser-actions/setup-chrome@v1.7.2
         with:
