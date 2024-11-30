@@ -12,19 +12,33 @@ right now.
 
 ### Setup
 
-Copy [.env.example](./.env.example) into .env and fill in the values.
+Copy [env/example.env](./env/example.env) into env/development.env and fill in
+the values.
 
-To setup the local postgres database run:
+Run the setup command:
 
 ```sh
-docker-compose up -d
-npm run db:migrate
+npm run init
 ```
 
 ### Dev server
 
 ```sh
 npm run dev
+```
+
+### Testing
+
+To run all tests and checkers:
+
+```sh
+npm run validate
+```
+
+To run just tests:
+
+```sh
+npm test
 ```
 
 ## License

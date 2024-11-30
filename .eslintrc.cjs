@@ -27,7 +27,7 @@ module.exports = {
   overrides: [
     // React
     {
-      files: ["**/*.{js,jsx,ts,tsx}"],
+      files: ["app/**/*.{js,jsx,ts,tsx}"],
       plugins: ["react", "jsx-a11y"],
       extends: [
         "plugin:react/recommended",
@@ -117,6 +117,17 @@ module.exports = {
           "error",
           { allowNumber: true },
         ],
+      },
+    },
+
+    // End-to-end tests
+    {
+      files: ["playwright/**", "tests/**"],
+      extends: ["plugin:playwright/recommended"],
+      rules: {
+        "@typescript-eslint/no-non-null-assertion": "off",
+        // Unable to handle aliased test method
+        "playwright/no-standalone-expect": "off",
       },
     },
 

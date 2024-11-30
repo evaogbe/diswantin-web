@@ -8,5 +8,13 @@ node_modules
 /build
 /dist
 
-# Secrets
-.env
+# Environment
+*.env
+!example.env
+
+# Testing
+/blob-report/
+/playwright/.auth
+/playwright/.cache/
+/playwright-report/
+/test-results/
