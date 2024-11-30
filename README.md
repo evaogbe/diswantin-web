@@ -12,7 +12,8 @@ right now.
 
 ### Setup
 
-Copy [.env.example](./.env.example) into .env and fill in the values.
+Copy [env/example.env](./env/example.env) into env/development.env and fill in
+the values.
 
 Run the setup command:
 
