@@ -4,7 +4,7 @@ const pgclient = new pg.Client({
   host: process.env.POSTGRES_HOST,
   port: process.env.POSTGRES_PORT,
   user: "postgres",
-  password: "postgres",
+  password: "password",
   database: "postgres",
 });
 
