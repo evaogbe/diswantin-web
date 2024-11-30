@@ -20,11 +20,11 @@
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "typecheck": "tsc",
     "spellcheck": "cspell \"**\"",
-    "pretest": "cross-env NODE_ENV=test run-s test:setup build",
-    "test": "cross-env NODE_ENV=test server-test start:test http://localhost:8811 'nightwatch'",
-    "test:ci": "cross-env NODE_ENV=test server-test start:test http://localhost:8811 'nightwatch -e ci.chrome'",
+    "test": "nightwatch",
+    "pretest:e2e": "cross-env NODE_ENV=test run-s test:setup build",
+    "test:e2e": "cross-env NODE_ENV=test server-test start:test http://localhost:8811 test",
     "test:setup": "tsx ./scripts/setup-e2e-tests.ts",
-    "validate": "run-p format:check lint typecheck spellcheck test"
+    "validate": "run-p format:check lint typecheck spellcheck test:e2e"
   },
   "dependencies": {
     "@conform-to/react": "^1.2.2",
@@ -70,7 +70,6 @@
     "@typescript-eslint/eslint-plugin": "^8.14.0",
     "@typescript-eslint/parser": "^8.14.0",
     "autoprefixer": "^10.4.19",
-    "chromedriver": "^131.0.1",
     "cross-env": "^7.0.3",
     "cspell": "^8.16.0",
     "drizzle-kit": "^0.28.1",

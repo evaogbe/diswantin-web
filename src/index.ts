@@ -12,8 +12,11 @@ import helmet from "helmet";
 import * as morgan from "morgan";
 
 async function run() {
+  // NODE_ENV can be undefined
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const env = process.env.NODE_ENV ?? "development";
   const viteDevServer =
-    process.env.NODE_ENV === "development"
+    env === "development"
       ? await import("vite").then((vite) =>
           vite.createServer({
             server: { middlewareMode: true },
@@ -44,10 +47,9 @@ async function run() {
           ],
           fontSrc: ["'self'"],
           styleSrc: ["'self'"],
-          connectSrc: [
-            "'self'",
-            process.env.NODE_ENV === "development" ? "ws:" : null,
-          ].filter((dir) => dir != null),
+          connectSrc: ["'self'", env === "development" ? "ws:" : null].filter(
+            (dir) => dir != null,
+          ),
           imgSrc: ["'self'"],
           formAction: ["'self'", "https://accounts.google.com"],
           baseUri: ["'none'"],
@@ -112,7 +114,7 @@ async function run() {
     port: portNumbers(desiredPort, desiredPort + 100),
   });
 
-  if (process.env.NODE_ENV !== "development" && port !== desiredPort) {
+  if (env !== "development" && port !== desiredPort) {
     console.error(`Port ${desiredPort} is not available.`);
     process.exit(1);
   }

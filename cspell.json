@@ -17,7 +17,6 @@
     "node_modules",
     "tests_output",
     ".gitignore",
-    "deploy.yml",
     "nightwatch.conf.cjs",
     "/project-words.txt"
   ]

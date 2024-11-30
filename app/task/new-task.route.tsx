@@ -30,7 +30,7 @@ export async function action({ request }: ActionFunctionArgs) {
     humanName: "create the to-do",
     hiddenFields: ["id"],
   });
-  return result ?? redirect("/home");
+  return result ?? redirect("/home", 303);
 }
 
 export const meta: MetaFunction = ({ error }) => {

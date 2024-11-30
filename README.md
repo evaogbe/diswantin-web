@@ -35,10 +35,10 @@ To run all tests and checkers:
 npm run validate
 ```
 
-To run just tests:
+To run end-to-end tests:
 
 ```sh
-npm test
+npm test:e2e
 ```
 
 ## License
