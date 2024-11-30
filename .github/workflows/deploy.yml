@@ -86,8 +86,7 @@ jobs:
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
-          # - 5433:5432
+          - 5433:5432
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4.2.2
@@ -102,7 +101,7 @@ jobs:
         run: node client.js
         env:
           POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
+          POSTGRES_PORT: 5433
       # - name: 📥 Install browsers
       #   run: npm run init:test
       # - name: 🎭 Run end-to-end tests
