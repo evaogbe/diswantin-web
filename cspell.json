@@ -10,6 +10,7 @@
   ],
   "dictionaries": ["project-words"],
   "ignorePaths": [
+    ".vscode",
     "/build",
     "/dist",
     "/drizzle",

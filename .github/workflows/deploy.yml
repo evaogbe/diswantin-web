@@ -77,7 +77,7 @@ jobs:
     name: 🎭 End-to-end tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    container: node:22-bookworm
+    container: node:22-bookworm-slim
     services:
       postgres:
         image: postgres
