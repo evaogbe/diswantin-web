@@ -93,7 +93,10 @@ async function run() {
           // eslint-disable-next-line import-x/no-unresolved
           ((await import("../build/server")) as unknown as ServerBuild),
       getLoadContext(_req, res) {
-        return { cspNonce: res.locals.cspNonce };
+        return {
+          cspNonce: (res as Response<unknown, { cspNonce: string }>).locals
+            .cspNonce,
+        };
       },
     }),
   );

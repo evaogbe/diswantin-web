@@ -22,7 +22,7 @@ export default async function handleRequest(
   const callbackName = isbot(request.headers.get("user-agent"))
     ? "onAllReady"
     : "onShellReady";
-  const nonce = String(loadContext.cspNonce);
+  const nonce = loadContext.cspNonce;
 
   return new Promise((resolve, reject) => {
     let shellRendered = false;
