@@ -97,13 +97,13 @@ jobs:
           node-version: 22
       - name: 📥 Install dependencies
         run: npm ci
+      - name: 📥 Install browsers
+        run: npm run init:test
       - name: Connect to PostgreSQL
         run: node client.js
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5433
-      # - name: 📥 Install browsers
-      #   run: npm run init:test
       # - name: 🎭 Run end-to-end tests
       #   run: npm test
       # - name: 📊 Upload report
