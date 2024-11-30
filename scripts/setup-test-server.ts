@@ -14,7 +14,7 @@ function randomString({
     .join("");
 }
 
-const dbUrl = "postgres://postgres:password@localhost:5433";
+const dbUrl = "postgres://postgres:password@127.0.0.1:5433";
 const dbName = randomString();
 
 const env = await fs.readFile("env/example.env", { encoding: "utf8" });
