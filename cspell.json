@@ -13,8 +13,9 @@
     "/build",
     "/dist",
     "/drizzle",
+    "/env",
     "node_modules",
-    "/project-words.txt",
-    ".env.example"
+    "playwright-report",
+    "/project-words.txt"
   ]
 }

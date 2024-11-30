@@ -1,10 +1,14 @@
-import "dotenv/config";
 import { vitePlugin as remix } from "@remix-run/dev";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
+import dotenv from "dotenv";
 import { glob } from "glob";
 import { defineConfig } from "vite";
 import { envOnlyMacros } from "vite-env-only";
 import tsconfigPaths from "vite-tsconfig-paths";
+
+// NODE_ENV can be undefined
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+dotenv.config({ path: `env/${process.env.NODE_ENV ?? "development"}.env` });
 
 declare module "@remix-run/node" {
   // Use interface for extensions
