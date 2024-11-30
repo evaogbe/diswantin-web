@@ -21,6 +21,7 @@ export async function action() {
     "email",
   ]);
   return redirect(url.toString(), {
+    status: 303,
     headers: [
       ["Set-Cookie", await stateCookie.serialize(state)],
       ["Set-Cookie", await codeVerifierCookie.serialize(codeVerifier)],

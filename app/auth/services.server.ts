@@ -13,7 +13,7 @@ export async function getIsAuthenticated(request: Request) {
 
 export async function redirectAuthenticated(request: Request) {
   if (await getIsAuthenticated(request)) {
-    throw redirect("/home");
+    throw redirect("/home", 303);
   }
 
   return null;
@@ -23,7 +23,7 @@ export async function getAuthenticatedUser(request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
   const userClientId: unknown = session.get("userId");
   if (typeof userClientId !== "string") {
-    throw redirect("/");
+    throw redirect("/", 303);
   }
 
   const [user] = await db
@@ -34,6 +34,7 @@ export async function getAuthenticatedUser(request: Request) {
 
   if (user == null) {
     throw redirect("/", {
+      status: 303,
       headers: {
         "Set-Cookie": await destroySession(session),
       },
@@ -47,6 +48,7 @@ export async function authenticate(request: Request, userClientId: string) {
   const session = await getSession(request.headers.get("Cookie"));
   session.set("userId", userClientId);
   return redirect("/home", {
+    status: 303,
     headers: {
       "Set-Cookie": await commitSession(session),
     },
@@ -57,6 +59,7 @@ export async function invalidateSession(message: string) {
   const session = await getSession();
   session.flash("message", message);
   return redirect("/", {
+    status: 303,
     headers: {
       "Set-Cookie": await commitSession(session),
     },
