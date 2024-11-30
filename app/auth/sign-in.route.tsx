@@ -1,5 +1,9 @@
 import { data, redirect } from "@remix-run/node";
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { generateState, generateCodeVerifier } from "arctic";
 import { google, stateCookie, codeVerifierCookie } from "./google.server";
@@ -12,7 +16,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return data({ flashMessage }, { headers: { "Set-Cookie": flashCookie } });
 }
 
-export async function action() {
+export async function action({ request }: ActionFunctionArgs) {
+  await redirectAuthenticated(request);
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
   const url = google.createAuthorizationURL(state, codeVerifier, [
