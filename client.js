@@ -1,11 +1,7 @@
 import pg from "pg";
 
 const pgclient = new pg.Client({
-  host: process.env.POSTGRES_HOST,
-  port: process.env.POSTGRES_PORT,
-  user: "postgres",
-  password: "password",
-  database: "postgres",
+  connectionString: "postgres://postgres:password@localhost:5433/postgres",
 });
 
 pgclient.connect();

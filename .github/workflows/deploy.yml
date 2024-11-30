@@ -101,9 +101,6 @@ jobs:
         run: npm run init:test
       - name: Connect to PostgreSQL
         run: node client.js
-        env:
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5433
       # - name: 🎭 Run end-to-end tests
       #   run: npm test
       # - name: 📊 Upload report
