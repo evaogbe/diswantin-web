@@ -101,13 +101,13 @@ jobs:
         run: npm run init:test
       - name: 🎭 Run end-to-end tests
         run: npm test
-      # - name: 📊 Upload report
-      #   uses: actions/upload-artifact@v4.4.3
-      #   if: ${{ !cancelled() }}
-      #   with:
-      #     name: playwright-report
-      #     path: playwright-report/
-      #     retention-days: 30
+      - name: 📊 Upload report
+        uses: actions/upload-artifact@v4.4.3
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
 
   deploy:
     name: 🚀 Deploy
