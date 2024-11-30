@@ -82,9 +82,8 @@ jobs:
       postgres:
         image: postgres
         ports:
-          - 5433:5432
+          - 5433/tcp
         env:
-          POSTGRES_HOST: localhost
           POSTGRES_PASSWORD: password
         options: >-
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s
