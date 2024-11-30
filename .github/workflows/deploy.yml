@@ -75,29 +75,33 @@ jobs:
 
   e2e-test:
     name: 🎭 End-to-end tests
-    timeout-minutes: 60
+    # timeout-minutes: 60
     runs-on: ubuntu-latest
-    container: node:22-bookworm-slim
     services:
       postgres:
         image: postgres
-        ports:
-          - 5432:5432
         env:
-          POSTGRES_PASSWORD: password
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
     steps:
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4.2.2
-      - name: 📥 Install dependencies
-        run: npm ci
+      # - name: ⬇️ Checkout repo
+      #   uses: actions/checkout@v4.2.2
+      # - name: ⎔ Set up Node.js
+      #   uses: actions/setup-node@v4.1.0
+      #   with:
+      #     cache: npm
+      #     node-version: 22
+      # - name: 📥 Install dependencies
+      #   run: npm ci
       - run: |
           apt-get update
           apt-get install --yes --no-install-recommends postgresql-client
       - run: >-
-          psql postgres://postgres:password@localhost:5432/postgres -c "SELECT
+          psql postgres://postgres:postgres@localhost:5432/postgres -c "SELECT
           1"
       # - name: 📥 Install browsers
       #   run: npm run init:test
