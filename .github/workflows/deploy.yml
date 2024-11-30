@@ -82,7 +82,7 @@ jobs:
       postgres:
         image: postgres
         ports:
-          - 5433:5432
+          - 5432:5432
         env:
           POSTGRES_PASSWORD: password
         options: >-
@@ -97,7 +97,7 @@ jobs:
           apt-get update
           apt-get install --yes --no-install-recommends postgresql-client
       - run: >-
-          psql postgres://postgres:password@localhost:5433/postgres -c "SELECT
+          psql postgres://postgres:password@localhost:5432/postgres -c "SELECT
           1"
       # - name: 📥 Install browsers
       #   run: npm run init:test
