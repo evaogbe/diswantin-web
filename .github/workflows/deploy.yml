@@ -99,10 +99,8 @@ jobs:
         run: npm ci
       - name: 📥 Install browsers
         run: npm run init:test
-      - name: Connect to PostgreSQL
-        run: node client.js
-      # - name: 🎭 Run end-to-end tests
-      #   run: npm test
+      - name: 🎭 Run end-to-end tests
+        run: npm test
       # - name: 📊 Upload report
       #   uses: actions/upload-artifact@v4.4.3
       #   if: ${{ !cancelled() }}

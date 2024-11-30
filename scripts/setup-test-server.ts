@@ -30,6 +30,7 @@ await db.connect();
 await db.query(`DROP DATABASE IF EXISTS ${dbName}`);
 await db.query(`CREATE DATABASE ${dbName}`);
 await db.end();
+console.log(`Database "${dbName} created`);
 
 const { stderr } = await exec("npm run db:push -- --force");
 if (stderr) {
