@@ -26,6 +26,15 @@ async function run() {
 
   const app = express.default();
 
+  app.use((req, res, next) => {
+    const host = req.header("x-forwarded-host") ?? req.header("host");
+    if (host === "diswantin.com") {
+      res.redirect(308, `https://www.diswantin.com${req.url}`);
+    } else {
+      next();
+    }
+  });
+
   app.use(compression());
 
   app.disable("x-powered-by");
