@@ -75,18 +75,20 @@ jobs:
 
   e2e-test:
     name: 🎭 End-to-end tests
-    # timeout-minutes: 60
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres
         env:
           POSTGRES_PASSWORD: postgres
+          # POSTGRES_PASSWORD: password
         options: >-
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
         ports:
           - 5432:5432
+          # - 5433:5432
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4.2.2
