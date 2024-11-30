@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link, NavLink } from "@remix-run/react";
 
 export function AppHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
@@ -10,10 +10,10 @@ export function AppHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
         <nav>
           <ul>
             <li>
-              <Link to="/new-todo">New to-do</Link>
+              <NavLink to="/new-todo">New to-do</NavLink>
             </li>
             <li>
-              <Link to="/settings">Settings</Link>
+              <NavLink to="/settings">Settings</NavLink>
             </li>
           </ul>
         </nav>
