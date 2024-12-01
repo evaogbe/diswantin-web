@@ -54,7 +54,7 @@ export default function SignInRoute() {
 
   return (
     <div className="min-h-svh">
-      <header className="border-primary-container bg-primary-container sticky top-0 z-10 flex justify-end border-b p-2xs shadow dark:border-accent">
+      <header className="sticky top-0 z-10 flex justify-end border-b border-primary-container bg-primary-container p-2xs shadow dark:border-accent">
         <ThemeToggle />
       </header>
       <main className="p-sm">
