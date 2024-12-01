@@ -10,7 +10,9 @@ import {
 import type { MetaFunction } from "@remix-run/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, LogOut, X } from "lucide-react";
+import { useId, useState } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { uid } from "uid";
 import { accountDeletionSchema } from "./model";
 import {
   deleteUser,
@@ -73,7 +75,12 @@ export default function SettingsRoute() {
   const [searchParams] = useSearchParams();
   const { email } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
+  const initialAccountDeletionFormId = useId();
+  const [accountDeletionFormId, setAccountDeletionFormId] = useState(
+    `form-${initialAccountDeletionFormId}`,
+  );
   const [accountDeletionForm, accountDeletionFields] = useForm({
+    id: accountDeletionFormId,
     lastResult,
     constraint: getValibotConstraint(accountDeletionSchema),
     shouldRevalidate: "onInput",
@@ -147,6 +154,7 @@ export default function SettingsRoute() {
       {searchParams.has("delete-account") ? (
         <FormProvider context={accountDeletionForm.context}>
           <Form
+            key={accountDeletionForm.key}
             method="post"
             id={accountDeletionForm.id}
             aria-labelledby={`${accountDeletionForm.id}-title`}
@@ -168,6 +176,9 @@ export default function SettingsRoute() {
                   replace
                   preventScrollReset
                   aria-label="Close"
+                  onClick={() => {
+                    setAccountDeletionFormId(`form-${uid()}`);
+                  }}
                 >
                   <X />
                 </Link>
