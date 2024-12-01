@@ -3,6 +3,7 @@ Diswantin
 Evawere
 isbot
 lightningcss
+Nunito
 Ogbe
 pg_isready
 pgdata

@@ -48,6 +48,16 @@ module.exports = {
           typescript: {},
         },
       },
+      rules: {
+        // Safari removes list semantics if the list style is removed
+        "jsx-a11y/no-redundant-roles": [
+          "error",
+          {
+            ol: ["list"],
+            ul: ["list"],
+          },
+        ],
+      },
     },
 
     // Typescript
@@ -95,6 +105,7 @@ module.exports = {
         "import-x/order": ["error", { alphabetize: { order: "asc" } }],
         "@typescript-eslint/array-type": ["error", { default: "array-simple" }],
         "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+        "@typescript-eslint/consistent-type-imports": "error",
         "@typescript-eslint/no-unused-vars": [
           "error",
           {
