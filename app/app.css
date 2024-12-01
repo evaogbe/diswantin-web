@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 20% 98%;
+    --primary-container: 251 95% 92%;
+    --primary-container-foreground: 224 71.4% 4.1%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    --success: 142 72% 29%;
+    --success-foreground: 210 20% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 262.1 83.3% 57.8%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --link: 224 76% 48%;
+  }
+
+  .dark,
+  :root[class~="dark"] {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 263.4 70% 50.4%;
+    --primary-foreground: 210 20% 98%;
+    --primary-container: 224 71.4% 4.1%;
+    --primary-container-foreground: 210 20% 98%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --success: 142 71% 45%;
+    --success-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 263.4 70% 50.4%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --link: 217 91% 60%;
+  }
+}
+
+@layer base {
+  /* @link https://utopia.fyi/type/calculator?c=330,18,1.2,1240,20,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+
+  :root {
+    /* Step -2: 12.5px → 12.8px */
+    --step--2: clamp(0.7813rem, 0.7745rem + 0.033vw, 0.8rem);
+    /* Step -1: 15px → 16px */
+    --step--1: clamp(0.9375rem, 0.9148rem + 0.1099vw, 1rem);
+    /* Step 0: 18px → 20px */
+    --step-0: clamp(1.125rem, 1.0797rem + 0.2198vw, 1.25rem);
+    /* Step 1: 21.6px → 25px */
+    --step-1: clamp(1.35rem, 1.2729rem + 0.3736vw, 1.5625rem);
+    /* Step 2: 25.92px → 31.25px */
+    --step-2: clamp(1.62rem, 1.4992rem + 0.5857vw, 1.9531rem);
+    /* Step 3: 31.104px → 39.0625px */
+    --step-3: clamp(1.944rem, 1.7636rem + 0.8746vw, 2.4414rem);
+    /* Step 4: 37.3248px → 48.8281px */
+    --step-4: clamp(2.3328rem, 2.0721rem + 1.2641vw, 3.0518rem);
+    /* Step 5: 44.7898px → 61.0352px */
+    --step-5: clamp(2.7994rem, 2.4312rem + 1.7852vw, 3.8147rem);
+  }
+
+  /* @link https://utopia.fyi/space/calculator?c=330,18,1.2,1240,20,1.25,5,2,&s=0.75|0.5|0.25|0.125,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+
+  :root {
+    /* Space 4xs: 2px → 3px */
+    --space-4xs: clamp(0.125rem, 0.1023rem + 0.1099vw, 0.1875rem);
+    /* Space 3xs: 5px → 5px */
+    --space-3xs: clamp(0.3125rem, 0.3125rem + 0vw, 0.3125rem);
+    /* Space 2xs: 9px → 10px */
+    --space-2xs: clamp(0.5625rem, 0.5398rem + 0.1099vw, 0.625rem);
+    /* Space xs: 14px → 15px */
+    --space-xs: clamp(0.875rem, 0.8523rem + 0.1099vw, 0.9375rem);
+    /* Space s: 18px → 20px */
+    --space-s: clamp(1.125rem, 1.0797rem + 0.2198vw, 1.25rem);
+    /* Space m: 27px → 30px */
+    --space-m: clamp(1.6875rem, 1.6195rem + 0.3297vw, 1.875rem);
+    /* Space l: 36px → 40px */
+    --space-l: clamp(2.25rem, 2.1593rem + 0.4396vw, 2.5rem);
+    /* Space xl: 54px → 60px */
+    --space-xl: clamp(3.375rem, 3.239rem + 0.6593vw, 3.75rem);
+    /* Space 2xl: 72px → 80px */
+    --space-2xl: clamp(4.5rem, 4.3187rem + 0.8791vw, 5rem);
+    /* Space 3xl: 108px → 120px */
+    --space-3xl: clamp(6.75rem, 6.478rem + 1.3187vw, 7.5rem);
+
+    /* One-up pairs */
+    /* Space 4xs-3xs: 2px → 5px */
+    --space-4xs-3xs: clamp(0.125rem, 0.057rem + 0.3297vw, 0.3125rem);
+    /* Space 3xs-2xs: 5px → 10px */
+    --space-3xs-2xs: clamp(0.3125rem, 0.1992rem + 0.5495vw, 0.625rem);
+    /* Space 2xs-xs: 9px → 15px */
+    --space-2xs-xs: clamp(0.5625rem, 0.4265rem + 0.6593vw, 0.9375rem);
+    /* Space xs-s: 14px → 20px */
+    --space-xs-s: clamp(0.875rem, 0.739rem + 0.6593vw, 1.25rem);
+    /* Space s-m: 18px → 30px */
+    --space-s-m: clamp(1.125rem, 0.853rem + 1.3187vw, 1.875rem);
+    /* Space m-l: 27px → 40px */
+    --space-m-l: clamp(1.6875rem, 1.3929rem + 1.4286vw, 2.5rem);
+    /* Space l-xl: 36px → 60px */
+    --space-l-xl: clamp(2.25rem, 1.706rem + 2.6374vw, 3.75rem);
+    /* Space xl-2xl: 54px → 80px */
+    --space-xl-2xl: clamp(3.375rem, 2.7857rem + 2.8571vw, 5rem);
+    /* Space 2xl-3xl: 72px → 120px */
+    --space-2xl-3xl: clamp(4.5rem, 3.4121rem + 5.2747vw, 7.5rem);
+
+    /* Custom pairs */
+    /* Space s-l: 18px → 40px */
+    --space-s-l: clamp(1.125rem, 0.6264rem + 2.4176vw, 2.5rem);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-primary-container font-body text-base text-primary-container-foreground;
+  }
+}
+
+@layer base {
+  :target {
+    scroll-margin-block: 5ex;
+  }
+}

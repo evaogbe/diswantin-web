@@ -3,13 +3,18 @@ import type {
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
+import { AlertCircle, Check, Plus } from "lucide-react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { markDoneSchema } from "./model";
 import { getCurrentTask, markTaskDone } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
-import { getTitle } from "~/head/meta";
+import { getTitle } from "~/layout/meta";
+import { Page, PageHeading } from "~/layout/page";
+import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
+import { Button } from "~/ui/button";
+import { AddTask } from "~/ui/icons";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getAuthenticatedUser(request);
@@ -37,44 +42,76 @@ export const meta: MetaFunction = ({ error }) => {
   return [{ title: getTitle({ error }) }];
 };
 
-export default function CurrentTask() {
+export default function CurrentTaskRoute() {
   const { currentTask } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
-  const lastResult = fetcher.data;
+  const markDoneFormErrors = fetcher.data?.error;
+
+  if (currentTask == null) {
+    return (
+      <Page
+        aria-labelledby="current-todo-heading"
+        className="flex flex-col items-center"
+      >
+        <PageHeading id="current-todo-heading">Current to-do</PageHeading>
+        <AddTask className="mt-xs size-2xl fill-muted-foreground" />
+        <p className="mt-sm text-xl text-muted-foreground">
+          No upcoming to-dos
+        </p>
+        <p className="mt-sm">
+          <Button asChild>
+            <Link to="/new-todo">
+              <Plus />
+              Add to-do
+            </Link>
+          </Button>
+        </p>
+      </Page>
+    );
+  }
+
   return (
-    <article aria-labelledby="current-todo-heading">
-      <h2 id="current-todo-heading">Current to-do</h2>
-      {lastResult?.error != null && (
-        <section
+    <Page
+      aria-labelledby="current-todo-heading"
+      className="flex flex-col items-center"
+    >
+      <PageHeading id="current-todo-heading" className="mb-xs">
+        Current to-do
+      </PageHeading>
+      {markDoneFormErrors != null && (
+        <Alert
+          variant="destructive"
           id="mark-done-form-error"
-          role="alert"
           aria-labelledby="mark-done-form-error-heading"
         >
-          <h3 id="mark-done-form-error-heading">Error marking to-do done</h3>
-          <p>{Object.values(lastResult.error)[0]?.[0]}</p>
-        </section>
+          <AlertCircle className="size-xs" />
+          <AlertTitle id="mark-done-form-error-heading">
+            Error marking to-do done
+          </AlertTitle>
+          <AlertDescription>
+            {Object.values(markDoneFormErrors)[0]?.[0]}
+          </AlertDescription>
+        </Alert>
       )}
-      {currentTask != null ? (
-        <>
-          <p>{currentTask.name}</p>
-          <fetcher.Form
-            method="post"
-            aria-describedby={
-              lastResult?.error != null ? "mark-done-form-error" : undefined
-            }
-          >
-            <div hidden>
-              <AuthenticityTokenInput />
-              <input type="hidden" name="id" value={currentTask.id} />
-            </div>
-            <p>
-              <button>Done</button>
-            </p>
-          </fetcher.Form>
-        </>
-      ) : (
-        <p>No upcoming to-dos</p>
-      )}
-    </article>
+      <p className="text-2xl tracking-tight">{currentTask.name}</p>
+      <fetcher.Form
+        method="post"
+        aria-describedby={
+          markDoneFormErrors != null ? "mark-done-form-error" : undefined
+        }
+        className="mt-sm"
+      >
+        <div hidden>
+          <AuthenticityTokenInput />
+          <input type="hidden" name="id" value={currentTask.id} />
+        </div>
+        <p>
+          <Button variant="secondary">
+            <Check />
+            Done
+          </Button>
+        </p>
+      </fetcher.Form>
+    </Page>
   );
 }

@@ -9,6 +9,7 @@ import {
 } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
+import { AlertCircle, LogOut, X } from "lucide-react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { accountDeletionSchema } from "./model";
 import {
@@ -17,7 +18,13 @@ import {
   invalidateSession,
 } from "./services.server";
 import { formAction } from "~/form/action.server";
-import { getTitle } from "~/head/meta";
+import { FormField, FormItem, FormLabel, FormMessage } from "~/form/field";
+import { Input } from "~/form/input";
+import { getTitle } from "~/layout/meta";
+import { Page, PageHeading } from "~/layout/page";
+import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
+import { Button } from "~/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { email } = await getAuthenticatedUser(request);
@@ -62,7 +69,7 @@ export const meta: MetaFunction = ({ error }) => {
   return [{ title: getTitle({ page: "Account settings", error }) }];
 };
 
-export default function LogoutRoute() {
+export default function SettingsRoute() {
   const [searchParams] = useSearchParams();
   const { email } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
@@ -86,42 +93,55 @@ export default function LogoutRoute() {
   };
 
   return (
-    <article aria-labelledby="account-settings-heading">
-      <h2 id="account-settings-heading">Account settings</h2>
-      <section aria-labelledby="account-info-heading">
-        <h3 id="account-info-heading">Account Info</h3>
-        <dl>
-          <dt>Sign-in method</dt>
-          <dd>
-            <p>Google</p>
-            {searchParams.has("email") ? (
-              <>
-                <p>{email}</p>
-                <p>
-                  <Link
-                    to={withoutSearchParam("email")}
-                    replace
-                    preventScrollReset
-                  >
-                    Hide email
-                  </Link>
+    <Page aria-labelledby="account-settings-heading">
+      <PageHeading id="account-settings-heading">Account settings</PageHeading>
+      <Card aria-labelledby="account-info-heading">
+        <CardHeader className="pb-2xs">
+          <CardTitle id="account-info-heading">Account Info</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <dl className="text-sm">
+            <dt className="text-muted-foreground">Sign-in method</dt>
+            <dd className="mt-4xs">
+              <p>Google</p>
+              {searchParams.has("email") ? (
+                <>
+                  <p>{email}</p>
+                  <p className="mt-4xs">
+                    <Button variant="outline" size="sm" asChild>
+                      <Link
+                        to={withoutSearchParam("email")}
+                        replace
+                        preventScrollReset
+                      >
+                        Hide email
+                      </Link>
+                    </Button>
+                  </p>
+                </>
+              ) : (
+                <p className="mt-4xs">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link
+                      to={withSearchParam("email")}
+                      replace
+                      preventScrollReset
+                    >
+                      Show email
+                    </Link>
+                  </Button>
                 </p>
-              </>
-            ) : (
-              <p>
-                <Link to={withSearchParam("email")} replace preventScrollReset>
-                  Show email
-                </Link>
-              </p>
-            )}
-          </dd>
-        </dl>
-      </section>
-      <Form method="post">
+              )}
+            </dd>
+          </dl>
+        </CardContent>
+      </Card>
+      <Form method="post" className="mt-sm">
         <p>
-          <button name="intent" value="sign-out">
+          <Button name="intent" value="sign-out" variant="secondary">
+            <LogOut />
             Sign out
-          </button>
+          </Button>
         </p>
       </Form>
       {searchParams.has("delete-account") ? (
@@ -135,16 +155,22 @@ export default function LogoutRoute() {
               : undefined
           }
           onSubmit={accountDeletionForm.onSubmit}
+          className="mt-sm space-y-xs rounded-xl border bg-card p-sm text-card-foreground shadow"
         >
-          <header>
-            <h3 id={`${accountDeletionForm.id}-title`}>Danger Zone</h3>
-            <Link
-              to={withoutSearchParam("delete-account")}
-              replace
-              preventScrollReset
-            >
-              Close
-            </Link>
+          <header className="flex items-center justify-between">
+            <CardTitle id={`${accountDeletionForm.id}-title`}>
+              Danger Zone
+            </CardTitle>
+            <Button variant="ghost" size="icon" asChild>
+              <Link
+                to={withoutSearchParam("delete-account")}
+                replace
+                preventScrollReset
+                aria-label="Close"
+              >
+                <X />
+              </Link>
+            </Button>
           </header>
           <p>
             <strong>Warning: Deleting your account cannot be undone</strong>
@@ -154,62 +180,72 @@ export default function LogoutRoute() {
             your account
           </p>
           {accountDeletionForm.errors != null && (
-            <section
+            <Alert
+              variant="destructive"
               id={accountDeletionForm.errorId}
-              role="alert"
               aria-labelledby={`${accountDeletionForm.errorId}-heading`}
             >
-              <h4 id={`${accountDeletionForm.errorId}-heading`}>
+              <AlertCircle className="size-xs" />
+              <AlertTitle
+                level={4}
+                id={`${accountDeletionForm.errorId}-heading`}
+              >
                 Error deleting account
-              </h4>
-              <p>{accountDeletionForm.errors[0]}</p>
-            </section>
+              </AlertTitle>
+              <AlertDescription>
+                {accountDeletionForm.errors[0]}
+              </AlertDescription>
+            </Alert>
           )}
           <div hidden>
             <AuthenticityTokenInput />
           </div>
-          <p>
-            <label htmlFor={accountDeletionFields.email.id}>Email</label>
-            <input
-              type="email"
-              autoComplete="email"
-              id={accountDeletionFields.email.id}
-              name={accountDeletionFields.email.name}
-              defaultValue={accountDeletionFields.email.initialValue}
-              aria-invalid={accountDeletionFields.email.errors != null}
-              aria-errormessage={
-                accountDeletionFields.email.errors != null
-                  ? accountDeletionFields.email.errorId
-                  : undefined
-              }
-              required={accountDeletionFields.email.required}
-            />
-            {accountDeletionFields.email.errors != null && (
-              <strong id={accountDeletionFields.email.errorId} role="alert">
-                {accountDeletionFields.email.errors[0]}
-              </strong>
+          <FormField
+            field={accountDeletionFields.email}
+            render={({ field, data }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <Input
+                  {...field}
+                  type="email"
+                  autoComplete="email"
+                  defaultValue={data.initialValue}
+                />
+                <FormMessage />
+              </FormItem>
             )}
-          </p>
+          />
           <p>
-            <button name="intent" value="delete-account">
+            <Button name="intent" value="delete-account" variant="secondary">
               Delete account
-            </button>
+            </Button>
           </p>
         </Form>
       ) : (
-        <section aria-labelledby="danger-zone-heading">
-          <h3 id="danger-zone-heading">Danger Zone</h3>
-          <p>
-            <Link
-              to={withSearchParam("delete-account")}
-              replace
-              preventScrollReset
+        <Card aria-labelledby="danger-zone-heading" className="mt-sm">
+          <CardHeader>
+            <CardTitle
+              id="danger-zone-heading"
+              className="flex h-lg items-center"
             >
-              Delete account
-            </Link>
-          </p>
-        </section>
+              Danger Zone
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>
+              <Button variant="destructive" asChild>
+                <Link
+                  to={withSearchParam("delete-account")}
+                  replace
+                  preventScrollReset
+                >
+                  Delete account
+                </Link>
+              </Button>
+            </p>
+          </CardContent>
+        </Card>
       )}
-    </article>
+    </Page>
   );
 }

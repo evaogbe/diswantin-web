@@ -46,7 +46,7 @@ async function run() {
             (_req, res) => `'nonce-${(res as Response).locals.cspNonce}'`,
           ],
           fontSrc: ["'self'"],
-          styleSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
           connectSrc: ["'self'", env === "development" ? "ws:" : null].filter(
             (dir) => dir != null,
           ),

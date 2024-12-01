@@ -1,9 +1,11 @@
 import { data } from "@remix-run/node";
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, MetaFunction, useLoaderData } from "@remix-run/react";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { getIsAuthenticated } from "~/auth/services.server";
-import { AppHeader } from "~/head/app-header";
-import { getTitle } from "~/head/meta";
+import { MainLayout } from "~/layout/main-layout";
+import { getTitle } from "~/layout/meta";
+import { Page, PageHeading } from "~/layout/page";
+import { Link } from "~/ui/link";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const isAuthenticated = await getIsAuthenticated(request);
@@ -18,18 +20,17 @@ export default function NotFoundRoute() {
   const { isAuthenticated } = useLoaderData<typeof loader>();
 
   return (
-    <>
-      <AppHeader isAuthenticated={isAuthenticated} />
-      <article aria-labelledby="page-not-found-heading">
-        <h2 id="page-not-found-heading">Page not found</h2>
-        <p>
+    <MainLayout isAuthenticated={isAuthenticated}>
+      <Page aria-labelledby="page-not-found-heading" className="space-y-sm">
+        <PageHeading id="page-not-found-heading">Page not found</PageHeading>
+        <p className="leading-7">
           The page you were looking for could not be found. Perhaps you typed in
           the URL wrong or the page has been removed.
         </p>
-        <p>
+        <p className="leading-7">
           <Link to={isAuthenticated ? "/home" : "/"}>Return home</Link>
         </p>
-      </article>
-    </>
+      </Page>
+    </MainLayout>
   );
 }

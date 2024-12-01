@@ -1,5 +1,5 @@
 import { data } from "@remix-run/node";
-import type { MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -9,22 +9,32 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { withSentry } from "@sentry/remix";
+import { clsx } from "clsx";
+import {
+  PreventFlashOnWrongTheme,
+  ThemeProvider,
+  useTheme,
+} from "remix-themes";
 import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 import { PublicEnvScript, initPublicEnv } from "~/env/public";
 import { GenericErrorBoundary } from "~/error/generic-error-boundary";
-import { AppHeader } from "~/head/app-header";
-import { getTitle } from "~/head/meta";
+import { MainLayout } from "~/layout/main-layout";
+import { getTitle } from "~/layout/meta";
 import { csrf } from "~/security/csrf.server";
 import { useNonce } from "~/security/nonce";
+import { themeSessionResolver } from "~/theme/session.server";
+import "@fontsource-variable/nunito-sans";
+import "./app.css";
 
 if (initPublicEnv != null) {
   await initPublicEnv();
 }
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
   const [csrfToken, csrfCookie] = await csrf.commitToken();
+  const { getTheme } = await themeSessionResolver(request);
   return data(
-    { csrfToken },
+    { csrfToken, theme: getTheme() },
     csrfCookie != null ? { headers: { "Set-Cookie": csrfCookie } } : undefined,
   );
 }
@@ -33,15 +43,21 @@ export const meta: MetaFunction = ({ error }) => {
   return [{ title: getTitle({ error }) }];
 };
 
-export function Layout({ children }: { children: React.ReactNode }) {
+function BaseLayout({ children }: { children: React.ReactNode }) {
+  const data = useLoaderData<typeof loader>();
   const nonce = useNonce();
+  const [theme] = useTheme();
 
   return (
-    <html lang="en">
+    <html lang="en" className={clsx(theme)}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
+        <PreventFlashOnWrongTheme
+          ssrTheme={Boolean(data.theme)}
+          nonce={nonce}
+        />
         <Links />
       </head>
       <body>
@@ -51,6 +67,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Scripts nonce={nonce} />
       </body>
     </html>
+  );
+}
+
+export function Layout({ children }: { children: React.ReactNode }) {
+  const { theme } = useLoaderData<typeof loader>();
+  return (
+    <ThemeProvider specifiedTheme={theme} themeAction="/resources/theme">
+      <BaseLayout>{children}</BaseLayout>
+    </ThemeProvider>
   );
 }
 
@@ -67,9 +92,8 @@ export default withSentry(App);
 
 export function ErrorBoundary() {
   return (
-    <>
-      <AppHeader isAuthenticated={false} />
+    <MainLayout isAuthenticated={false}>
       <GenericErrorBoundary />
-    </>
+    </MainLayout>
   );
 }

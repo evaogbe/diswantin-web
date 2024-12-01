@@ -3,13 +3,19 @@ import { redirect } from "@remix-run/node";
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
+import { AlertCircle } from "lucide-react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { taskSchema } from "./model";
 import { createTask, getNewTaskForm } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
+import { FormField, FormItem, FormLabel, FormMessage } from "~/form/field";
+import { Input } from "~/form/input";
 import { genericError } from "~/form/validation";
-import { getTitle } from "~/head/meta";
+import { getTitle } from "~/layout/meta";
+import { Page, PageHeading } from "~/layout/page";
+import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
+import { Button } from "~/ui/button";
 
 export function loader() {
   const taskForm = getNewTaskForm();
@@ -37,7 +43,7 @@ export const meta: MetaFunction = ({ error }) => {
   return [{ title: getTitle({ page: "New task", error }) }];
 };
 
-export default function NewTask() {
+export default function NewTaskRoute() {
   const { taskForm } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [form, fields] = useForm({
@@ -54,55 +60,54 @@ export default function NewTask() {
     (fields.id.errors != null ? genericError("create the to-do") : null);
 
   return (
-    <Form
-      method="post"
-      autoComplete="off"
-      id={form.id}
-      aria-labelledby={`${form.id}-title`}
-      aria-describedby={formError != null ? form.errorId : undefined}
-      onSubmit={form.onSubmit}
-    >
-      <h2 id={`${form.id}-title`}>New to-do</h2>
-      {formError != null && (
-        <section
-          id={form.errorId}
-          role="alert"
-          aria-labelledby={`${form.errorId}-heading`}
+    <Page asChild>
+      <div>
+        <Form
+          method="post"
+          autoComplete="off"
+          id={form.id}
+          aria-labelledby={`${form.id}-title`}
+          aria-describedby={formError != null ? form.errorId : undefined}
+          onSubmit={form.onSubmit}
+          className="space-y-xs sm:px-lg"
         >
-          <h3 id={`${form.errorId}-heading`}>Error adding to-do</h3>
-          <p>{formError}</p>
-        </section>
-      )}
-      <div hidden>
-        <AuthenticityTokenInput />
-        <input
-          type="hidden"
-          name={fields.id.name}
-          defaultValue={fields.id.initialValue}
-        />
+          <PageHeading id={`${form.id}-title`}>New to-do</PageHeading>
+          {formError != null && (
+            <Alert
+              variant="destructive"
+              id={form.errorId}
+              aria-labelledby={`${form.errorId}-heading`}
+            >
+              <AlertCircle className="size-xs" />
+              <AlertTitle id={`${form.errorId}-heading`}>
+                Error adding to-do
+              </AlertTitle>
+              <AlertDescription>{formError}</AlertDescription>
+            </Alert>
+          )}
+          <div hidden>
+            <AuthenticityTokenInput />
+            <input
+              type="hidden"
+              name={fields.id.name}
+              defaultValue={fields.id.initialValue}
+            />
+          </div>
+          <FormField
+            field={fields.name}
+            render={({ field, data }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <Input {...field} defaultValue={data.initialValue} />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <p className="flex justify-end">
+            <Button>Save</Button>
+          </p>
+        </Form>
       </div>
-      <p>
-        <label htmlFor={fields.name.id}>Name</label>
-        <input
-          id={fields.name.id}
-          name={fields.name.name}
-          defaultValue={fields.name.initialValue}
-          aria-invalid={fields.name.errors != null}
-          aria-errormessage={
-            fields.name.errors != null ? fields.name.errorId : undefined
-          }
-          required={fields.name.required}
-          maxLength={fields.name.maxLength}
-        />
-        {fields.name.errors != null && (
-          <strong id={fields.name.errorId} role="alert">
-            {fields.name.errors[0]}
-          </strong>
-        )}
-      </p>
-      <p>
-        <button>Save</button>
-      </p>
-    </Form>
+    </Page>
   );
 }
