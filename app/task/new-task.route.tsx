@@ -1,4 +1,4 @@
-import { useForm } from "@conform-to/react";
+import { FormProvider, useForm } from "@conform-to/react";
 import { redirect } from "@remix-run/node";
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
@@ -62,51 +62,53 @@ export default function NewTaskRoute() {
   return (
     <Page asChild>
       <div>
-        <Form
-          method="post"
-          autoComplete="off"
-          id={form.id}
-          aria-labelledby={`${form.id}-title`}
-          aria-describedby={formError != null ? form.errorId : undefined}
-          onSubmit={form.onSubmit}
-          className="space-y-xs sm:px-lg"
-        >
-          <PageHeading id={`${form.id}-title`}>New to-do</PageHeading>
-          {formError != null && (
-            <Alert
-              variant="destructive"
-              id={form.errorId}
-              aria-labelledby={`${form.errorId}-heading`}
-            >
-              <AlertCircle className="size-xs" />
-              <AlertTitle id={`${form.errorId}-heading`}>
-                Error adding to-do
-              </AlertTitle>
-              <AlertDescription>{formError}</AlertDescription>
-            </Alert>
-          )}
-          <div hidden>
-            <AuthenticityTokenInput />
-            <input
-              type="hidden"
-              name={fields.id.name}
-              defaultValue={fields.id.initialValue}
-            />
-          </div>
-          <FormField
-            field={fields.name}
-            render={({ field, data }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <Input {...field} defaultValue={data.initialValue} />
-                <FormMessage />
-              </FormItem>
+        <FormProvider context={form.context}>
+          <Form
+            method="post"
+            autoComplete="off"
+            id={form.id}
+            aria-labelledby={`${form.id}-title`}
+            aria-describedby={formError != null ? form.errorId : undefined}
+            onSubmit={form.onSubmit}
+            className="space-y-xs sm:px-lg"
+          >
+            <PageHeading id={`${form.id}-title`}>New to-do</PageHeading>
+            {formError != null && (
+              <Alert
+                variant="destructive"
+                id={form.errorId}
+                aria-labelledby={`${form.errorId}-heading`}
+              >
+                <AlertCircle className="size-xs" />
+                <AlertTitle id={`${form.errorId}-heading`}>
+                  Error adding to-do
+                </AlertTitle>
+                <AlertDescription>{formError}</AlertDescription>
+              </Alert>
             )}
-          />
-          <p className="flex justify-end">
-            <Button>Save</Button>
-          </p>
-        </Form>
+            <div hidden>
+              <AuthenticityTokenInput />
+              <input
+                type="hidden"
+                name={fields.id.name}
+                defaultValue={fields.id.initialValue}
+              />
+            </div>
+            <FormField
+              name={fields.name.name}
+              render={({ field, data }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <Input {...field} defaultValue={data.initialValue} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <p className="flex justify-end">
+              <Button>Save</Button>
+            </p>
+          </Form>
+        </FormProvider>
       </div>
     </Page>
   );

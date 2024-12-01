@@ -1,4 +1,4 @@
-import { useForm } from "@conform-to/react";
+import { FormProvider, useForm } from "@conform-to/react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
   Form,
@@ -145,82 +145,84 @@ export default function SettingsRoute() {
         </p>
       </Form>
       {searchParams.has("delete-account") ? (
-        <Form
-          method="post"
-          id={accountDeletionForm.id}
-          aria-labelledby={`${accountDeletionForm.id}-title`}
-          aria-describedby={
-            accountDeletionForm.errors != null
-              ? accountDeletionForm.errorId
-              : undefined
-          }
-          onSubmit={accountDeletionForm.onSubmit}
-          className="mt-sm space-y-xs rounded-xl border bg-card p-sm text-card-foreground shadow"
-        >
-          <header className="flex items-center justify-between">
-            <CardTitle id={`${accountDeletionForm.id}-title`}>
-              Danger Zone
-            </CardTitle>
-            <Button variant="ghost" size="icon" asChild>
-              <Link
-                to={withoutSearchParam("delete-account")}
-                replace
-                preventScrollReset
-                aria-label="Close"
+        <FormProvider context={accountDeletionForm.context}>
+          <Form
+            method="post"
+            id={accountDeletionForm.id}
+            aria-labelledby={`${accountDeletionForm.id}-title`}
+            aria-describedby={
+              accountDeletionForm.errors != null
+                ? accountDeletionForm.errorId
+                : undefined
+            }
+            onSubmit={accountDeletionForm.onSubmit}
+            className="mt-sm space-y-xs rounded-xl border bg-card p-sm text-card-foreground shadow"
+          >
+            <header className="flex items-center justify-between">
+              <CardTitle id={`${accountDeletionForm.id}-title`}>
+                Danger Zone
+              </CardTitle>
+              <Button variant="ghost" size="icon" asChild>
+                <Link
+                  to={withoutSearchParam("delete-account")}
+                  replace
+                  preventScrollReset
+                  aria-label="Close"
+                >
+                  <X />
+                </Link>
+              </Button>
+            </header>
+            <p>
+              <strong>Warning: Deleting your account cannot be undone</strong>
+            </p>
+            <p>
+              Enter the email associated with your account to permanently delete
+              your account
+            </p>
+            {accountDeletionForm.errors != null && (
+              <Alert
+                variant="destructive"
+                id={accountDeletionForm.errorId}
+                aria-labelledby={`${accountDeletionForm.errorId}-heading`}
               >
-                <X />
-              </Link>
-            </Button>
-          </header>
-          <p>
-            <strong>Warning: Deleting your account cannot be undone</strong>
-          </p>
-          <p>
-            Enter the email associated with your account to permanently delete
-            your account
-          </p>
-          {accountDeletionForm.errors != null && (
-            <Alert
-              variant="destructive"
-              id={accountDeletionForm.errorId}
-              aria-labelledby={`${accountDeletionForm.errorId}-heading`}
-            >
-              <AlertCircle className="size-xs" />
-              <AlertTitle
-                level={4}
-                id={`${accountDeletionForm.errorId}-heading`}
-              >
-                Error deleting account
-              </AlertTitle>
-              <AlertDescription>
-                {accountDeletionForm.errors[0]}
-              </AlertDescription>
-            </Alert>
-          )}
-          <div hidden>
-            <AuthenticityTokenInput />
-          </div>
-          <FormField
-            field={accountDeletionFields.email}
-            render={({ field, data }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <Input
-                  {...field}
-                  type="email"
-                  autoComplete="email"
-                  defaultValue={data.initialValue}
-                />
-                <FormMessage />
-              </FormItem>
+                <AlertCircle className="size-xs" />
+                <AlertTitle
+                  level={4}
+                  id={`${accountDeletionForm.errorId}-heading`}
+                >
+                  Error deleting account
+                </AlertTitle>
+                <AlertDescription>
+                  {accountDeletionForm.errors[0]}
+                </AlertDescription>
+              </Alert>
             )}
-          />
-          <p>
-            <Button name="intent" value="delete-account" variant="secondary">
-              Delete account
-            </Button>
-          </p>
-        </Form>
+            <div hidden>
+              <AuthenticityTokenInput />
+            </div>
+            <FormField
+              name={accountDeletionFields.email.name}
+              render={({ field, data }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    {...field}
+                    type="email"
+                    autoComplete="email"
+                    defaultValue={data.initialValue}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <p>
+              <Button name="intent" value="delete-account" variant="secondary">
+                Delete account
+              </Button>
+            </p>
+          </Form>
+        </FormProvider>
       ) : (
         <Card aria-labelledby="danger-zone-heading" className="mt-sm">
           <CardHeader>

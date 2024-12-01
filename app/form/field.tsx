@@ -1,5 +1,6 @@
-import type { Constraint, FieldName, FormValue } from "@conform-to/dom";
-import type { FieldMetadata } from "@conform-to/react";
+import type { Constraint, FormValue } from "@conform-to/dom";
+import { useField } from "@conform-to/react";
+import type { FieldMetadata, FieldName } from "@conform-to/react";
 import type * as LabelPrimitive from "@radix-ui/react-label";
 import { createContext, forwardRef, useContext } from "react";
 import { Label } from "./label";
@@ -30,36 +31,38 @@ type RenderProps<
 };
 
 function FormField<
-  Schema = unknown,
+  Schema,
   FormSchema extends Record<string, unknown> = Record<string, unknown>,
 >({
-  field,
+  name,
   render,
 }: {
-  field: FieldMetadata<Schema, FormSchema>;
+  name: FieldName<Schema, FormSchema>;
   render: (renderProps: RenderProps<Schema>) => React.ReactNode;
 }) {
+  const [meta] = useField(name);
+
   return (
-    <FormFieldContext.Provider value={field}>
+    <FormFieldContext.Provider value={meta}>
       {render({
         field: {
-          id: field.id,
-          name: field.name,
-          "aria-describedby": field.descriptionId,
-          "aria-errormessage": field.errors != null ? field.errorId : undefined,
-          "aria-invalid": field.errors != null,
-          required: field.required,
-          minLength: field.minLength,
-          maxLength: field.maxLength,
-          min: field.min,
-          max: field.max,
-          step: field.step,
-          multiple: field.multiple,
-          pattern: field.pattern,
+          id: meta.id,
+          name: meta.name,
+          "aria-describedby": meta.descriptionId,
+          "aria-errormessage": meta.errors != null ? meta.errorId : undefined,
+          "aria-invalid": meta.errors != null,
+          required: meta.required,
+          minLength: meta.minLength,
+          maxLength: meta.maxLength,
+          min: meta.min,
+          max: meta.max,
+          step: meta.step,
+          multiple: meta.multiple,
+          pattern: meta.pattern,
         },
         data: {
-          initialValue: field.initialValue,
-          value: field.value,
+          initialValue: meta.initialValue,
+          value: meta.value,
         },
       })}
     </FormFieldContext.Provider>
