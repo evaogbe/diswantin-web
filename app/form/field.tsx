@@ -21,7 +21,6 @@ type RenderProps<
     id: string;
     name: FieldName<Schema, FormSchema>;
     "aria-describedby": string;
-    "aria-errormessage": string | undefined;
     "aria-invalid": boolean;
   } & Constraint;
   data: {
@@ -48,8 +47,10 @@ function FormField<
         field: {
           id: meta.id,
           name: meta.name,
-          "aria-describedby": meta.descriptionId,
-          "aria-errormessage": meta.errors != null ? meta.errorId : undefined,
+          "aria-describedby":
+            meta.errors == null
+              ? meta.descriptionId
+              : `${meta.descriptionId} ${meta.errorId}`,
           "aria-invalid": meta.errors != null,
           required: meta.required,
           minLength: meta.minLength,

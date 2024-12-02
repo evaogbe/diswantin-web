@@ -74,7 +74,7 @@ export function AccountDeletionForm({
               id={form.errorId}
               aria-labelledby={`${form.errorId}-heading`}
             >
-              <AlertCircle className="size-xs" />
+              <AlertCircle aria-hidden="true" className="size-xs" />
               <AlertTitle level={4} id={`${form.errorId}-heading`}>
                 Error deleting account
               </AlertTitle>

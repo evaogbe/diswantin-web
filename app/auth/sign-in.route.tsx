@@ -64,7 +64,7 @@ export default function SignInRoute() {
             aria-labelledby="flash-heading"
             className="mx-auto max-w-prose"
           >
-            <CircleCheck className="size-xs" />
+            <CircleCheck aria-hidden="true" className="size-xs" />
             <AlertTitle level={2} id="flash-heading">
               Success
             </AlertTitle>

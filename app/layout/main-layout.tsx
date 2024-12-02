@@ -35,13 +35,13 @@ export function MainLayout({
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuLink to="/new-todo">
-                  <Plus />
+                  <Plus aria-hidden="true" />
                   <span className="sr-only sm:not-sr-only">New to-do</span>
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuLink to="/settings">
-                  <Settings />
+                  <Settings aria-hidden="true" />
                   <span className="sr-only sm:not-sr-only">Settings</span>
                 </NavigationMenuLink>
               </NavigationMenuItem>
