@@ -112,7 +112,7 @@ export default function SettingsRoute() {
       <Form method="post" className="mt-sm">
         <p>
           <Button name="intent" value="sign-out" variant="secondary">
-            <LogOut />
+            <LogOut aria-hidden="true" />
             Sign out
           </Button>
         </p>

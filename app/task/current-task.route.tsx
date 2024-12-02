@@ -54,14 +54,17 @@ export default function CurrentTaskRoute() {
         className="flex flex-col items-center"
       >
         <PageHeading id="current-todo-heading">Current to-do</PageHeading>
-        <AddTask className="mt-xs size-2xl fill-muted-foreground" />
+        <AddTask
+          aria-hidden="true"
+          className="mt-xs size-2xl fill-muted-foreground"
+        />
         <p className="mt-sm text-xl text-muted-foreground">
           No upcoming to-dos
         </p>
         <p className="mt-sm">
           <Button asChild>
             <Link to="/new-todo">
-              <Plus />
+              <Plus aria-hidden="true" />
               Add to-do
             </Link>
           </Button>
@@ -84,7 +87,7 @@ export default function CurrentTaskRoute() {
           id="mark-done-form-error"
           aria-labelledby="mark-done-form-error-heading"
         >
-          <AlertCircle className="size-xs" />
+          <AlertCircle aria-hidden="true" className="size-xs" />
           <AlertTitle id="mark-done-form-error-heading">
             Error marking to-do done
           </AlertTitle>
@@ -107,7 +110,7 @@ export default function CurrentTaskRoute() {
         </div>
         <p>
           <Button variant="secondary">
-            <Check />
+            <Check aria-hidden="true" />
             Done
           </Button>
         </p>
