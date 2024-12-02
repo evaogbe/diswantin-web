@@ -3,8 +3,9 @@ import { redirect } from "@remix-run/node";
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, X } from "lucide-react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { useHydrated } from "remix-utils/use-hydrated";
 import { taskSchema } from "./model";
 import { createTask, getNewTaskForm } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
@@ -44,6 +45,7 @@ export const meta: MetaFunction = ({ error }) => {
 };
 
 export default function NewTaskRoute() {
+  const isHydrated = useHydrated();
   const { taskForm } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [form, fields] = useForm({
@@ -65,10 +67,11 @@ export default function NewTaskRoute() {
         <FormProvider context={form.context}>
           <Form
             method="post"
-            autoComplete="off"
             id={form.id}
+            noValidate={form.noValidate}
             aria-labelledby={`${form.id}-title`}
             aria-describedby={formError != null ? form.errorId : undefined}
+            autoComplete="off"
             onSubmit={form.onSubmit}
             className="space-y-xs sm:px-lg"
           >
@@ -96,10 +99,72 @@ export default function NewTaskRoute() {
             </div>
             <FormField
               name={fields.name.name}
-              render={({ field, data }) => (
+              render={({ field, control }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
-                  <Input {...field} defaultValue={data.initialValue} />
+                  <Input {...field} defaultValue={control.initialValue} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name={fields.deadlineDate.name}
+              render={({ field, control }) => (
+                <FormItem>
+                  <FormLabel>Deadline date</FormLabel>
+                  <span className="flex gap-2xs">
+                    <Input
+                      {...field}
+                      value={control.value ?? ""}
+                      onChange={control.onChange}
+                      type="date"
+                      className="flex-1"
+                    />
+                    {(!isHydrated || control.value != null) && (
+                      <Button
+                        {...form.update.getButtonProps({
+                          name: field.name,
+                          value: "",
+                        })}
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Clear"
+                      >
+                        <X />
+                      </Button>
+                    )}
+                  </span>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name={fields.deadlineTime.name}
+              render={({ field, control }) => (
+                <FormItem>
+                  <FormLabel>Deadline time</FormLabel>
+                  <span className="flex gap-2xs">
+                    <Input
+                      {...field}
+                      value={control.value ?? ""}
+                      onChange={control.onChange}
+                      type="time"
+                      className="flex-1"
+                    />
+                    {(!isHydrated || control.value != null) && (
+                      <Button
+                        {...form.update.getButtonProps({
+                          name: field.name,
+                          value: "",
+                        })}
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Clear"
+                      >
+                        <X />
+                      </Button>
+                    )}
+                  </span>
                   <FormMessage />
                 </FormItem>
               )}

@@ -1,8 +1,10 @@
 import { relations } from "drizzle-orm";
 import {
   char,
+  date,
   integer,
   pgTable,
+  time,
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -22,6 +24,8 @@ export const task = pgTable("task", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   name: varchar({ length: 255 }).notNull(),
+  deadlineDate: date(),
+  deadlineTime: time(),
 });
 
 export const userRelations = relations(user, ({ many }) => ({

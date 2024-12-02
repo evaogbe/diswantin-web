@@ -23,6 +23,19 @@ export async function formAction<S extends GenericSchema>({
 }) {
   const submission = parseWithValibot(formData, { schema });
 
+  if (submission.status !== "success") {
+    for (const field of hiddenFields ?? []) {
+      if (submission.error?.[field] != null) {
+        Sentry.captureMessage(`Invalid ${field}`, {
+          extra: { error: submission.error, humanName },
+        });
+        throw new Response(`Invalid ${field}`, { status: 400 });
+      }
+    }
+
+    return data(submission.reply(), submission.status === "error" ? 422 : 200);
+  }
+
   try {
     await csrf.validate(formData, requestHeaders);
   } catch (e) {
@@ -37,19 +50,6 @@ export async function formAction<S extends GenericSchema>({
       }),
       500,
     );
-  }
-
-  if (submission.status !== "success") {
-    for (const field of hiddenFields ?? []) {
-      if (submission.error?.[field] != null) {
-        Sentry.captureMessage(`Invalid ${field}`, {
-          extra: { error: submission.error, humanName },
-        });
-        throw new Response(`Invalid ${field}`, { status: 400 });
-      }
-    }
-
-    return data(submission.reply(), 422);
   }
 
   try {

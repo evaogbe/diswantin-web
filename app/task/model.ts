@@ -10,6 +10,12 @@ export const taskSchema = v.object({
     v.nonEmpty("Required"),
     v.maxLength(256, "Too long"),
   ),
+  deadlineDate: v.optional(
+    v.pipe(v.string("Invalid date"), v.isoDate("Invalid date")),
+  ),
+  deadlineTime: v.optional(
+    v.pipe(v.string("Invalid time"), v.isoTime("Invalid time")),
+  ),
 });
 
 export type Task = v.InferOutput<typeof taskSchema>;
