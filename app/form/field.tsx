@@ -1,4 +1,4 @@
-import type { Constraint, FormValue } from "@conform-to/dom";
+import type { Constraint, DefaultValue, FormValue } from "@conform-to/dom";
 import { useField } from "@conform-to/react";
 import type { FieldMetadata, FieldName } from "@conform-to/react";
 import type * as LabelPrimitive from "@radix-ui/react-label";
@@ -23,9 +23,10 @@ type RenderProps<
     "aria-describedby": string;
     "aria-invalid": boolean;
   } & Constraint;
-  data: {
+  control: {
     initialValue: FormValue<Schema>;
     value: FormValue<Schema>;
+    onChange: React.ChangeEventHandler;
   };
 };
 
@@ -39,7 +40,7 @@ function FormField<
   name: FieldName<Schema, FormSchema>;
   render: (renderProps: RenderProps<Schema>) => React.ReactNode;
 }) {
-  const [meta] = useField(name);
+  const [meta, form] = useField(name);
 
   return (
     <FormFieldContext.Provider value={meta}>
@@ -61,9 +62,17 @@ function FormField<
           multiple: meta.multiple,
           pattern: meta.pattern,
         },
-        data: {
+        control: {
           initialValue: meta.initialValue,
           value: meta.value,
+          onChange: (e) => {
+            if ("value" in e.target) {
+              form.update({
+                name: meta.name,
+                value: e.target.value as NonNullable<DefaultValue<Schema>>,
+              });
+            }
+          },
         },
       })}
     </FormFieldContext.Provider>

@@ -3,7 +3,7 @@ import pg from "pg";
 import { env } from "~/env/private.server";
 
 const globalForDb = globalThis as unknown as {
-  dbPool: pg.Pool | undefined;
+  dbPool?: pg.Pool;
 };
 
 const pool =

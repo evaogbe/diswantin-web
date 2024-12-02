@@ -37,9 +37,9 @@ export function AccountDeletionForm({
     return (
       <FormProvider context={form.context}>
         <Form
-          key={form.key}
           method="post"
           id={form.id}
+          noValidate={form.noValidate}
           aria-labelledby={`${form.id}-title`}
           aria-describedby={form.errors != null ? form.errorId : undefined}
           onSubmit={form.onSubmit}
@@ -86,14 +86,14 @@ export function AccountDeletionForm({
           </div>
           <FormField
             name={fields.email.name}
-            render={({ field, data }) => (
+            render={({ field, control }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <Input
                   {...field}
+                  defaultValue={control.initialValue}
                   type="email"
                   autoComplete="email"
-                  defaultValue={data.initialValue}
                 />
                 <FormMessage />
               </FormItem>
