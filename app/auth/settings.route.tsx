@@ -1,18 +1,8 @@
-import { FormProvider, useForm } from "@conform-to/react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  useActionData,
-  useLoaderData,
-  useSearchParams,
-} from "@remix-run/react";
+import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
-import { AlertCircle, LogOut, X } from "lucide-react";
-import { useId, useState } from "react";
-import { AuthenticityTokenInput } from "remix-utils/csrf/react";
-import { uid } from "uid";
+import { LogOut } from "lucide-react";
+import { AccountDeletionForm } from "./account-deletion-form";
 import { accountDeletionSchema } from "./model";
 import {
   deleteUser,
@@ -20,13 +10,11 @@ import {
   invalidateSession,
 } from "./services.server";
 import { formAction } from "~/form/action.server";
-import { FormField, FormItem, FormLabel, FormMessage } from "~/form/field";
-import { Input } from "~/form/input";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
-import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
+import { useSearchParams } from "~/url/use-search-params";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { email } = await getAuthenticatedUser(request);
@@ -72,32 +60,10 @@ export const meta: MetaFunction = ({ error }) => {
 };
 
 export default function SettingsRoute() {
-  const [searchParams] = useSearchParams();
+  const { searchParams, withSearchParam, withoutSearchParam } =
+    useSearchParams();
   const { email } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
-  const initialAccountDeletionFormId = useId();
-  const [accountDeletionFormId, setAccountDeletionFormId] = useState(
-    `form-${initialAccountDeletionFormId}`,
-  );
-  const [accountDeletionForm, accountDeletionFields] = useForm({
-    id: accountDeletionFormId,
-    lastResult,
-    constraint: getValibotConstraint(accountDeletionSchema),
-    shouldRevalidate: "onInput",
-    onValidate({ formData }) {
-      return parseWithValibot(formData, { schema: accountDeletionSchema });
-    },
-  });
-  const withSearchParam = (name: string, value = "") => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set(name, value);
-    return `?${newSearchParams}`;
-  };
-  const withoutSearchParam = (name: string) => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.delete(name);
-    return `?${newSearchParams}`;
-  };
 
   return (
     <Page aria-labelledby="account-settings-heading">
@@ -151,114 +117,7 @@ export default function SettingsRoute() {
           </Button>
         </p>
       </Form>
-      {searchParams.has("delete-account") ? (
-        <FormProvider context={accountDeletionForm.context}>
-          <Form
-            key={accountDeletionForm.key}
-            method="post"
-            id={accountDeletionForm.id}
-            aria-labelledby={`${accountDeletionForm.id}-title`}
-            aria-describedby={
-              accountDeletionForm.errors != null
-                ? accountDeletionForm.errorId
-                : undefined
-            }
-            onSubmit={accountDeletionForm.onSubmit}
-            className="mt-sm space-y-xs rounded-xl border bg-card p-sm text-card-foreground shadow"
-          >
-            <header className="flex items-center justify-between">
-              <CardTitle id={`${accountDeletionForm.id}-title`}>
-                Danger Zone
-              </CardTitle>
-              <Button variant="ghost" size="icon" asChild>
-                <Link
-                  to={withoutSearchParam("delete-account")}
-                  replace
-                  preventScrollReset
-                  aria-label="Close"
-                  onClick={() => {
-                    setAccountDeletionFormId(`form-${uid()}`);
-                  }}
-                >
-                  <X />
-                </Link>
-              </Button>
-            </header>
-            <p>
-              <strong>Warning: Deleting your account cannot be undone</strong>
-            </p>
-            <p>
-              Enter the email associated with your account to permanently delete
-              your account
-            </p>
-            {accountDeletionForm.errors != null && (
-              <Alert
-                variant="destructive"
-                id={accountDeletionForm.errorId}
-                aria-labelledby={`${accountDeletionForm.errorId}-heading`}
-              >
-                <AlertCircle className="size-xs" />
-                <AlertTitle
-                  level={4}
-                  id={`${accountDeletionForm.errorId}-heading`}
-                >
-                  Error deleting account
-                </AlertTitle>
-                <AlertDescription>
-                  {accountDeletionForm.errors[0]}
-                </AlertDescription>
-              </Alert>
-            )}
-            <div hidden>
-              <AuthenticityTokenInput />
-            </div>
-            <FormField
-              name={accountDeletionFields.email.name}
-              render={({ field, data }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <Input
-                    {...field}
-                    type="email"
-                    autoComplete="email"
-                    defaultValue={data.initialValue}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <p>
-              <Button name="intent" value="delete-account" variant="secondary">
-                Delete account
-              </Button>
-            </p>
-          </Form>
-        </FormProvider>
-      ) : (
-        <Card aria-labelledby="danger-zone-heading" className="mt-sm">
-          <CardHeader>
-            <CardTitle
-              id="danger-zone-heading"
-              className="flex h-lg items-center"
-            >
-              Danger Zone
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>
-              <Button variant="destructive" asChild>
-                <Link
-                  to={withSearchParam("delete-account")}
-                  replace
-                  preventScrollReset
-                >
-                  Delete account
-                </Link>
-              </Button>
-            </p>
-          </CardContent>
-        </Card>
-      )}
+      <AccountDeletionForm lastResult={lastResult} />
     </Page>
   );
 }
