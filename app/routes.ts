@@ -3,10 +3,10 @@ import type { RouteConfig } from "@remix-run/route-config";
 
 export default [
   index("auth/sign-in.route.tsx"),
-  route("_health", "health/route.tsx"),
-  route("monitoring", "monitoring/route.tsx"),
-  route("resources/theme", "theme/route.tsx"),
-  route("auth/google/callback", "auth/google.route.tsx"),
+  route("_health", "health/route.ts"),
+  route("monitoring", "monitoring/route.ts"),
+  route("resources/theme", "theme/route.ts"),
+  route("auth/google/callback", "auth/google.route.ts"),
   layout("auth/layout.route.tsx", [
     route("home", "task/current-task.route.tsx"),
     route("new-todo", "task/new-task.route.tsx"),
