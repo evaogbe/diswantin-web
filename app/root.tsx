@@ -49,7 +49,7 @@ function BaseLayout({ children }: { children: React.ReactNode }) {
   const [theme] = useTheme();
 
   return (
-    <html lang="en" className={clsx(theme)}>
+    <html lang="en" dir="ltr" className={clsx(theme)}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

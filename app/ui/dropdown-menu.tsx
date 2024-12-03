@@ -25,13 +25,13 @@ const DropdownMenuSubTrigger = forwardRef<
     ref={ref}
     className={cn(
       "flex cursor-default select-none items-center gap-2xs rounded-sm px-2xs py-3xs text-sm outline-none focus:bg-accent data-[state=open]:bg-accent [&_svg]:pointer-events-none [&_svg]:size-xs [&_svg]:shrink-0",
-      inset && "pl-md",
+      inset && "ps-md",
       className,
     )}
     {...props}
   >
     {children}
-    <ChevronRight aria-hidden="true" className="ml-auto" />
+    <ChevronRight aria-hidden="true" className="ms-auto" />
   </DropdownMenuPrimitive.SubTrigger>
 ));
 DropdownMenuSubTrigger.displayName =
@@ -81,7 +81,7 @@ const DropdownMenuItem = forwardRef<
     ref={ref}
     className={cn(
       "relative flex cursor-default select-none items-center gap-2xs rounded-sm px-2xs py-3xs text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-xs [&>svg]:shrink-0",
-      inset && "pl-md",
+      inset && "ps-md",
       className,
     )}
     {...props}
@@ -96,7 +96,7 @@ const DropdownMenuCheckboxItem = forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-sm py-3xs pl-md pr-2xs text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex cursor-default select-none items-center rounded-sm py-3xs pe-2xs ps-md text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className,
     )}
     checked={checked}
@@ -120,7 +120,7 @@ const DropdownMenuRadioItem = forwardRef<
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-sm py-3xs pl-md pr-2xs text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex cursor-default select-none items-center rounded-sm py-3xs pe-2xs ps-md text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className,
     )}
     {...props}
@@ -145,7 +145,7 @@ const DropdownMenuLabel = forwardRef<
     ref={ref}
     className={cn(
       "px-2xs py-3xs text-sm font-semibold",
-      inset && "pl-md",
+      inset && "ps-md",
       className,
     )}
     {...props}
@@ -171,7 +171,7 @@ const DropdownMenuShortcut = ({
 }: React.HTMLAttributes<HTMLSpanElement>) => {
   return (
     <span
-      className={cn("ml-auto text-xs tracking-widest opacity-60", className)}
+      className={cn("ms-auto text-xs tracking-widest opacity-60", className)}
       {...props}
     />
   );
