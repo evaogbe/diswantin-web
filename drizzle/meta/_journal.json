@@ -43,6 +43,13 @@
       "when": 1733117381901,
       "tag": "0005_stale_butterfly",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1733162853583,
+      "tag": "0006_legal_toad",
+      "breakpoints": true
     }
   ]
 }

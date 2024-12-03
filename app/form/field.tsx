@@ -13,6 +13,14 @@ type FormFieldContextValue<
 
 const FormFieldContext = createContext<FormFieldContextValue | null>(null);
 
+function useFormField() {
+  const field = useContext(FormFieldContext);
+  if (field == null) {
+    throw new Error("useFormField should be used within <FormField>");
+  }
+  return field;
+}
+
 type RenderProps<
   Schema,
   FormSchema extends Record<string, unknown> = Record<string, unknown>,
@@ -79,13 +87,47 @@ function FormField<
   );
 }
 
-function useFormField() {
-  const field = useContext(FormFieldContext);
-  if (field == null) {
-    throw new Error("useFormField should be used within <FormField>");
-  }
-  return field;
-}
+const FormFieldSet = forwardRef(function FormFieldSet<
+  Schema,
+  FormSchema extends Record<string, unknown> = Record<string, unknown>,
+>(
+  {
+    className,
+    ...props
+  }: Omit<React.JSX.IntrinsicElements["fieldset"], "name"> & {
+    name: FieldName<Schema, FormSchema>;
+  },
+  ref: React.ForwardedRef<HTMLFieldSetElement>,
+) {
+  const [meta] = useField(props.name);
+
+  return (
+    <FormFieldContext.Provider value={meta}>
+      <fieldset ref={ref} className={cn("space-y-2xs", className)} {...props} />
+    </FormFieldContext.Provider>
+  );
+});
+FormFieldSet.displayName = "FormFieldSet";
+
+const FormLegend = forwardRef<
+  HTMLLegendElement,
+  React.HTMLAttributes<HTMLLegendElement>
+>(({ className, ...props }, ref) => {
+  const field = useFormField();
+
+  return (
+    <legend
+      ref={ref}
+      className={cn(
+        "text-sm font-medium leading-none",
+        field.errors != null && "text-destructive",
+        className,
+      )}
+      {...props}
+    />
+  );
+});
+FormLegend.displayName = "FormLegend";
 
 const FormItem = forwardRef<
   HTMLParagraphElement,
@@ -154,8 +196,10 @@ const FormMessage = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
 FormMessage.displayName = "FormMessage";
 
 export {
-  FormField,
   useFormField,
+  FormField,
+  FormFieldSet,
+  FormLegend,
   FormItem,
   FormLabel,
   FormDescription,

@@ -26,6 +26,8 @@ export const task = pgTable("task", {
   name: varchar({ length: 255 }).notNull(),
   deadlineDate: date(),
   deadlineTime: time(),
+  scheduledDate: date(),
+  scheduledTime: time(),
 });
 
 export const userRelations = relations(user, ({ many }) => ({
