@@ -1,5 +1,5 @@
 import { formatISO, startOfDay } from "date-fns";
-import { and, eq, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
+import { and, eq, isNotNull, isNull, lt, lte, or, sql } from "drizzle-orm";
 import type { SQLChunk } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { uid } from "uid";
@@ -24,11 +24,11 @@ export async function getCurrentTask(userId: number) {
         eq(table.task.userId, userId),
         or(
           isNull(table.task.scheduledDate),
-          lte(table.task.scheduledDate, today),
-        ),
-        or(
-          isNull(table.task.scheduledTime),
-          lte(table.task.scheduledTime, currentTime),
+          lt(table.task.scheduledDate, today),
+          and(
+            eq(table.task.scheduledDate, today),
+            lte(table.task.scheduledTime, currentTime),
+          ),
         ),
       ),
     )
