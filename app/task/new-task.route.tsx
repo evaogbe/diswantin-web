@@ -1,18 +1,16 @@
 import { FormProvider, useForm } from "@conform-to/react";
 import { redirect } from "@remix-run/node";
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
 import * as Sentry from "@sentry/remix";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
-import { AlertCircle, X } from "lucide-react";
-import { useState } from "react";
+import { AlertCircle, CalendarDays, CalendarOff, X } from "lucide-react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { useHydrated } from "remix-utils/use-hydrated";
 import { taskSchema } from "./model";
 import { createTask, getNewTaskForm } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
-import { Checkbox } from "~/form/checkbox";
 import {
   FormField,
   FormFieldSet,
@@ -22,12 +20,12 @@ import {
   FormMessage,
 } from "~/form/field";
 import { Input } from "~/form/input";
-import { Label } from "~/form/label";
 import { genericError } from "~/form/validation";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
 import { Button } from "~/ui/button";
+import { useSearchParams } from "~/url/use-search-params";
 
 export function loader() {
   const taskForm = getNewTaskForm();
@@ -58,8 +56,9 @@ export const meta: MetaFunction = ({ error }) => {
 export default function NewTaskRoute() {
   const { taskForm } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
+  const { searchParams, withSearchParam, withoutSearchParam } =
+    useSearchParams();
   const isHydrated = useHydrated();
-  const [isScheduled, setIsScheduled] = useState(false);
   const [form, fields] = useForm({
     lastResult,
     constraint: getValibotConstraint(taskSchema),
@@ -80,11 +79,13 @@ export default function NewTaskRoute() {
     },
     defaultValue: taskForm,
   });
+  const showDeadline = !searchParams.has("scheduled");
+  const showScheduledAt = searchParams.has("scheduled");
   const formError =
     form.errors?.[0] ??
-    ([fields.id, fields.deadline, fields.scheduledAt].some(
-      (field) => field.errors != null,
-    )
+    (fields.id.errors != null ||
+    (fields.deadline.errors != null && !showDeadline) ||
+    (fields.scheduledAt.errors != null && !showScheduledAt)
       ? genericError("create the to-do")
       : null);
   const deadline = fields.deadline.getFieldset();
@@ -136,33 +137,32 @@ export default function NewTaskRoute() {
                 </FormItem>
               )}
             />
-            {isHydrated && (
-              <p>
-                <Checkbox
-                  id={`${form.id}-is-scheduled`}
-                  checked={isScheduled}
-                  onCheckedChange={() => {
-                    if (isScheduled) {
-                      form.update({
-                        name: fields.scheduledAt.name,
-                        value: { date: "", time: "" },
-                      });
-                    } else {
-                      form.update({
-                        name: fields.deadline.name,
-                        value: { date: "", time: "" },
-                      });
-                    }
-                    setIsScheduled((prev) => !prev);
-                  }}
-                  className="me-2xs"
-                />
-                <Label htmlFor={`${form.id}-is-scheduled`} className="mt-sm">
-                  Scheduled?
-                </Label>
-              </p>
-            )}
-            {(!isHydrated || !isScheduled) && (
+            <p>
+              {searchParams.has("scheduled") ? (
+                <Button variant="outline" asChild>
+                  <Link
+                    to={withoutSearchParam("scheduled")}
+                    replace
+                    preventScrollReset
+                  >
+                    <CalendarOff />
+                    Unschedule
+                  </Link>
+                </Button>
+              ) : (
+                <Button variant="outline" asChild>
+                  <Link
+                    to={withSearchParam("scheduled")}
+                    replace
+                    preventScrollReset
+                  >
+                    <CalendarDays />
+                    Schedule
+                  </Link>
+                </Button>
+              )}
+            </p>
+            {showDeadline && (
               <FormFieldSet name={fields.deadline.name} className="border p-xs">
                 <FormLegend>Deadline</FormLegend>
                 <div className="flex flex-wrap gap-2xs">
@@ -179,21 +179,17 @@ export default function NewTaskRoute() {
                             type="date"
                             className="flex-1"
                           />
-                          {!isHydrated || control.value != null ? (
-                            <Button
-                              {...form.update.getButtonProps({
-                                name: field.name,
-                                value: "",
-                              })}
-                              variant="ghost"
-                              size="icon"
-                              aria-label="Clear"
-                            >
-                              <X />
-                            </Button>
-                          ) : (
-                            <span className="w-lg" />
-                          )}
+                          <Button
+                            {...form.update.getButtonProps({
+                              name: field.name,
+                              value: "",
+                            })}
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Clear"
+                          >
+                            <X />
+                          </Button>
                         </span>
                         <FormMessage />
                       </FormItem>
@@ -212,21 +208,17 @@ export default function NewTaskRoute() {
                             type="time"
                             className="flex-1"
                           />
-                          {!isHydrated || control.value != null ? (
-                            <Button
-                              {...form.update.getButtonProps({
-                                name: field.name,
-                                value: "",
-                              })}
-                              variant="ghost"
-                              size="icon"
-                              aria-label="Clear"
-                            >
-                              <X />
-                            </Button>
-                          ) : (
-                            <span className="w-lg" />
-                          )}
+                          <Button
+                            {...form.update.getButtonProps({
+                              name: field.name,
+                              value: "",
+                            })}
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Clear"
+                          >
+                            <X />
+                          </Button>
                         </span>
                         <FormMessage />
                       </FormItem>
@@ -236,7 +228,7 @@ export default function NewTaskRoute() {
                 <FormMessage />
               </FormFieldSet>
             )}
-            {(!isHydrated || isScheduled) && (
+            {showScheduledAt && (
               <FormFieldSet
                 name={fields.scheduledAt.name}
                 className="border p-xs"
@@ -256,21 +248,17 @@ export default function NewTaskRoute() {
                             type="date"
                             className="flex-1"
                           />
-                          {!isHydrated || control.value != null ? (
-                            <Button
-                              {...form.update.getButtonProps({
-                                name: fields.scheduledAt.name,
-                                value: { date: "", time: "" },
-                              })}
-                              variant="ghost"
-                              size="icon"
-                              aria-label="Clear"
-                            >
-                              <X />
-                            </Button>
-                          ) : (
-                            <span className="w-lg" />
-                          )}
+                          <Button
+                            {...form.update.getButtonProps({
+                              name: fields.scheduledAt.name,
+                              value: { date: "", time: "" },
+                            })}
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Clear"
+                          >
+                            <X />
+                          </Button>
                         </span>
                         <FormMessage />
                       </FormItem>
@@ -290,21 +278,17 @@ export default function NewTaskRoute() {
                               type="time"
                               className="flex-1"
                             />
-                            {!isHydrated || control.value != null ? (
-                              <Button
-                                {...form.update.getButtonProps({
-                                  name: field.name,
-                                  value: "",
-                                })}
-                                variant="ghost"
-                                size="icon"
-                                aria-label="Clear"
-                              >
-                                <X />
-                              </Button>
-                            ) : (
-                              <span className="w-lg" />
-                            )}
+                            <Button
+                              {...form.update.getButtonProps({
+                                name: field.name,
+                                value: "",
+                              })}
+                              variant="ghost"
+                              size="icon"
+                              aria-label="Clear"
+                            >
+                              <X />
+                            </Button>
                           </span>
                           <FormMessage />
                         </FormItem>
