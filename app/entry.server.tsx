@@ -54,8 +54,6 @@ export default async function handleRequest(
           pipe(body);
         },
         onShellError(error: unknown) {
-          // Pass through all errors
-          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
           reject(error);
         },
         onError(error: unknown) {
