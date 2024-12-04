@@ -123,6 +123,10 @@ module.exports = {
           "error",
           { prefer: "parameter-property" },
         ],
+        "@typescript-eslint/prefer-promise-reject-errors": [
+          "error",
+          { allowThrowingUnknown: true },
+        ],
         "@typescript-eslint/prefer-readonly": "error",
         "@typescript-eslint/restrict-template-expressions": [
           "error",
