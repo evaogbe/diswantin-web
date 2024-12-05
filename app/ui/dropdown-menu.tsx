@@ -102,7 +102,7 @@ const DropdownMenuCheckboxItem = forwardRef<
     checked={checked}
     {...props}
   >
-    <span className="absolute left-2xs flex size-xs items-center justify-center">
+    <span className="absolute start-2xs flex size-xs items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
         <Check className="size-xs" />
       </DropdownMenuPrimitive.ItemIndicator>
@@ -125,7 +125,7 @@ const DropdownMenuRadioItem = forwardRef<
     )}
     {...props}
   >
-    <span className="absolute left-2xs flex size-xs items-center justify-center">
+    <span className="absolute start-2xs flex size-xs items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
         <Circle className="size-2xs fill-current" />
       </DropdownMenuPrimitive.ItemIndicator>
