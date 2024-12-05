@@ -3,16 +3,12 @@ import { decodeIdToken } from "arctic";
 import type { OAuth2Tokens } from "arctic";
 import * as v from "valibot";
 import { google, stateCookie, codeVerifierCookie } from "./google.server";
+import { credentialsSchema } from "./model";
 import {
   authenticate,
   createUser,
   getAccountByGoogleId,
 } from "./services.server";
-
-const claimsSchema = v.object({
-  sub: v.string(),
-  email: v.pipe(v.string(), v.email()),
-});
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -40,7 +36,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   const parseResult = v.safeParse(
-    claimsSchema,
+    credentialsSchema,
     decodeIdToken(tokens.idToken()),
   );
   if (!parseResult.success) {
@@ -49,10 +45,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   let account = await getAccountByGoogleId(parseResult.output.sub);
   if (account == null) {
-    const clientId = await createUser({
-      googleId: parseResult.output.sub,
-      email: parseResult.output.email,
-    });
+    const clientId = await createUser(parseResult.output);
     account = { clientId, timeZone: null };
   }
 

@@ -9,7 +9,7 @@ export async function getAuthSession(testId: number) {
   let userId = userIdsByTestId.get(testId);
   if (userId == null) {
     userId = await createUser({
-      googleId: faker.string.uuid(),
+      sub: faker.string.uuid(),
       email: faker.internet.email(),
     });
     userIdsByTestId.set(testId, userId);

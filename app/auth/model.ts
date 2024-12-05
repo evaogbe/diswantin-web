@@ -6,6 +6,13 @@ const timeZoneSchema = v.pipe(
   v.maxLength(255, "Too long"),
 );
 
+export const credentialsSchema = v.object({
+  sub: v.string(),
+  email: v.pipe(v.string(), v.email()),
+});
+
+export type Credentials = v.InferOutput<typeof credentialsSchema>;
+
 export const onboardingSchema = v.object({
   timeZone: timeZoneSchema,
 });
