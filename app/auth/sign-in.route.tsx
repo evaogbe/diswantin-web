@@ -53,7 +53,7 @@ export default function SignInRoute() {
   const { flashMessage } = useLoaderData<typeof loader>();
 
   return (
-    <div className="min-h-svh">
+    <>
       <header className="sticky top-0 z-10 flex justify-end border-b border-primary-container bg-primary-container p-2xs shadow dark:border-accent">
         <ThemeToggle />
       </header>
@@ -83,6 +83,6 @@ export default function SignInRoute() {
           </p>
         </Form>
       </main>
-    </div>
+    </>
   );
 }

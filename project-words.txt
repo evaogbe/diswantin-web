@@ -1,4 +1,5 @@
 # New Words
+cmdk
 Diswantin
 Evawere
 isbot

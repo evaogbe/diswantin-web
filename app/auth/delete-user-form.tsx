@@ -6,7 +6,7 @@ import { AlertCircle, X } from "lucide-react";
 import { useId, useState } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { uid } from "uid";
-import { accountDeletionSchema } from "./model";
+import { deleteUserSchema } from "./model";
 import { FormField, FormItem, FormLabel, FormMessage } from "~/form/field";
 import { Input } from "~/form/input";
 import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
@@ -14,10 +14,10 @@ import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { useSearchParams } from "~/url/use-search-params";
 
-export function AccountDeletionForm({
+export function DeleteUserForm({
   lastResult,
 }: {
-  lastResult?: SubmissionResult;
+  lastResult?: SubmissionResult | null;
 }) {
   const { searchParams, withSearchParam, withoutSearchParam } =
     useSearchParams();
@@ -26,10 +26,11 @@ export function AccountDeletionForm({
   const [form, fields] = useForm({
     id: formId,
     lastResult,
-    constraint: getValibotConstraint(accountDeletionSchema),
+    constraint: getValibotConstraint(deleteUserSchema),
     shouldRevalidate: "onInput",
+    defaultNoValidate: false,
     onValidate({ formData }) {
-      return parseWithValibot(formData, { schema: accountDeletionSchema });
+      return parseWithValibot(formData, { schema: deleteUserSchema });
     },
   });
 

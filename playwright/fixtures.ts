@@ -36,7 +36,8 @@ export const test = baseTest.extend<object, { workerStorageState: string }>({
           sameSite: "Lax",
         },
       ]);
-      await page.goto("http://localhost:8811/home");
+      await page.goto("http://localhost:8811/onboarding");
+      await page.getByRole("button", { name: "Save" }).click();
 
       await expect(
         page.getByRole("article", { name: "Current to-do" }),

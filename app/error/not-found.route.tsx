@@ -1,14 +1,14 @@
 import { data } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { getIsAuthenticated } from "~/auth/services.server";
+import { isFullyAuthenticated } from "~/auth/services.server";
 import { MainLayout } from "~/layout/main-layout";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Link } from "~/ui/link";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const isAuthenticated = await getIsAuthenticated(request);
+  const isAuthenticated = await isFullyAuthenticated(request);
   return data({ isAuthenticated }, 404);
 }
 

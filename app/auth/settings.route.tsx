@@ -1,13 +1,16 @@
+import { redirect } from "@remix-run/node";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import { LogOut } from "lucide-react";
-import { AccountDeletionForm } from "./account-deletion-form";
-import { accountDeletionSchema } from "./model";
+import { Eye, EyeOff, LogOut, Pencil } from "lucide-react";
+import { DeleteUserForm } from "./delete-user-form";
+import { EditTimeZoneForm } from "./edit-time-zone-form";
+import { deleteUserSchema, editTimeZoneSchema } from "./model";
 import {
   deleteUser,
   getAuthenticatedUser,
   invalidateSession,
+  updateTimeZone,
 } from "./services.server";
 import { formAction } from "~/form/action.server";
 import { getTitle } from "~/layout/meta";
@@ -17,13 +20,36 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { useSearchParams } from "~/url/use-search-params";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const { email } = await getAuthenticatedUser(request);
-  return { email };
+  const { email, timeZone } = await getAuthenticatedUser(request);
+  return {
+    account: { email, timeZone },
+    timeZones: Intl.supportedValuesOf("timeZone"),
+  };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   switch (formData.get("intent")) {
+    case "update-time-zone": {
+      const user = await getAuthenticatedUser(request);
+      const result = await formAction({
+        formData,
+        requestHeaders: request.headers,
+        schema: editTimeZoneSchema,
+        mutation: async (values) => {
+          await updateTimeZone(user.id, values.timeZone);
+          return null;
+        },
+        humanName: "edit the time zone",
+      });
+      if (result != null) {
+        return result;
+      }
+
+      const url = new URL(request.url);
+      url.searchParams.delete("update-time-zone");
+      return redirect(`/settings?${url.searchParams}`, 303);
+    }
     case "sign-out": {
       return await invalidateSession("Signed out");
     }
@@ -32,7 +58,7 @@ export async function action({ request }: ActionFunctionArgs) {
       const result = await formAction({
         formData,
         requestHeaders: request.headers,
-        schema: accountDeletionSchema,
+        schema: deleteUserSchema,
         mutation: async (values) => {
           if (values.email !== user.email) {
             return "Incorrect email";
@@ -60,55 +86,85 @@ export const meta: MetaFunction = ({ error }) => {
 };
 
 export default function SettingsRoute() {
+  const { account, timeZones } = useLoaderData<typeof loader>();
+  const lastResult = useActionData<typeof action>();
   const { searchParams, withSearchParam, withoutSearchParam } =
     useSearchParams();
-  const { email } = useLoaderData<typeof loader>();
-  const lastResult = useActionData<typeof action>();
 
   return (
     <Page aria-labelledby="account-settings-heading">
       <PageHeading id="account-settings-heading">Account settings</PageHeading>
-      <Card aria-labelledby="account-info-heading">
-        <CardHeader className="pb-2xs">
-          <CardTitle id="account-info-heading">Account Info</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="text-sm">
-            <dt className="text-muted-foreground">Sign-in method</dt>
-            <dd className="mt-4xs">
-              <p>Google</p>
-              {searchParams.has("email") ? (
-                <>
-                  <p>{email}</p>
-                  <p className="mt-4xs">
+      {searchParams.has("update-time-zone") ? (
+        <EditTimeZoneForm
+          lastResult={
+            lastResult?.initialValue?.intent === "update-time-zone"
+              ? lastResult
+              : null
+          }
+          timeZones={timeZones}
+          initialTimeZone={account.timeZone}
+        />
+      ) : (
+        <Card aria-labelledby="account-info-heading">
+          <CardHeader className="pb-2xs">
+            <CardTitle id="account-info-heading">Account Info</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <dl className="text-sm">
+              <dt className="text-muted-foreground">Sign-in method</dt>
+              <dd>
+                <p>Google</p>
+                {searchParams.has("email") ? (
+                  <>
+                    <p>{account.email}</p>
+                    <p className="mt-3xs">
+                      <Button variant="outline" size="sm" asChild>
+                        <Link
+                          to={withoutSearchParam("email")}
+                          replace
+                          preventScrollReset
+                        >
+                          <EyeOff aria-hidden="true" />
+                          Hide email
+                        </Link>
+                      </Button>
+                    </p>
+                  </>
+                ) : (
+                  <p className="mt-3xs">
                     <Button variant="outline" size="sm" asChild>
                       <Link
-                        to={withoutSearchParam("email")}
+                        to={withSearchParam("email")}
                         replace
                         preventScrollReset
                       >
-                        Hide email
+                        <Eye aria-hidden="true" />
+                        Show email
                       </Link>
                     </Button>
                   </p>
-                </>
-              ) : (
-                <p className="mt-4xs">
+                )}
+              </dd>
+              <dt className="mt-2xs text-muted-foreground">Time zone</dt>
+              <dd>
+                <p>{account.timeZone}</p>
+                <p className="mt-3xs">
                   <Button variant="outline" size="sm" asChild>
                     <Link
-                      to={withSearchParam("email")}
+                      to={withSearchParam("update-time-zone")}
                       replace
                       preventScrollReset
                     >
-                      Show email
+                      <Pencil aria-hidden="true" />
+                      Edit
                     </Link>
                   </Button>
                 </p>
-              )}
-            </dd>
-          </dl>
-        </CardContent>
-      </Card>
+              </dd>
+            </dl>
+          </CardContent>
+        </Card>
+      )}
       <Form method="post" className="mt-sm">
         <p>
           <Button name="intent" value="sign-out" variant="secondary">
@@ -117,7 +173,13 @@ export default function SettingsRoute() {
           </Button>
         </p>
       </Form>
-      <AccountDeletionForm lastResult={lastResult} />
+      <DeleteUserForm
+        lastResult={
+          lastResult?.initialValue?.intent === "delete-account"
+            ? lastResult
+            : null
+        }
+      />
     </Page>
   );
 }
