@@ -82,12 +82,15 @@ export default function OnboardingRoute() {
       typeof Intl !== "undefined" &&
       typeof Intl.DateTimeFormat !== "undefined"
     ) {
-      form.update({
-        name: fields.timeZone.name,
-        value: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      });
+      const defaultTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (timeZones.includes(defaultTimeZone)) {
+        form.update({
+          name: fields.timeZone.name,
+          value: defaultTimeZone,
+        });
+      }
     }
-  }, [form, fields]);
+  }, [timeZones, form, fields]);
 
   return (
     <MainLayout isAuthenticated={false}>
