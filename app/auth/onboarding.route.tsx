@@ -151,7 +151,6 @@ export default function OnboardingRoute() {
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
-                                role="combobox"
                                 ref={timeZoneCombobox}
                                 className={cn(
                                   "w-full justify-between sm:w-96",

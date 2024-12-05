@@ -37,6 +37,19 @@ export const test = baseTest.extend<object, { workerStorageState: string }>({
         },
       ]);
       await page.goto("http://localhost:8811/onboarding");
+
+      await expect(
+        page.getByRole("form", { name: "Account setup" }),
+      ).toBeVisible();
+
+      if (
+        await page.getByRole("button", { name: "Select time zone" }).isVisible()
+      ) {
+        await page.getByRole("button", { name: "Select time zone" }).click();
+        await page.getByRole("option", { name: "America/Los_Angeles" }).click();
+        await page.getByRole("button", { name: "America/Los_Angeles" }).click();
+      }
+
       await page.getByRole("button", { name: "Save" }).click();
 
       await expect(
