@@ -70,11 +70,6 @@ export async function getFlashMessage(request: Request) {
   ] as const;
 }
 
-export async function getIsAuthenticated(request: Request) {
-  const session = await getSession(request.headers.get("Cookie"));
-  return session.has("userId");
-}
-
 async function getUserBySession(session: Session) {
   const userClientId: unknown = session.get("userId");
   if (typeof userClientId !== "string") {
@@ -95,6 +90,12 @@ async function getUserBySession(session: Session) {
 }
 
 type User = NonNullable<Awaited<ReturnType<typeof getUserBySession>>>;
+
+export async function isFullyAuthenticated(request: Request) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const user = await getUserBySession(session);
+  return user?.timeZone != null;
+}
 
 export function getAuthenticatedUser(
   request: Request,
