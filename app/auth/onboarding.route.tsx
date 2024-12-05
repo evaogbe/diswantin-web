@@ -44,8 +44,14 @@ export async function action({ request }: ActionFunctionArgs) {
     formData,
     requestHeaders: request.headers,
     schema: onboardingSchema,
-    mutation: async (values) => {
-      await updateTimeZone(user.id, values.timeZone);
+    mutation: async ({ timeZone }) => {
+      if (!Intl.supportedValuesOf("timeZone").includes(timeZone)) {
+        throw new Response(`Time zone not supported: ${timeZone}`, {
+          status: 400,
+        });
+      }
+
+      await updateTimeZone(user.id, timeZone);
       return null;
     },
     humanName: "set up your account",
@@ -200,7 +206,7 @@ export default function OnboardingRoute() {
                           <input
                             type="hidden"
                             name={field.name}
-                            value={control.value}
+                            value={control.value ?? ""}
                           />
                         </>
                       )}

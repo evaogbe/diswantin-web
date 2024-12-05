@@ -174,7 +174,7 @@ export function EditTimeZoneForm({
                     <input
                       type="hidden"
                       name={field.name}
-                      value={control.value}
+                      value={control.value ?? ""}
                     />
                   </>
                 )}
