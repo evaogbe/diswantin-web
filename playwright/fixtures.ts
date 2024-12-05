@@ -37,6 +37,9 @@ export const test = baseTest.extend<object, { workerStorageState: string }>({
         },
       ]);
       await page.goto("http://localhost:8811/onboarding");
+      await page.getByTestId("time-zone-button").click();
+      await page.getByRole("option", { name: "America/Los_Angeles" }).click();
+      await page.getByRole("button", { name: "America/Los_Angeles" }).click();
       await page.getByRole("button", { name: "Save" }).click();
 
       await expect(

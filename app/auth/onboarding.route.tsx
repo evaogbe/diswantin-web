@@ -66,7 +66,7 @@ export const meta: MetaFunction = ({ error }) => {
 export default function OnboardingRoute() {
   const { timeZones } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
-  const timeZoneCombobox = useRef<HTMLButtonElement>(null);
+  const timeZoneButtonRef = useRef<HTMLButtonElement>(null);
   const [form, fields] = useForm({
     lastResult,
     constraint: getValibotConstraint(onboardingSchema),
@@ -130,7 +130,7 @@ export default function OnboardingRoute() {
                   <FormItem className="flex flex-col">
                     <FormLabel
                       htmlFor={undefined}
-                      onClick={() => timeZoneCombobox.current?.focus()}
+                      onClick={() => timeZoneButtonRef.current?.focus()}
                     >
                       Time zone
                     </FormLabel>
@@ -154,7 +154,8 @@ export default function OnboardingRoute() {
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
-                                ref={timeZoneCombobox}
+                                ref={timeZoneButtonRef}
+                                data-testid="time-zone-button"
                                 className={cn(
                                   "w-full justify-between sm:w-96",
                                   !control.value && "text-muted-foreground",
