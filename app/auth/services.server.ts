@@ -3,6 +3,7 @@ import type { Session } from "@remix-run/node";
 import { eq } from "drizzle-orm";
 import { uid } from "uid";
 import * as v from "valibot";
+import type { Credentials } from "./model";
 import { getSession, destroySession, commitSession } from "./session.server";
 import { db } from "~/db.server";
 import * as table from "~/db.server/schema";
@@ -18,11 +19,11 @@ export async function getAccountByGoogleId(googleId: string) {
 
 type Account = NonNullable<Awaited<ReturnType<typeof getAccountByGoogleId>>>;
 
-export async function createUser(user: { googleId: string; email: string }) {
+export async function createUser(user: Credentials) {
   const clientId = uid();
   await db
     .insert(table.user)
-    .values({ clientId, googleId: user.googleId, email: user.email });
+    .values({ clientId, googleId: user.sub, email: user.email });
   return clientId;
 }
 
