@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/remix";
 import { parseWithValibot } from "conform-to-valibot";
 import { CSRFError } from "remix-utils/csrf/server";
 import type { GenericSchema, InferOutput } from "valibot";
-import { genericError } from "./validation";
+import { generalError } from "./validation";
 import { csrf } from "~/security/csrf.server";
 
 export async function formAction<S extends GenericSchema>({
@@ -46,7 +46,7 @@ export async function formAction<S extends GenericSchema>({
 
     return data(
       submission.reply({
-        formErrors: [genericError(humanName)],
+        formErrors: [generalError(humanName)],
       }),
       500,
     );
@@ -69,7 +69,7 @@ export async function formAction<S extends GenericSchema>({
     console.error(e);
     return data(
       submission.reply({
-        formErrors: [genericError(humanName)],
+        formErrors: [generalError(humanName)],
       }),
       500,
     );

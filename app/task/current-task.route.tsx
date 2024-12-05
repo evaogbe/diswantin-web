@@ -14,7 +14,7 @@ import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
 import { Button } from "~/ui/button";
-import { AddTask } from "~/ui/icons";
+import { AddTask, Details } from "~/ui/icons";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getAuthenticatedUser(request);
@@ -56,7 +56,7 @@ export default function CurrentTaskRoute() {
         <PageHeading id="current-todo-heading">Current to-do</PageHeading>
         <AddTask
           aria-hidden="true"
-          className="mt-xs size-2xl fill-muted-foreground"
+          className="mt-xs size-2xl text-muted-foreground"
         />
         <p className="mt-sm text-xl text-muted-foreground">
           No upcoming to-dos
@@ -78,14 +78,13 @@ export default function CurrentTaskRoute() {
       aria-labelledby="current-todo-heading"
       className="flex flex-col items-center"
     >
-      <PageHeading id="current-todo-heading" className="mb-xs">
-        Current to-do
-      </PageHeading>
+      <PageHeading id="current-todo-heading">Current to-do</PageHeading>
       {markDoneFormErrors != null && (
         <Alert
           variant="destructive"
           id="mark-done-form-error"
           aria-labelledby="mark-done-form-error-heading"
+          className="my-xs"
         >
           <AlertCircle aria-hidden="true" className="size-xs" />
           <AlertTitle id="mark-done-form-error-heading">
@@ -96,25 +95,34 @@ export default function CurrentTaskRoute() {
           </AlertDescription>
         </Alert>
       )}
-      <p className="text-2xl tracking-tight">{currentTask.name}</p>
-      <fetcher.Form
-        method="post"
-        aria-describedby={
-          markDoneFormErrors != null ? "mark-done-form-error" : undefined
-        }
-        className="mt-sm"
-      >
-        <div hidden>
-          <AuthenticityTokenInput />
-          <input type="hidden" name="id" value={currentTask.id} />
-        </div>
+      <p className="text-center text-2xl tracking-tight">{currentTask.name}</p>
+      <footer className="mt-md flex w-full justify-around">
         <p>
-          <Button variant="secondary">
-            <Check aria-hidden="true" />
-            Done
+          <Button asChild variant="outline">
+            <Link to={`/todo/${currentTask.id}`}>
+              <Details aria-hidden="true" />
+              Details
+            </Link>
           </Button>
         </p>
-      </fetcher.Form>
+        <fetcher.Form
+          method="post"
+          aria-describedby={
+            markDoneFormErrors != null ? "mark-done-form-error" : undefined
+          }
+        >
+          <div hidden>
+            <AuthenticityTokenInput />
+            <input type="hidden" name="id" value={currentTask.id} />
+          </div>
+          <p>
+            <Button variant="secondary">
+              <Check aria-hidden="true" />
+              Done
+            </Button>
+          </p>
+        </fetcher.Form>
+      </footer>
     </Page>
   );
 }

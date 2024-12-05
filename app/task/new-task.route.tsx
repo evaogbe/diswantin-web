@@ -7,7 +7,7 @@ import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, CalendarDays, CalendarOff, X } from "lucide-react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { useHydrated } from "remix-utils/use-hydrated";
-import { taskSchema } from "./model";
+import { newTaskSchema } from "./model";
 import { createTask, getNewTaskForm } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from "~/form/field";
 import { Input } from "~/form/input";
-import { genericError } from "~/form/validation";
+import { generalError } from "~/form/validation";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
@@ -38,7 +38,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const result = await formAction({
     formData,
     requestHeaders: request.headers,
-    schema: taskSchema,
+    schema: newTaskSchema,
     mutation: async (values) => {
       await createTask(values, user.id);
       return null;
@@ -50,7 +50,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export const meta: MetaFunction = ({ error }) => {
-  return [{ title: getTitle({ page: "New task", error }) }];
+  return [{ title: getTitle({ page: "New to-do", error }) }];
 };
 
 export default function NewTaskRoute() {
@@ -61,11 +61,11 @@ export default function NewTaskRoute() {
   const isHydrated = useHydrated();
   const [form, fields] = useForm({
     lastResult,
-    constraint: getValibotConstraint(taskSchema),
+    constraint: getValibotConstraint(newTaskSchema),
     shouldRevalidate: "onInput",
     defaultNoValidate: false,
     onValidate({ formData }) {
-      const submission = parseWithValibot(formData, { schema: taskSchema });
+      const submission = parseWithValibot(formData, { schema: newTaskSchema });
       if (submission.status === "error") {
         const field = ["id", "deadline", "scheduledAt"].find(
           (name) => submission.error?.[name] != null,
@@ -87,7 +87,7 @@ export default function NewTaskRoute() {
     (fields.id.errors != null ||
     (fields.deadline.errors != null && !showDeadline) ||
     (fields.scheduledAt.errors != null && !showScheduledAt)
-      ? genericError("create the to-do")
+      ? generalError("create the to-do")
       : null);
   const deadline = fields.deadline.getFieldset();
   const scheduledAt = fields.scheduledAt.getFieldset();

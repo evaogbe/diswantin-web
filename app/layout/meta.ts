@@ -7,6 +7,8 @@ export function getTitle({ page, error }: { page?: string; error?: unknown }) {
         return "Incorrect input | Diswantin";
       case 403:
         return "Access denied | Diswantin";
+      case 404:
+        return "Page not found | Diswantin";
       default:
         return "Unexpected error | Diswantin";
     }
@@ -17,7 +19,8 @@ export function getTitle({ page, error }: { page?: string; error?: unknown }) {
   }
 
   if (page != null) {
-    return `${page} | Diswantin`;
+    const truncated = page.length > 45 ? `${page.slice(0, 45)}…` : page;
+    return `${truncated} | Diswantin`;
   }
 
   return "Diswantin";

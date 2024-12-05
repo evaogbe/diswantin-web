@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { getAuthSession } from "../playwright/test-data";
 
-test("can sign in", async ({ page }) => {
+test("can create account", async ({ page }) => {
   const id = test.info().parallelIndex;
   const session = await getAuthSession(id);
 

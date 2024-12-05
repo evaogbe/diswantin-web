@@ -1,8 +1,11 @@
 import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
 import { captureRemixErrorBoundaryError } from "@sentry/remix";
+import { NotFoundPage } from "./not-found-page";
 import { Page, PageHeading } from "~/layout/page";
 
-export function GenericErrorBoundary() {
+export function GeneralErrorBoundary({
+  isAuthenticated,
+}: { isAuthenticated?: boolean } = {}) {
   const error = useRouteError();
   captureRemixErrorBoundaryError(error);
 
@@ -26,6 +29,9 @@ export function GenericErrorBoundary() {
           <p className="mt-sm leading-7">You are not allowed to do that</p>
         </Page>
       );
+    }
+    case 404: {
+      return <NotFoundPage homePath={isAuthenticated ? "/home" : "/"} />;
     }
     default: {
       return (

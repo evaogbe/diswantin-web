@@ -18,7 +18,7 @@ import {
 } from "remix-themes";
 import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 import { PublicEnvScript, initPublicEnv } from "~/env/public";
-import { GenericErrorBoundary } from "~/error/generic-error-boundary";
+import { GeneralErrorBoundary } from "~/error/general-error-boundary";
 import { MainLayout } from "~/layout/main-layout";
 import { getTitle } from "~/layout/meta";
 import { csrf } from "~/security/csrf.server";
@@ -97,7 +97,7 @@ export default withSentry(App);
 export function ErrorBoundary() {
   return (
     <MainLayout isAuthenticated={false}>
-      <GenericErrorBoundary />
+      <GeneralErrorBoundary />
     </MainLayout>
   );
 }
