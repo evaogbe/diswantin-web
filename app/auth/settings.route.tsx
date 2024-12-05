@@ -36,8 +36,14 @@ export async function action({ request }: ActionFunctionArgs) {
         formData,
         requestHeaders: request.headers,
         schema: editTimeZoneSchema,
-        mutation: async (values) => {
-          await updateTimeZone(user.id, values.timeZone);
+        mutation: async ({ timeZone }) => {
+          if (!Intl.supportedValuesOf("timeZone").includes(timeZone)) {
+            throw new Response(`Time zone not supported: ${timeZone}`, {
+              status: 400,
+            });
+          }
+
+          await updateTimeZone(user.id, timeZone);
           return null;
         },
         humanName: "edit the time zone",

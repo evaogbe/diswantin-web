@@ -35,7 +35,7 @@ export function EditTimeZoneForm({
   initialTimeZone: string;
 }) {
   const { withoutSearchParam } = useSearchParams();
-  const timeZoneCombobox = useRef<HTMLButtonElement>(null);
+  const timeZoneButtonRef = useRef<HTMLButtonElement>(null);
   const initialFormId = useId();
   const [formId, setFormId] = useState(`form-${initialFormId}`);
   const [form, fields] = useForm({
@@ -100,7 +100,7 @@ export function EditTimeZoneForm({
             <FormItem className="flex flex-col">
               <FormLabel
                 htmlFor={undefined}
-                onClick={() => timeZoneCombobox.current?.focus()}
+                onClick={() => timeZoneButtonRef.current?.focus()}
               >
                 Time zone
               </FormLabel>
@@ -121,8 +121,7 @@ export function EditTimeZoneForm({
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          role="combobox"
-                          ref={timeZoneCombobox}
+                          ref={timeZoneButtonRef}
                           className={cn(
                             "w-full justify-between sm:w-96",
                             !control.value && "text-muted-foreground",
@@ -174,7 +173,7 @@ export function EditTimeZoneForm({
                     <input
                       type="hidden"
                       name={field.name}
-                      value={control.value}
+                      value={control.value ?? ""}
                     />
                   </>
                 )}

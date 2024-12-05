@@ -61,6 +61,11 @@ export async function formAction<S extends GenericSchema>({
     return null;
   } catch (e) {
     Sentry.captureException(e);
+
+    if (e instanceof Response) {
+      throw e;
+    }
+
     console.error(e);
     return data(
       submission.reply({

@@ -44,8 +44,14 @@ export async function action({ request }: ActionFunctionArgs) {
     formData,
     requestHeaders: request.headers,
     schema: onboardingSchema,
-    mutation: async (values) => {
-      await updateTimeZone(user.id, values.timeZone);
+    mutation: async ({ timeZone }) => {
+      if (!Intl.supportedValuesOf("timeZone").includes(timeZone)) {
+        throw new Response(`Time zone not supported: ${timeZone}`, {
+          status: 400,
+        });
+      }
+
+      await updateTimeZone(user.id, timeZone);
       return null;
     },
     humanName: "set up your account",
@@ -60,7 +66,7 @@ export const meta: MetaFunction = ({ error }) => {
 export default function OnboardingRoute() {
   const { timeZones } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
-  const timeZoneCombobox = useRef<HTMLButtonElement>(null);
+  const timeZoneButtonRef = useRef<HTMLButtonElement>(null);
   const [form, fields] = useForm({
     lastResult,
     constraint: getValibotConstraint(onboardingSchema),
@@ -76,12 +82,15 @@ export default function OnboardingRoute() {
       typeof Intl !== "undefined" &&
       typeof Intl.DateTimeFormat !== "undefined"
     ) {
-      form.update({
-        name: fields.timeZone.name,
-        value: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      });
+      const defaultTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (timeZones.includes(defaultTimeZone)) {
+        form.update({
+          name: fields.timeZone.name,
+          value: defaultTimeZone,
+        });
+      }
     }
-  }, [form, fields]);
+  }, [timeZones, form, fields]);
 
   return (
     <MainLayout isAuthenticated={false}>
@@ -121,7 +130,7 @@ export default function OnboardingRoute() {
                   <FormItem className="flex flex-col">
                     <FormLabel
                       htmlFor={undefined}
-                      onClick={() => timeZoneCombobox.current?.focus()}
+                      onClick={() => timeZoneButtonRef.current?.focus()}
                     >
                       Time zone
                     </FormLabel>
@@ -145,8 +154,8 @@ export default function OnboardingRoute() {
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
-                                role="combobox"
-                                ref={timeZoneCombobox}
+                                ref={timeZoneButtonRef}
+                                data-testid="time-zone-button"
                                 className={cn(
                                   "w-full justify-between sm:w-96",
                                   !control.value && "text-muted-foreground",
@@ -200,7 +209,7 @@ export default function OnboardingRoute() {
                           <input
                             type="hidden"
                             name={field.name}
-                            value={control.value}
+                            value={control.value ?? ""}
                           />
                         </>
                       )}

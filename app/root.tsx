@@ -7,6 +7,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRouteLoaderData,
 } from "@remix-run/react";
 import { withSentry } from "@sentry/remix";
 import { clsx } from "clsx";
@@ -44,7 +45,7 @@ export const meta: MetaFunction = ({ error }) => {
 };
 
 function BaseLayout({ children }: { children: React.ReactNode }) {
-  const data = useLoaderData<typeof loader>();
+  const data = useRouteLoaderData<typeof loader>("root");
   const nonce = useNonce();
   const [theme] = useTheme();
 
@@ -55,7 +56,7 @@ function BaseLayout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <PreventFlashOnWrongTheme
-          ssrTheme={Boolean(data.theme)}
+          ssrTheme={Boolean(data?.theme)}
           nonce={nonce}
         />
         <Links />
@@ -71,9 +72,12 @@ function BaseLayout({ children }: { children: React.ReactNode }) {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { theme } = useLoaderData<typeof loader>();
+  const data = useRouteLoaderData<typeof loader>("root");
   return (
-    <ThemeProvider specifiedTheme={theme} themeAction="/resources/theme">
+    <ThemeProvider
+      specifiedTheme={data?.theme ?? null}
+      themeAction="/resources/theme"
+    >
       <BaseLayout>{children}</BaseLayout>
     </ThemeProvider>
   );
