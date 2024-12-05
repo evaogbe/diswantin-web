@@ -16,6 +16,7 @@
     "/drizzle",
     "/env",
     "node_modules",
+    "/patches",
     "playwright-report",
     "/project-words.txt"
   ]

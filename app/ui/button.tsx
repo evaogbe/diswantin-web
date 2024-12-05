@@ -5,7 +5,7 @@ import { forwardRef } from "react";
 import { cn } from "~/ui/classes";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-3xs whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-xs [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2xs whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-xs [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -21,7 +21,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-lg px-xs py-2xs",
+        default: "h-lg px-xs",
         sm: "h-md rounded-md px-2xs text-xs",
         lg: "h-xl rounded-md px-md",
         icon: "size-lg",

@@ -21,6 +21,8 @@ function useFormField() {
   return field;
 }
 
+type FieldType = "input" | "select" | "textarea";
+
 type RenderProps<
   Schema,
   FormSchema extends Record<string, unknown> = Record<string, unknown>,
@@ -43,9 +45,11 @@ function FormField<
   FormSchema extends Record<string, unknown> = Record<string, unknown>,
 >({
   name,
+  type = "input",
   render,
 }: {
   name: FieldName<Schema, FormSchema>;
+  type?: FieldType;
   render: (renderProps: RenderProps<Schema>) => React.ReactNode;
 }) {
   const [meta, form] = useField(name);
@@ -62,13 +66,20 @@ function FormField<
               : `${meta.descriptionId} ${meta.errorId}`,
           "aria-invalid": meta.errors != null,
           required: meta.required,
-          minLength: meta.minLength,
-          maxLength: meta.maxLength,
-          min: meta.min,
-          max: meta.max,
-          step: meta.step,
-          multiple: meta.multiple,
-          pattern: meta.pattern,
+          minLength:
+            type === "input" || type === "textarea"
+              ? meta.minLength
+              : undefined,
+          maxLength:
+            type === "input" || type === "textarea"
+              ? meta.maxLength
+              : undefined,
+          multiple:
+            type === "input" || type === "select" ? meta.multiple : undefined,
+          min: type === "input" ? meta.min : undefined,
+          max: type === "input" ? meta.max : undefined,
+          step: type === "input" ? meta.step : undefined,
+          pattern: type === "input" ? meta.pattern : undefined,
         },
         control: {
           initialValue: meta.initialValue,

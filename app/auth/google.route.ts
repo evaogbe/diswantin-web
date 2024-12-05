@@ -6,7 +6,7 @@ import { google, stateCookie, codeVerifierCookie } from "./google.server";
 import {
   authenticate,
   createUser,
-  getClientIdByGoogleId,
+  getAccountByGoogleId,
 } from "./services.server";
 
 const claimsSchema = v.object({
@@ -47,13 +47,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
     throw new Response(null, { status: 400 });
   }
 
-  let clientId = await getClientIdByGoogleId(parseResult.output.sub);
-  if (clientId == null) {
-    clientId = await createUser({
+  let account = await getAccountByGoogleId(parseResult.output.sub);
+  if (account == null) {
+    const clientId = await createUser({
       googleId: parseResult.output.sub,
       email: parseResult.output.email,
     });
+    account = { clientId, timeZone: null };
   }
 
-  return authenticate(request, clientId);
+  return authenticate(request, account);
 }

@@ -18,7 +18,7 @@ import { AddTask } from "~/ui/icons";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getAuthenticatedUser(request);
-  const currentTask = await getCurrentTask(user.id);
+  const currentTask = await getCurrentTask(user);
   return { currentTask };
 }
 

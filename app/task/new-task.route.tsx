@@ -63,6 +63,7 @@ export default function NewTaskRoute() {
     lastResult,
     constraint: getValibotConstraint(taskSchema),
     shouldRevalidate: "onInput",
+    defaultNoValidate: false,
     onValidate({ formData }) {
       const submission = parseWithValibot(formData, { schema: taskSchema });
       if (submission.status === "error") {

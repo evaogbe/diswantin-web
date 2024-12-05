@@ -14,6 +14,7 @@ export const user = pgTable("user", {
   clientId: char({ length: 11 }).notNull().unique(),
   googleId: varchar({ length: 255 }).notNull().unique(),
   email: varchar({ length: 255 }).notNull().unique(),
+  timeZone: varchar({ length: 255 }),
 });
 
 export const task = pgTable("task", {

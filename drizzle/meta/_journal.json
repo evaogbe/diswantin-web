@@ -50,6 +50,13 @@
       "when": 1733162853583,
       "tag": "0006_legal_toad",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1733373172681,
+      "tag": "0007_worthless_major_mapleleaf",
+      "breakpoints": true
     }
   ]
 }
