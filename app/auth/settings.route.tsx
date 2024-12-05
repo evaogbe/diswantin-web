@@ -3,9 +3,9 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { Eye, EyeOff, LogOut, Pencil } from "lucide-react";
-import { DeleteAccountForm } from "./delete-account-form";
+import { DeleteUserForm } from "./delete-user-form";
 import { EditTimeZoneForm } from "./edit-time-zone-form";
-import { deleteAccountSchema, editTimeZoneSchema } from "./model";
+import { deleteUserSchema, editTimeZoneSchema } from "./model";
 import {
   deleteUser,
   getAuthenticatedUser,
@@ -58,7 +58,7 @@ export async function action({ request }: ActionFunctionArgs) {
       const result = await formAction({
         formData,
         requestHeaders: request.headers,
-        schema: deleteAccountSchema,
+        schema: deleteUserSchema,
         mutation: async (values) => {
           if (values.email !== user.email) {
             return "Incorrect email";
@@ -173,7 +173,7 @@ export default function SettingsRoute() {
           </Button>
         </p>
       </Form>
-      <DeleteAccountForm
+      <DeleteUserForm
         lastResult={
           lastResult?.initialValue?.intent === "delete-account"
             ? lastResult

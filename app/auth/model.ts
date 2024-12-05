@@ -10,7 +10,7 @@ export const onboardingSchema = v.object({
   timeZone: timeZoneSchema,
 });
 
-export const deleteAccountSchema = v.object({
+export const deleteUserSchema = v.object({
   email: v.pipe(
     v.string("Required"),
     v.trim(),
