@@ -77,18 +77,12 @@ export default function OnboardingRoute() {
     },
   });
   useEffect(() => {
-    if (
-      fields.timeZone.value == null &&
-      typeof Intl !== "undefined" &&
-      typeof Intl.DateTimeFormat !== "undefined"
-    ) {
-      const defaultTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      if (timeZones.includes(defaultTimeZone)) {
-        form.update({
-          name: fields.timeZone.name,
-          value: defaultTimeZone,
-        });
-      }
+    const defaultTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (fields.timeZone.value == null && timeZones.includes(defaultTimeZone)) {
+      form.update({
+        name: fields.timeZone.name,
+        value: defaultTimeZone,
+      });
     }
   }, [timeZones, form, fields]);
 

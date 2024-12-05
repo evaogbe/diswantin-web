@@ -7,6 +7,7 @@ export default [
   layout("auth/layout.route.tsx", [
     route("home", "task/current-task.route.tsx"),
     route("new-todo", "task/new-task.route.tsx"),
+    route("todo/:id", "task/task-detail.route.tsx"),
     route("settings", "auth/settings.route.tsx"),
   ]),
   route("_health", "health/route.ts"),

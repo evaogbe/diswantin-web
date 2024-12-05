@@ -91,6 +91,8 @@ async function getUserBySession(session: Session) {
 }
 
 type User = NonNullable<Awaited<ReturnType<typeof getUserBySession>>>;
+type FreshUser = User & { timeZone: null };
+type FullUser = User & { timeZone: NonNullable<User["timeZone"]> };
 
 export async function isFullyAuthenticated(request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -101,11 +103,11 @@ export async function isFullyAuthenticated(request: Request) {
 export function getAuthenticatedUser(
   request: Request,
   opts: { fresh: true },
-): Promise<User & { timeZone: null }>;
+): Promise<FreshUser>;
 export function getAuthenticatedUser(
   request: Request,
   opts?: { fresh?: false },
-): Promise<User & { timeZone: NonNullable<User["timeZone"]> }>;
+): Promise<FullUser>;
 export async function getAuthenticatedUser(
   request: Request,
   opts: { fresh?: boolean } = {},

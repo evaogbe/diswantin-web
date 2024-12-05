@@ -7,6 +7,7 @@ const Page = forwardRef<
   React.JSX.IntrinsicElements["article"] & { asChild?: boolean }
 >(({ className, asChild, ...props }, ref) => {
   const Comp = asChild ? Slot : "article";
+
   return (
     <Comp
       className={cn("flex-1 rounded bg-background p-sm pt-2xs", className)}
@@ -24,7 +25,7 @@ const PageHeading = forwardRef<
   <h2
     ref={ref}
     className={cn(
-      "font-display text-3xl font-extrabold tracking-tight",
+      "font-display text-3xl font-extrabold leading-tight tracking-tight",
       className,
     )}
     {...props}
