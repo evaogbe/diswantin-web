@@ -1,5 +1,9 @@
 import { data } from "@remix-run/node";
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -42,6 +46,32 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export const meta: MetaFunction = ({ error }) => {
   return [{ title: getTitle({ error }) }];
+};
+
+export const links: LinksFunction = () => {
+  return [
+    {
+      rel: "apple-touch-icon",
+      sizes: "180x180",
+      href: "/apple-touch-icon.png",
+    },
+    {
+      rel: "icon",
+      sizes: "32x32",
+      href: "/favicon-32x32.png",
+      type: "image/png",
+    },
+    {
+      rel: "icon",
+      sizes: "16x16",
+      href: "/favicon-32x32.png",
+      type: "image/png",
+    },
+    {
+      rel: "manifest",
+      href: "/site.webmanifest",
+    },
+  ];
 };
 
 function BaseLayout({ children }: { children: React.ReactNode }) {
