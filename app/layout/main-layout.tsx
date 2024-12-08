@@ -27,7 +27,7 @@ export function MainLayout({
             to={isAuthenticated ? "/home" : "/"}
             className={cn(navigationMenuTriggerStyle(), "text-base")}
           >
-            <img src={logo} alt="" width="24" height="24" />
+            <img src={logo} alt="" width="32" height="32" />
             <span className="max-sm:sr-only">Diswantin</span>
           </Link>
         </h1>
