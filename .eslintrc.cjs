@@ -106,6 +106,10 @@ module.exports = {
         "@typescript-eslint/array-type": ["error", { default: "array-simple" }],
         "@typescript-eslint/consistent-type-definitions": ["error", "type"],
         "@typescript-eslint/consistent-type-imports": "error",
+        "@typescript-eslint/no-explicit-any": [
+          "error",
+          { ignoreRestArgs: true },
+        ],
         "@typescript-eslint/no-unused-vars": [
           "error",
           {

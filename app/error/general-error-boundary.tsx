@@ -33,6 +33,18 @@ export function GeneralErrorBoundary({
     case 404: {
       return <NotFoundPage homePath={isAuthenticated ? "/home" : "/"} />;
     }
+    case 429: {
+      return (
+        <Page aria-labelledby="too-many-requests-heading">
+          <PageHeading id="too-many-requests-heading">
+            Rate limit exceeded
+          </PageHeading>
+          <p className="mt-sm leading-7">
+            Please wait a few moments then try again
+          </p>
+        </Page>
+      );
+    }
     default: {
       return (
         <Page aria-labelledby="unexpected-error-heading">

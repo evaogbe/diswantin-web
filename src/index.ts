@@ -69,16 +69,30 @@ async function run() {
     }),
   );
 
-  app.use(
-    rateLimit({
-      limit: 100,
-      standardHeaders: "draft-7",
-      legacyHeaders: false,
-      keyGenerator(req) {
-        return req.get("x-envoy-external-address") ?? req.ip ?? "";
-      },
-    }),
-  );
+  const generalRateLimit = rateLimit({
+    limit: 1000,
+    standardHeaders: "draft-7",
+    legacyHeaders: false,
+    keyGenerator(req) {
+      return req.get("x-envoy-external-address") ?? req.ip ?? "";
+    },
+  });
+  const strongRateLimit = rateLimit({
+    limit: 100,
+    standardHeaders: "draft-7",
+    legacyHeaders: false,
+    keyGenerator(req) {
+      return req.get("x-envoy-external-address") ?? req.ip ?? "";
+    },
+  });
+
+  app.use((req, res, next) => {
+    if (req.method !== "GET" && req.method !== "HEAD") {
+      return strongRateLimit(req, res, next);
+    }
+
+    return generalRateLimit(req, res, next);
+  });
 
   app.all(
     "*",

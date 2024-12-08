@@ -9,6 +9,8 @@ export function getTitle({ page, error }: { page?: string; error?: unknown }) {
         return "Access denied | Diswantin";
       case 404:
         return "Page not found | Diswantin";
+      case 429:
+        return "Rate limit exceeded | Diswantin";
       default:
         return "Unexpected error | Diswantin";
     }

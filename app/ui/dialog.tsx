@@ -58,10 +58,7 @@ function DialogHeader({
 }: React.HTMLAttributes<HTMLElement>) {
   return (
     <header
-      className={cn(
-        "flex flex-col space-y-3xs text-center sm:text-start",
-        className,
-      )}
+      className={cn("flex flex-col space-y-3xs max-sm:text-center", className)}
       {...props}
     />
   );

@@ -1,9 +1,8 @@
 import { data } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { NotFoundPage } from "./not-found-page";
 import { isFullyAuthenticated } from "~/auth/services.server";
-import { MainLayout } from "~/layout/main-layout";
+import { NotFoundPage } from "~/error/not-found-page";
 import { getTitle } from "~/layout/meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -18,9 +17,5 @@ export const meta: MetaFunction = ({ error }) => {
 export default function NotFoundRoute() {
   const { isAuthenticated } = useLoaderData<typeof loader>();
 
-  return (
-    <MainLayout isAuthenticated={isAuthenticated}>
-      <NotFoundPage homePath={isAuthenticated ? "/home" : "/"} />
-    </MainLayout>
-  );
+  return <NotFoundPage homePath={isAuthenticated ? "/home" : "/"} />;
 }

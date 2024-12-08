@@ -1,13 +1,13 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Outlet, useRouteLoaderData } from "@remix-run/react";
-import { getAuthenticatedUser } from "./services.server";
+import { Outlet, useLoaderData, useRouteLoaderData } from "@remix-run/react";
+import { isFullyAuthenticated } from "~/auth/services.server";
 import { GeneralErrorBoundary } from "~/error/general-error-boundary";
 import { MainLayout } from "~/layout/main-layout";
 import { getTitle } from "~/layout/meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await getAuthenticatedUser(request);
-  return { isAuthenticated: true };
+  const isAuthenticated = await isFullyAuthenticated(request);
+  return { isAuthenticated };
 }
 
 export const meta: MetaFunction = ({ error }) => {
@@ -15,15 +15,17 @@ export const meta: MetaFunction = ({ error }) => {
 };
 
 export default function AuthLayout() {
+  const { isAuthenticated } = useLoaderData<typeof loader>();
+
   return (
-    <MainLayout isAuthenticated>
+    <MainLayout isAuthenticated={isAuthenticated}>
       <Outlet />
     </MainLayout>
   );
 }
 
 export function ErrorBoundary() {
-  const data = useRouteLoaderData<typeof loader>("auth/layout.route");
+  const data = useRouteLoaderData<typeof loader>("main-layout.route");
   const isAuthenticated = Boolean(data?.isAuthenticated);
 
   return (
