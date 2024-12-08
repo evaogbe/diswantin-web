@@ -155,4 +155,8 @@
   :target {
     scroll-margin-block: 5ex;
   }
+
+  ::-webkit-search-cancel-button {
+    appearance: none;
+  }
 }

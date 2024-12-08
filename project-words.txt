@@ -11,5 +11,7 @@ pgdata
 picklist
 pipeable
 stefanzweifel
+tsquery
+tsvector
 valibot
 viewports

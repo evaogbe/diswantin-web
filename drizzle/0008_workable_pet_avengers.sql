@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "name_search_index" ON "task" USING gin (to_tsvector('english', "name"));

@@ -1,6 +1,10 @@
 import { FormProvider, useForm } from "@conform-to/react";
 import { redirect } from "@remix-run/node";
-import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
 import * as Sentry from "@sentry/remix";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
@@ -27,8 +31,10 @@ import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { useSearchParams } from "~/url/use-search-params";
 
-export function loader() {
-  const taskForm = getNewTaskForm();
+export async function loader({ request }: LoaderFunctionArgs) {
+  await getAuthenticatedUser(request);
+  const url = new URL(request.url);
+  const taskForm = getNewTaskForm(url.searchParams.get("name"));
   return { taskForm };
 }
 

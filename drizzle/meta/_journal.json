@@ -57,6 +57,13 @@
       "when": 1733373172681,
       "tag": "0007_worthless_major_mapleleaf",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1733611081308,
+      "tag": "0008_workable_pet_avengers",
+      "breakpoints": true
     }
   ]
 }

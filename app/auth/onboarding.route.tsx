@@ -16,7 +16,6 @@ import { getAuthenticatedUser, updateTimeZone } from "./services.server";
 import { formAction } from "~/form/action.server";
 import { FormField, FormItem, FormLabel, FormMessage } from "~/form/field";
 import { NativeSelect } from "~/form/select";
-import { MainLayout } from "~/layout/main-layout";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
@@ -87,138 +86,134 @@ export default function OnboardingRoute() {
   }, [timeZones, form, fields]);
 
   return (
-    <MainLayout isAuthenticated={false}>
-      <Page asChild className="flex flex-col items-center">
-        <div>
-          <FormProvider context={form.context}>
-            <Form
-              method="post"
-              id={form.id}
-              noValidate={form.noValidate}
-              aria-labelledby={`${form.id}-title`}
-              aria-describedby={form.errors != null ? form.errorId : undefined}
-              onSubmit={form.onSubmit}
-              className="w-full space-y-xs sm:w-96"
-            >
-              <PageHeading id={`${form.id}-title`}>Account setup</PageHeading>
-              {form.errors != null && (
-                <Alert
-                  variant="destructive"
-                  id={form.errorId}
-                  aria-labelledby={`${form.errorId}-heading`}
-                >
-                  <AlertCircle aria-hidden="true" className="size-xs" />
-                  <AlertTitle id={`${form.errorId}-heading`}>
-                    Error setting up account
-                  </AlertTitle>
-                  <AlertDescription>{form.errors[0]}</AlertDescription>
-                </Alert>
+    <Page asChild className="flex flex-col items-center">
+      <div>
+        <FormProvider context={form.context}>
+          <Form
+            method="post"
+            id={form.id}
+            noValidate={form.noValidate}
+            aria-labelledby={`${form.id}-title`}
+            aria-describedby={form.errors != null ? form.errorId : undefined}
+            onSubmit={form.onSubmit}
+            className="w-full space-y-xs sm:w-96"
+          >
+            <PageHeading id={`${form.id}-title`}>Account setup</PageHeading>
+            {form.errors != null && (
+              <Alert
+                variant="destructive"
+                id={form.errorId}
+                aria-labelledby={`${form.errorId}-heading`}
+              >
+                <AlertCircle aria-hidden="true" className="size-xs" />
+                <AlertTitle id={`${form.errorId}-heading`}>
+                  Error setting up account
+                </AlertTitle>
+                <AlertDescription>{form.errors[0]}</AlertDescription>
+              </Alert>
+            )}
+            <div hidden>
+              <AuthenticityTokenInput />
+            </div>
+            <FormField
+              name={fields.timeZone.name}
+              type="select"
+              render={({ field, control }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel
+                    htmlFor={undefined}
+                    onClick={() => timeZoneButtonRef.current?.focus()}
+                  >
+                    Time zone
+                  </FormLabel>
+                  <ClientOnly
+                    fallback={
+                      <NativeSelect
+                        {...field}
+                        defaultValue={control.initialValue}
+                      >
+                        {timeZones.map((timeZone) => (
+                          <option key={timeZone} value={timeZone}>
+                            {timeZone}
+                          </option>
+                        ))}
+                      </NativeSelect>
+                    }
+                  >
+                    {() => (
+                      <>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              ref={timeZoneButtonRef}
+                              data-testid="time-zone-button"
+                              className={cn(
+                                "w-full justify-between sm:w-96",
+                                !control.value && "text-muted-foreground",
+                              )}
+                            >
+                              <span className="truncate">
+                                {control.value ?? "Select time zone"}
+                              </span>
+                              <ChevronsUpDown
+                                aria-hidden="true"
+                                className="shrink-0 opacity-50"
+                              />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-full p-0 sm:w-96">
+                            <Command>
+                              <CommandInput placeholder="Search time zones…" />
+                              <CommandList>
+                                <CommandEmpty>No time zone found.</CommandEmpty>
+                                <CommandGroup>
+                                  {timeZones.map((timeZone) => (
+                                    <CommandItem
+                                      key={timeZone}
+                                      value={timeZone}
+                                      onSelect={() => {
+                                        form.update({
+                                          name: field.name,
+                                          value: timeZone,
+                                        });
+                                      }}
+                                    >
+                                      {timeZone}
+                                      <Check
+                                        aria-label="Selected"
+                                        className={cn(
+                                          "ms-auto",
+                                          timeZone === control.value
+                                            ? "opacity-100"
+                                            : "opacity-0",
+                                        )}
+                                      />
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                        <input
+                          type="hidden"
+                          name={field.name}
+                          value={control.value ?? ""}
+                        />
+                      </>
+                    )}
+                  </ClientOnly>
+                  <FormMessage />
+                </FormItem>
               )}
-              <div hidden>
-                <AuthenticityTokenInput />
-              </div>
-              <FormField
-                name={fields.timeZone.name}
-                type="select"
-                render={({ field, control }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel
-                      htmlFor={undefined}
-                      onClick={() => timeZoneButtonRef.current?.focus()}
-                    >
-                      Time zone
-                    </FormLabel>
-                    <ClientOnly
-                      fallback={
-                        <NativeSelect
-                          {...field}
-                          defaultValue={control.initialValue}
-                        >
-                          {timeZones.map((timeZone) => (
-                            <option key={timeZone} value={timeZone}>
-                              {timeZone}
-                            </option>
-                          ))}
-                        </NativeSelect>
-                      }
-                    >
-                      {() => (
-                        <>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                ref={timeZoneButtonRef}
-                                data-testid="time-zone-button"
-                                className={cn(
-                                  "w-full justify-between sm:w-96",
-                                  !control.value && "text-muted-foreground",
-                                )}
-                              >
-                                <span className="truncate">
-                                  {control.value ?? "Select time zone"}
-                                </span>
-                                <ChevronsUpDown
-                                  aria-hidden="true"
-                                  className="shrink-0 opacity-50"
-                                />
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-full p-0 sm:w-96">
-                              <Command>
-                                <CommandInput placeholder="Search time zones…" />
-                                <CommandList>
-                                  <CommandEmpty>
-                                    No time zone found.
-                                  </CommandEmpty>
-                                  <CommandGroup>
-                                    {timeZones.map((timeZone) => (
-                                      <CommandItem
-                                        key={timeZone}
-                                        value={timeZone}
-                                        onSelect={() => {
-                                          form.update({
-                                            name: field.name,
-                                            value: timeZone,
-                                          });
-                                        }}
-                                      >
-                                        {timeZone}
-                                        <Check
-                                          aria-label="Selected"
-                                          className={cn(
-                                            "ms-auto",
-                                            timeZone === control.value
-                                              ? "opacity-100"
-                                              : "opacity-0",
-                                          )}
-                                        />
-                                      </CommandItem>
-                                    ))}
-                                  </CommandGroup>
-                                </CommandList>
-                              </Command>
-                            </PopoverContent>
-                          </Popover>
-                          <input
-                            type="hidden"
-                            name={field.name}
-                            value={control.value ?? ""}
-                          />
-                        </>
-                      )}
-                    </ClientOnly>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <p className="flex justify-end">
-                <Button>Save</Button>
-              </p>
-            </Form>
-          </FormProvider>
-        </div>
-      </Page>
-    </MainLayout>
+            />
+            <p className="flex justify-end">
+              <Button>Save</Button>
+            </p>
+          </Form>
+        </FormProvider>
+      </div>
+    </Page>
   );
 }

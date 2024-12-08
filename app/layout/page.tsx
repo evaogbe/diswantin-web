@@ -10,7 +10,7 @@ const Page = forwardRef<
 
   return (
     <Comp
-      className={cn("flex-1 rounded bg-background p-sm pt-2xs", className)}
+      className={cn("flex-1 rounded-sm bg-background p-sm pt-2xs", className)}
       ref={ref}
       {...props}
     />

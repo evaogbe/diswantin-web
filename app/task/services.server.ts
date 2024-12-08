@@ -1,9 +1,21 @@
 import { parse } from "date-fns";
 import { formatInTimeZone, toDate } from "date-fns-tz";
-import { and, eq, isNotNull, isNull, lt, lte, or, sql } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  isNotNull,
+  isNull,
+  lt,
+  lte,
+  or,
+  sql,
+} from "drizzle-orm";
 import type { SQLChunk } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { uid } from "uid";
+import * as v from "valibot";
+import { nameSchema } from "./model";
 import type { NewTask } from "./model";
 import { db } from "~/db.server";
 import * as table from "~/db.server/schema";
@@ -53,6 +65,81 @@ export async function getCurrentTask(user: User) {
     )
     .limit(1);
   return currentTask;
+}
+
+function escapeRegExp(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function buildSearchHeadline(str: string, tokens: string[]) {
+  const occurrences = tokens
+    .flatMap((token) =>
+      [...str.matchAll(new RegExp(escapeRegExp(token), "dgi"))].flatMap(
+        (match) => match.indices ?? [],
+      ),
+    )
+    .sort((a, b) => {
+      if (a[0] < b[0]) return -1;
+      if (a[0] > b[0]) return 1;
+      if (a[1] < b[1]) return -1;
+      if (a[1] > b[1]) return 1;
+      return 0;
+    });
+  let last = 0;
+  const headline = [];
+
+  for (const [start, end] of occurrences) {
+    if (last > start) continue;
+
+    if (/^\s+$/.test(str.slice(last, start))) {
+      const lastHeadline = headline[headline.length - 1];
+      if (lastHeadline != null) {
+        lastHeadline.value = `${lastHeadline.value}${str.slice(last, end)}`;
+      }
+    } else {
+      if (last < start) {
+        headline.push({ value: str.slice(last, start), highlight: false });
+      }
+      headline.push({ value: str.slice(start, end), highlight: true });
+    }
+    last = end;
+  }
+
+  if (last < str.length) {
+    headline.push({ value: str.slice(last), highlight: false });
+  }
+  return headline;
+}
+
+export async function searchTasks(query: string, userId: number) {
+  const tsquery = `${query
+    .replace(/[^\w\s]/g, " ")
+    .trim()
+    .replace(/\s+/g, ":* & ")}:*`;
+  const searchResults = await db
+    .select({ id: table.task.clientId, name: table.task.name })
+    .from(table.task)
+    .where(
+      and(
+        eq(table.task.userId, userId),
+        sql`to_tsvector('simple', ${table.task.name}) @@ to_tsquery('simple', ${tsquery})`,
+      ),
+    )
+    .orderBy(
+      desc(
+        sql`ts_rank_cd(
+          to_tsvector('simple', ${table.task.name}),
+          to_tsquery('simple', ${tsquery}),
+          1
+        )`,
+      ),
+    )
+    .limit(30);
+  const tokens = query.split(/\s+/);
+  return searchResults.map((result) => ({
+    ...result,
+    headline: buildSearchHeadline(result.name, tokens),
+  }));
 }
 
 function formatDateTime(
@@ -125,10 +212,11 @@ export async function getTaskDetail(taskClientId: string, user: User) {
   };
 }
 
-export function getNewTaskForm() {
+export function getNewTaskForm(name: string | null) {
+  const parseResult = v.safeParse(nameSchema, name);
   return {
     id: uid(),
-    name: "",
+    name: parseResult.success ? parseResult.output : "",
     deadline: {
       date: "",
       time: "",
