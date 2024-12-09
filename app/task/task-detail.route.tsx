@@ -166,7 +166,7 @@ export default function TaskDetailRoute() {
 
   return (
     <Page aria-labelledby="todo-detail-heading">
-      <header>
+      <header className="space-y-xs">
         <PageHeading
           id="todo-detail-heading"
           className={cn(isDone && "line-through")}
@@ -179,7 +179,6 @@ export default function TaskDetailRoute() {
             variant="destructive"
             id="form-error"
             aria-labelledby="form-error-heading"
-            className="mt-xs"
           >
             <AlertCircle aria-hidden="true" className="size-xs" />
             <AlertTitle id="form-error-heading">
@@ -190,7 +189,7 @@ export default function TaskDetailRoute() {
             <AlertDescription>{formError}</AlertDescription>
           </Alert>
         )}
-        <div className="mt-xs flex justify-end gap-2xs">
+        <div className="flex justify-end gap-2xs">
           <fetcher.Form
             method="post"
             aria-describedby={
