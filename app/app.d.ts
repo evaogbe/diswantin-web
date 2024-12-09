@@ -1,3 +1,4 @@
+/// <reference types="vite-plugin-svgr/client" />
 // Use interface for extensions
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import "@remix-run/server-runtime";

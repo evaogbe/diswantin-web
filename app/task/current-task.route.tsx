@@ -1,10 +1,13 @@
+import AddTask from "@material-design-icons/svg/filled/add_task.svg?react";
+import Check from "@material-design-icons/svg/filled/check.svg?react";
+import Details from "@material-design-icons/svg/filled/details.svg?react";
 import type {
   ActionFunctionArgs,
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
-import { AlertCircle, Check, Plus } from "lucide-react";
+import { AlertCircle, Plus } from "lucide-react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { markDoneSchema } from "./model";
 import { getCurrentTask, markTaskDone } from "./services.server";
@@ -14,7 +17,6 @@ import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
 import { Button } from "~/ui/button";
-import { AddTask, Details } from "~/ui/icons";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getAuthenticatedUser(request);
@@ -64,8 +66,7 @@ export default function CurrentTaskRoute() {
         <p className="mt-sm">
           <Button asChild>
             <Link to="/new-todo">
-              <Plus aria-hidden="true" />
-              Add to-do
+              <Plus aria-hidden="true" /> Add to-do
             </Link>
           </Button>
         </p>
@@ -84,7 +85,7 @@ export default function CurrentTaskRoute() {
           variant="destructive"
           id="mark-done-form-error"
           aria-labelledby="mark-done-form-error-heading"
-          className="my-xs"
+          className="mt-xs"
         >
           <AlertCircle aria-hidden="true" className="size-xs" />
           <AlertTitle id="mark-done-form-error-heading">
@@ -95,13 +96,14 @@ export default function CurrentTaskRoute() {
           </AlertDescription>
         </Alert>
       )}
-      <p className="text-center text-2xl tracking-tight">{currentTask.name}</p>
+      <p className="mt-2xs text-center text-2xl tracking-tight">
+        {currentTask.name}
+      </p>
       <footer className="mt-md flex w-full justify-around">
         <p>
           <Button asChild variant="outline">
             <Link to={`/todo/${currentTask.id}`}>
-              <Details aria-hidden="true" />
-              Details
+              <Details aria-hidden="true" className="fill-current" /> Details
             </Link>
           </Button>
         </p>
@@ -117,8 +119,7 @@ export default function CurrentTaskRoute() {
           </div>
           <p>
             <Button variant="secondary">
-              <Check aria-hidden="true" />
-              Done
+              <Check aria-hidden="true" className="fill-current" /> Done
             </Button>
           </p>
         </fetcher.Form>

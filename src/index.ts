@@ -50,7 +50,7 @@ async function run() {
           connectSrc: ["'self'", env === "development" ? "ws:" : null].filter(
             (dir) => dir != null,
           ),
-          imgSrc: ["'self'"],
+          imgSrc: ["'self'", "data:"],
           formAction: ["'self'", "https://accounts.google.com"],
           baseUri: ["'none'"],
           "upgrade-insecure-requests": null,

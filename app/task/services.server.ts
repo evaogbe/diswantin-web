@@ -33,9 +33,14 @@ export async function getCurrentTask(user: User) {
   const [currentTask] = await db
     .select({ id: table.task.clientId, name: table.task.name })
     .from(table.task)
+    .leftJoin(
+      table.taskCompletion,
+      eq(table.taskCompletion.taskId, table.task.id),
+    )
     .where(
       and(
         eq(table.task.userId, user.id),
+        isNull(table.taskCompletion.doneAt),
         or(
           isNull(table.task.scheduledDate),
           lt(table.task.scheduledDate, today),
@@ -117,8 +122,16 @@ export async function searchTasks(query: string, userId: number) {
     .trim()
     .replace(/\s+/g, ":* & ")}:*`;
   const searchResults = await db
-    .select({ id: table.task.clientId, name: table.task.name })
+    .select({
+      id: table.task.clientId,
+      name: table.task.name,
+      isDone: sql<boolean>`${table.taskCompletion.doneAt} IS NOT NULL`,
+    })
     .from(table.task)
+    .leftJoin(
+      table.taskCompletion,
+      eq(table.taskCompletion.taskId, table.task.id),
+    )
     .where(
       and(
         eq(table.task.userId, userId),
@@ -183,8 +196,13 @@ export async function getTaskDetail(taskClientId: string, user: User) {
       deadlineTime: table.task.deadlineTime,
       scheduledDate: table.task.scheduledDate,
       scheduledTime: table.task.scheduledTime,
+      isDone: sql<boolean>`${table.taskCompletion.doneAt} IS NOT NULL`,
     })
     .from(table.task)
+    .leftJoin(
+      table.taskCompletion,
+      eq(table.taskCompletion.taskId, table.task.id),
+    )
     .where(
       and(
         eq(table.task.userId, user.id),
@@ -209,6 +227,7 @@ export async function getTaskDetail(taskClientId: string, user: User) {
       task.scheduledTime,
       user.timeZone,
     ),
+    isDone: task.isDone,
   };
 }
 
@@ -243,10 +262,49 @@ export async function createTask(task: NewTask, userId: number) {
     .onConflictDoNothing({ target: table.task.clientId });
 }
 
-export async function markTaskDone(taskClientId: string, userId: number) {
+export async function deleteTask(taskClientId: string, userId: number) {
   await db
     .delete(table.task)
     .where(
       and(eq(table.task.clientId, taskClientId), eq(table.task.userId, userId)),
     );
+}
+
+export async function markTaskDone(taskClientId: string, userId: number) {
+  const [task] = await db
+    .select({ id: table.task.id })
+    .from(table.task)
+    .where(
+      and(eq(table.task.clientId, taskClientId), eq(table.task.userId, userId)),
+    )
+    .limit(1);
+  if (task == null) {
+    throw new Error(`task not found: ${taskClientId} for user: ${userId}`);
+  }
+
+  const existingCompletions = await db
+    .select({ exists: sql<1>`1` })
+    .from(table.taskCompletion)
+    .where(eq(table.taskCompletion.taskId, task.id))
+    .limit(1);
+  if (existingCompletions.length < 1) {
+    await db.insert(table.taskCompletion).values({ taskId: task.id });
+  }
+}
+
+export async function unmarkTaskDone(taskClientId: string, userId: number) {
+  const [task] = await db
+    .select({ id: table.task.id })
+    .from(table.task)
+    .where(
+      and(eq(table.task.clientId, taskClientId), eq(table.task.userId, userId)),
+    )
+    .limit(1);
+  if (task == null) {
+    throw new Error(`task not found: ${taskClientId} for user: ${userId}`);
+  }
+
+  await db
+    .delete(table.taskCompletion)
+    .where(eq(table.taskCompletion.taskId, task.id));
 }

@@ -50,3 +50,11 @@ export type NewTask = v.InferOutput<typeof newTaskSchema>;
 export const markDoneSchema = v.object({
   id: clientIdSchema,
 });
+
+export const unmarkDoneSchema = v.object({
+  id: clientIdSchema,
+});
+
+export const deleteTaskSchema = v.object({
+  id: clientIdSchema,
+});
