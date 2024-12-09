@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { glob } from "glob";
 import { defineConfig } from "vite";
 import { envOnlyMacros } from "vite-env-only";
+import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 // NODE_ENV can be undefined
@@ -21,6 +22,7 @@ declare module "@remix-run/node" {
 export default defineConfig({
   plugins: [
     envOnlyMacros(),
+    svgr(),
     remix({
       future: {
         v3_fetcherPersist: true,

@@ -121,7 +121,10 @@ export default function TaskSearchRoute() {
                   <li key={result.id}>
                     <Link
                       to={`/todo/${result.id}`}
-                      className="inline-flex h-lg w-full items-center rounded-sm px-xs py-2xs transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
+                      className={cn(
+                        "inline-flex h-lg w-full items-center rounded-sm px-xs py-2xs transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
+                        result.isDone && "line-through",
+                      )}
                     >
                       {result.headline.map(({ value, highlight }, i) =>
                         highlight ? (
@@ -134,6 +137,7 @@ export default function TaskSearchRoute() {
                           </span>
                         ),
                       )}
+                      {result.isDone && <span className="sr-only">Done</span>}
                     </Link>
                   </li>
                 ))}
@@ -150,8 +154,7 @@ export default function TaskSearchRoute() {
                 <p className="mt-sm">
                   <Button asChild>
                     <Link to={`/new-todo?name=${query.trim()}`}>
-                      <Plus aria-hidden="true" />
-                      Add to-do
+                      <Plus aria-hidden="true" /> Add to-do
                     </Link>
                   </Button>
                 </p>

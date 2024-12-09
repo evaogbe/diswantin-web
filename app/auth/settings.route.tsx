@@ -130,8 +130,7 @@ export default function SettingsRoute() {
                           replace
                           preventScrollReset
                         >
-                          <EyeOff aria-hidden="true" />
-                          Hide email
+                          <EyeOff aria-hidden="true" /> Hide email
                         </Link>
                       </Button>
                     </p>
@@ -144,8 +143,7 @@ export default function SettingsRoute() {
                         replace
                         preventScrollReset
                       >
-                        <Eye aria-hidden="true" />
-                        Show email
+                        <Eye aria-hidden="true" /> Show email
                       </Link>
                     </Button>
                   </p>
@@ -161,8 +159,7 @@ export default function SettingsRoute() {
                       replace
                       preventScrollReset
                     >
-                      <Pencil aria-hidden="true" />
-                      Edit
+                      <Pencil aria-hidden="true" /> Edit
                     </Link>
                   </Button>
                 </p>
@@ -174,8 +171,7 @@ export default function SettingsRoute() {
       <Form method="post" className="mt-sm">
         <p>
           <Button name="intent" value="sign-out" variant="secondary">
-            <LogOut aria-hidden="true" />
-            Sign out
+            <LogOut aria-hidden="true" /> Sign out
           </Button>
         </p>
       </Form>
