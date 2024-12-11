@@ -74,7 +74,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^9.3.0",
-    "@playwright/test": "^1.49.0",
+    "@playwright/test": "^1.49.1",
     "@remix-run/dev": "^2.14.0",
     "@remix-run/route-config": "^2.14.0",
     "@sentry/vite-plugin": "^2.22.6",
