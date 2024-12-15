@@ -22,7 +22,13 @@ declare module "@remix-run/node" {
 export default defineConfig({
   plugins: [
     envOnlyMacros(),
-    svgr(),
+    svgr({
+      svgrOptions: {
+        svgProps: {
+          fill: "currentColor",
+        },
+      },
+    }),
     remix({
       future: {
         v3_fetcherPersist: true,

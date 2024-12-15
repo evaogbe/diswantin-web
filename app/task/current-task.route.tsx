@@ -103,7 +103,7 @@ export default function CurrentTaskRoute() {
         <p>
           <Button asChild variant="outline">
             <Link to={`/todo/${currentTask.id}`}>
-              <Details aria-hidden="true" className="fill-current" /> Details
+              <Details aria-hidden="true" /> Details
             </Link>
           </Button>
         </p>
@@ -119,7 +119,7 @@ export default function CurrentTaskRoute() {
           </div>
           <p>
             <Button variant="secondary">
-              <Check aria-hidden="true" className="fill-current" /> Done
+              <Check aria-hidden="true" /> Done
             </Button>
           </p>
         </fetcher.Form>
