@@ -127,7 +127,7 @@ const DropdownMenuRadioItem = forwardRef<
   >
     <span className="absolute start-2xs flex size-xs items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
-        <Circle className="size-2xs fill-current" />
+        <Circle className="size-2xs" />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}

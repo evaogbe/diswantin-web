@@ -206,12 +206,12 @@ export default function TaskDetailRoute() {
             <p>
               {isDone ? (
                 <Button name="intent" value="unmark-done" variant="outline">
-                  <RemoveDone aria-hidden="true" className="fill-current" />
+                  <RemoveDone aria-hidden="true" />
                   Unmark done
                 </Button>
               ) : (
                 <Button name="intent" value="mark-done" variant="outline">
-                  <Check aria-hidden="true" className="fill-current" />
+                  <Check aria-hidden="true" />
                   Mark done
                 </Button>
               )}
