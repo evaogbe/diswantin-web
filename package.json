@@ -53,7 +53,7 @@
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "dotenv": "^16.4.7",
-    "drizzle-orm": "^0.37.0",
+    "drizzle-orm": "^0.38.2",
     "express": "^4.21.2",
     "express-rate-limit": "^7.4.1",
     "get-port": "^7.1.0",
