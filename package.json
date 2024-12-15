@@ -48,7 +48,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.4",
     "compression": "^1.7.5",
-    "conform-to-valibot": "^1.12.1",
+    "conform-to-valibot": "^1.12.2",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
