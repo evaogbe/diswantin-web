@@ -21,7 +21,7 @@ const dateTimeSchema = v.object(
   "Invalid input",
 );
 
-export const newTaskSchema = v.pipe(
+export const taskSchema = v.pipe(
   v.object({
     id: clientIdSchema,
     name: nameSchema,
@@ -45,7 +45,7 @@ export const newTaskSchema = v.pipe(
   ),
 );
 
-export type NewTask = v.InferOutput<typeof newTaskSchema>;
+export type TaskForm = v.InferOutput<typeof taskSchema>;
 
 export const markDoneSchema = v.object({
   id: clientIdSchema,

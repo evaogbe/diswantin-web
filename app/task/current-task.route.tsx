@@ -33,7 +33,7 @@ export async function action({ request }: ActionFunctionArgs) {
     schema: markDoneSchema,
     mutation: async (values) => {
       await markTaskDone(values.id, user.id);
-      return null;
+      return ["success", null];
     },
     humanName: "mark the to-do done",
     hiddenFields: ["id"],

@@ -44,7 +44,7 @@ export async function action({ request }: ActionFunctionArgs) {
           }
 
           await updateTimeZone(user.id, timeZone);
-          return null;
+          return ["success", null];
         },
         humanName: "edit the time zone",
       });
@@ -67,11 +67,11 @@ export async function action({ request }: ActionFunctionArgs) {
         schema: deleteUserSchema,
         mutation: async (values) => {
           if (values.email !== user.email) {
-            return "Incorrect email";
+            return ["error", "Incorrect email"];
           }
 
           await deleteUser(user.id);
-          return null;
+          return ["success", null];
         },
         humanName: "delete your account",
       });
