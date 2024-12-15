@@ -13,6 +13,7 @@ export default [
     route("home", "task/current-task.route.tsx"),
     route("new-todo", "task/new-task.route.tsx"),
     route("todo/:id", "task/task-detail.route.tsx"),
+    route("edit-todo/:id", "task/edit-task.route.tsx"),
     route("settings", "auth/settings.route.tsx"),
     route("*", "not-found.route.tsx"),
   ]),

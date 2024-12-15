@@ -1,5 +1,4 @@
 import { FormProvider, useForm } from "@conform-to/react";
-import { redirect } from "@remix-run/node";
 import type {
   ActionFunctionArgs,
   LoaderFunctionArgs,
@@ -39,7 +38,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
   const user = await getAuthenticatedUser(request, { fresh: true });
   const formData = await request.formData();
-  const result = await formAction({
+  return formAction({
     formData,
     requestHeaders: request.headers,
     schema: onboardingSchema,
@@ -51,11 +50,10 @@ export async function action({ request }: ActionFunctionArgs) {
       }
 
       await updateTimeZone(user.id, timeZone);
-      return null;
+      return ["success", "/home"];
     },
     humanName: "set up your account",
   });
-  return result ?? redirect("/home", 303);
 }
 
 export const meta: MetaFunction = ({ error }) => {

@@ -16,7 +16,7 @@ import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { uid } from "uid";
 import * as v from "valibot";
 import { nameSchema } from "./model";
-import type { NewTask } from "./model";
+import type { TaskForm } from "./model";
 import { db } from "~/db.server";
 import * as table from "~/db.server/schema";
 
@@ -247,7 +247,40 @@ export function getNewTaskForm(name: string | null) {
   };
 }
 
-export async function createTask(task: NewTask, userId: number) {
+export async function getEditTaskForm(taskClientId: string, userId: number) {
+  const [task] = await db
+    .select({
+      id: table.task.clientId,
+      name: table.task.name,
+      deadlineDate: table.task.deadlineDate,
+      deadlineTime: table.task.deadlineTime,
+      scheduledDate: table.task.scheduledDate,
+      scheduledTime: table.task.scheduledTime,
+    })
+    .from(table.task)
+    .where(
+      and(eq(table.task.clientId, taskClientId), eq(table.task.userId, userId)),
+    )
+    .limit(1);
+  if (task == null) {
+    return null;
+  }
+
+  return {
+    id: task.id,
+    name: task.name,
+    deadline: {
+      date: task.deadlineDate ?? "",
+      time: task.deadlineTime?.slice(0, 5) ?? "",
+    },
+    scheduledAt: {
+      date: task.scheduledDate ?? "",
+      time: task.scheduledTime?.slice(0, 5) ?? "",
+    },
+  };
+}
+
+export async function createTask(task: TaskForm, userId: number) {
   await db
     .insert(table.task)
     .values({
@@ -260,6 +293,21 @@ export async function createTask(task: NewTask, userId: number) {
       scheduledTime: task.scheduledAt?.time,
     })
     .onConflictDoNothing({ target: table.task.clientId });
+}
+
+export async function updateTask(task: TaskForm, userId: number) {
+  await db
+    .update(table.task)
+    .set({
+      name: task.name,
+      deadlineDate: task.deadline?.date ?? null,
+      deadlineTime: task.deadline?.time ?? null,
+      scheduledDate: task.scheduledAt?.date ?? null,
+      scheduledTime: task.scheduledAt?.time ?? null,
+    })
+    .where(
+      and(eq(table.task.clientId, task.id), eq(table.task.userId, userId)),
+    );
 }
 
 export async function deleteTask(taskClientId: string, userId: number) {

@@ -1,4 +1,4 @@
-import { data } from "@remix-run/node";
+import { data, redirect } from "@remix-run/node";
 import * as Sentry from "@sentry/remix";
 import { parseWithValibot } from "conform-to-valibot";
 import { CSRFError } from "remix-utils/csrf/server";
@@ -17,7 +17,9 @@ export async function formAction<S extends GenericSchema>({
   formData: FormData;
   requestHeaders: Headers;
   schema: S;
-  mutation: (values: InferOutput<S>) => Promise<string | null>;
+  mutation: (
+    values: InferOutput<S>,
+  ) => Promise<["success", string | null] | ["error", string]>;
   humanName: string;
   hiddenFields?: string[];
 }) {
@@ -53,12 +55,16 @@ export async function formAction<S extends GenericSchema>({
   }
 
   try {
-    const error = await mutation(submission.value);
-    if (error != null) {
-      return data(submission.reply({ formErrors: [error] }), 422);
+    const [status, result] = await mutation(submission.value);
+    if (status === "error") {
+      return data(submission.reply({ formErrors: [result] }), 422);
     }
 
-    return null;
+    if (result == null) {
+      return null;
+    }
+
+    return redirect(result, 303);
   } catch (e) {
     Sentry.captureException(e);
 

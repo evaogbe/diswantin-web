@@ -8,14 +8,14 @@ import type {
 } from "@remix-run/node";
 import {
   Form,
-  redirect,
+  Link,
   useActionData,
   useFetcher,
   useLoaderData,
   useNavigation,
 } from "@remix-run/react";
 import type { Fetcher } from "@remix-run/react";
-import { AlertCircle, EllipsisVertical, Trash } from "lucide-react";
+import { AlertCircle, EllipsisVertical, Pencil, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ClientOnly } from "remix-utils/client-only";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
@@ -67,7 +67,7 @@ export async function action({ request }: ActionFunctionArgs) {
         schema: markDoneSchema,
         mutation: async (values) => {
           await markTaskDone(values.id, user.id);
-          return null;
+          return ["success", null];
         },
         humanName: "mark the to-do done",
         hiddenFields: ["id"],
@@ -81,7 +81,7 @@ export async function action({ request }: ActionFunctionArgs) {
         schema: unmarkDoneSchema,
         mutation: async (values) => {
           await unmarkTaskDone(values.id, user.id);
-          return null;
+          return ["success", null];
         },
         humanName: "unmark the to-do done",
         hiddenFields: ["id"],
@@ -89,18 +89,17 @@ export async function action({ request }: ActionFunctionArgs) {
     }
     case "delete": {
       const user = await getAuthenticatedUser(request);
-      const result = await formAction({
+      return formAction({
         formData,
         requestHeaders: request.headers,
         schema: deleteTaskSchema,
         mutation: async (values) => {
           await deleteTask(values.id, user.id);
-          return null;
+          return ["success", "/home"];
         },
         humanName: "delete the to-do",
         hiddenFields: ["id"],
       });
-      return result ?? redirect("/home");
     }
     default: {
       throw new Response(null, { status: 400 });
@@ -217,6 +216,11 @@ export default function TaskDetailRoute() {
               )}
             </p>
           </fetcher.Form>
+          <Button variant="outline" asChild>
+            <Link to={`/edit-todo/${task.id}`}>
+              <Pencil aria-hidden="true" /> Edit
+            </Link>
+          </Button>
           <ClientOnly
             fallback={
               <Form
