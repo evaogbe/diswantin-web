@@ -69,21 +69,20 @@ async function run() {
     }),
   );
 
-  const generalRateLimit = rateLimit({
-    limit: 1000,
-    standardHeaders: "draft-7",
+  const rateLimitDefaults = {
+    standardHeaders: "draft-8",
     legacyHeaders: false,
-    keyGenerator(req) {
+    keyGenerator(req: express.Request) {
       return req.get("x-envoy-external-address") ?? req.ip ?? "";
     },
+  };
+  const generalRateLimit = rateLimit({
+    ...rateLimitDefaults,
+    limit: 1000,
   });
   const strongRateLimit = rateLimit({
+    ...rateLimitDefaults,
     limit: 100,
-    standardHeaders: "draft-7",
-    legacyHeaders: false,
-    keyGenerator(req) {
-      return req.get("x-envoy-external-address") ?? req.ip ?? "";
-    },
   });
 
   app.use((req, res, next) => {
