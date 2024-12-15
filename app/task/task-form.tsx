@@ -5,7 +5,6 @@ import * as Sentry from "@sentry/remix";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, CalendarDays, CalendarOff, X } from "lucide-react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
-import { useHydrated } from "remix-utils/use-hydrated";
 import { taskSchema } from "./model";
 import type { TaskForm } from "./model";
 import {
@@ -37,7 +36,6 @@ export function TaskForm({
   errorHeading: string;
 }) {
   const { searchParams, withSearchParam } = useSearchParams();
-  const isHydrated = useHydrated();
   const [form, fields] = useForm({
     lastResult,
     constraint: getValibotConstraint(taskSchema),
@@ -268,7 +266,7 @@ export function TaskForm({
                       </FormItem>
                     )}
                   />
-                  {!isHydrated || scheduledAt.date.value != null ? (
+                  {scheduledAt.date.value != null ? (
                     <FormField
                       name={scheduledAt.time.name}
                       render={({ field, control }) => (

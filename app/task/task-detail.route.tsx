@@ -17,7 +17,6 @@ import {
 import type { Fetcher } from "@remix-run/react";
 import { AlertCircle, EllipsisVertical, Pencil, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ClientOnly } from "remix-utils/client-only";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import * as v from "valibot";
 import { deleteTaskSchema, markDoneSchema, unmarkDoneSchema } from "./model";
@@ -221,65 +220,40 @@ export default function TaskDetailRoute() {
               <Pencil aria-hidden="true" /> Edit
             </Link>
           </Button>
-          <ClientOnly
-            fallback={
-              <Form
-                method="post"
-                aria-describedby={
-                  formError != null && lastIntent === "delete"
-                    ? "form-error"
-                    : undefined
-                }
-              >
-                <div hidden>
-                  <AuthenticityTokenInput />
-                  <input type="hidden" name="id" defaultValue={task.id} />
-                </div>
-                <p>
-                  <Button name="intent" value="delete" variant="outline">
-                    <Trash aria-hidden="true" /> Delete
-                  </Button>
-                </p>
-              </Form>
-            }
-          >
-            {() => (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    <EllipsisVertical aria-hidden="true" /> More
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
-                    <Form
-                      method="post"
-                      aria-describedby={
-                        formError != null && lastIntent === "delete"
-                          ? "form-error"
-                          : undefined
-                      }
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <EllipsisVertical aria-hidden="true" /> More
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <Form
+                  method="post"
+                  aria-describedby={
+                    formError != null && lastIntent === "delete"
+                      ? "form-error"
+                      : undefined
+                  }
+                >
+                  <div hidden>
+                    <AuthenticityTokenInput />
+                    <input type="hidden" name="id" defaultValue={task.id} />
+                  </div>
+                  <p>
+                    <button
+                      name="intent"
+                      value="delete"
+                      className="inline-flex items-center gap-2xs"
                     >
-                      <div hidden>
-                        <AuthenticityTokenInput />
-                        <input type="hidden" name="id" defaultValue={task.id} />
-                      </div>
-                      <p>
-                        <button
-                          name="intent"
-                          value="delete"
-                          className="inline-flex items-center gap-2xs"
-                        >
-                          <Trash aria-hidden="true" className="size-xs" />
-                          Delete
-                        </button>
-                      </p>
-                    </Form>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </ClientOnly>
+                      <Trash aria-hidden="true" className="size-xs" />
+                      Delete
+                    </button>
+                  </p>
+                </Form>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
       <dl className="mt-sm">
