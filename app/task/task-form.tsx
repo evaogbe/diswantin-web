@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "~/form/field";
 import { Input } from "~/form/input";
+import { TextArea } from "~/form/text-area";
 import { generalError } from "~/form/validation";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
@@ -129,6 +130,20 @@ export function TaskForm({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <Input {...field} defaultValue={control.initialValue} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name={fields.note.name}
+              render={({ field, control }) => (
+                <FormItem>
+                  <FormLabel>Note</FormLabel>
+                  <TextArea
+                    {...field}
+                    defaultValue={control.initialValue}
+                    rows={3}
+                  />
                   <FormMessage />
                 </FormItem>
               )}

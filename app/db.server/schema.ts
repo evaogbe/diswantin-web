@@ -29,6 +29,7 @@ export const task = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     name: varchar({ length: 255 }).notNull(),
+    note: varchar({ length: 256 }),
     deadlineDate: date(),
     deadlineTime: time(),
     startAfterDate: date(),

@@ -163,7 +163,7 @@ export default function TaskDetailRoute() {
       : fetcher.formData.get("intent") === "mark-done";
 
   return (
-    <Page aria-labelledby="todo-detail-heading">
+    <Page aria-labelledby="todo-detail-heading" className="space-y-sm">
       <header className="space-y-xs">
         <PageHeading
           id="todo-detail-heading"
@@ -256,7 +256,8 @@ export default function TaskDetailRoute() {
           </DropdownMenu>
         </div>
       </header>
-      <dl className="mt-sm">
+      {task.note != null && <p className="whitespace-pre-wrap">{task.note}</p>}
+      <dl>
         {task.deadline != null && (
           <>
             <dt className="text-muted-foreground">Deadline</dt>
