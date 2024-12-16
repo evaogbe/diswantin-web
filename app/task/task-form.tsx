@@ -44,7 +44,7 @@ export function TaskForm({
     onValidate({ formData }) {
       const submission = parseWithValibot(formData, { schema: taskSchema });
       if (submission.status === "error") {
-        const field = ["id", "deadline", "scheduledAt"].find(
+        const field = ["id", "deadline", "startAfter", "scheduledAt"].find(
           (name) => submission.error?.[name] != null,
         );
         if (field != null) {
@@ -61,6 +61,10 @@ export function TaskForm({
         searchParams.get("scheduled") === "1"
           ? { date: "", time: "" }
           : taskForm.deadline,
+      startAfter:
+        searchParams.get("scheduled") === "1"
+          ? { date: "", time: "" }
+          : taskForm.startAfter,
       scheduledAt:
         searchParams.get("scheduled") === "0"
           ? { date: "", time: "" }
@@ -75,10 +79,12 @@ export function TaskForm({
     form.errors?.[0] ??
     (fields.id.errors != null ||
     (fields.deadline.errors != null && showScheduledAt) ||
+    (fields.startAfter.errors != null && showScheduledAt) ||
     (fields.scheduledAt.errors != null && !showScheduledAt)
       ? generalError(humanName)
       : null);
   const deadline = fields.deadline.getFieldset();
+  const startAfter = fields.startAfter.getFieldset();
   const scheduledAt = fields.scheduledAt.getFieldset();
 
   return (
@@ -156,6 +162,10 @@ export function TaskForm({
                         name: fields.deadline.name,
                         value: { date: "", time: "" },
                       });
+                      form.update({
+                        name: fields.startAfter.name,
+                        value: { date: "", time: "" },
+                      });
                     }}
                   >
                     <CalendarDays />
@@ -165,70 +175,142 @@ export function TaskForm({
               )}
             </p>
             {!showScheduledAt && (
-              <FormFieldSet name={fields.deadline.name} className="border p-xs">
-                <FormLegend>Deadline</FormLegend>
-                <div className="flex flex-wrap gap-2xs">
-                  <FormField
-                    name={deadline.date.name}
-                    render={({ field, control }) => (
-                      <FormItem className="flex-[1_11rem]">
-                        <FormLabel>Date</FormLabel>
-                        <span className="flex gap-4xs">
-                          <Input
-                            {...field}
-                            value={control.value ?? ""}
-                            onChange={control.onChange}
-                            type="date"
-                            className="flex-1"
-                          />
-                          <Button
-                            {...form.update.getButtonProps({
-                              name: field.name,
-                              value: "",
-                            })}
-                            variant="ghost"
-                            size="icon"
-                            aria-label="Clear"
-                          >
-                            <X />
-                          </Button>
-                        </span>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name={deadline.time.name}
-                    render={({ field, control }) => (
-                      <FormItem className="flex-[1_11rem]">
-                        <FormLabel>Time</FormLabel>
-                        <span className="flex gap-4xs">
-                          <Input
-                            {...field}
-                            value={control.value ?? ""}
-                            onChange={control.onChange}
-                            type="time"
-                            className="flex-1"
-                          />
-                          <Button
-                            {...form.update.getButtonProps({
-                              name: field.name,
-                              value: "",
-                            })}
-                            variant="ghost"
-                            size="icon"
-                            aria-label="Clear"
-                          >
-                            <X />
-                          </Button>
-                        </span>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormMessage />
-              </FormFieldSet>
+              <>
+                <FormFieldSet
+                  name={fields.deadline.name}
+                  className="border p-xs"
+                >
+                  <FormLegend>Deadline</FormLegend>
+                  <div className="flex flex-wrap gap-2xs">
+                    <FormField
+                      name={deadline.date.name}
+                      render={({ field, control }) => (
+                        <FormItem className="flex-[1_11rem]">
+                          <FormLabel>Date</FormLabel>
+                          <span className="flex gap-4xs">
+                            <Input
+                              {...field}
+                              value={control.value ?? ""}
+                              onChange={control.onChange}
+                              type="date"
+                              className="flex-1"
+                            />
+                            <Button
+                              {...form.update.getButtonProps({
+                                name: field.name,
+                                value: "",
+                              })}
+                              variant="ghost"
+                              size="icon"
+                              aria-label="Clear"
+                            >
+                              <X />
+                            </Button>
+                          </span>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      name={deadline.time.name}
+                      render={({ field, control }) => (
+                        <FormItem className="flex-[1_11rem]">
+                          <FormLabel>Time</FormLabel>
+                          <span className="flex gap-4xs">
+                            <Input
+                              {...field}
+                              value={control.value ?? ""}
+                              onChange={control.onChange}
+                              type="time"
+                              className="flex-1"
+                            />
+                            <Button
+                              {...form.update.getButtonProps({
+                                name: field.name,
+                                value: "",
+                              })}
+                              variant="ghost"
+                              size="icon"
+                              aria-label="Clear"
+                            >
+                              <X />
+                            </Button>
+                          </span>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <FormMessage />
+                </FormFieldSet>
+                <FormFieldSet
+                  name={fields.startAfter.name}
+                  className="border p-xs"
+                >
+                  <FormLegend>Start after</FormLegend>
+                  <div className="flex flex-wrap gap-2xs">
+                    <FormField
+                      name={startAfter.date.name}
+                      render={({ field, control }) => (
+                        <FormItem className="flex-[1_11rem]">
+                          <FormLabel>Date</FormLabel>
+                          <span className="flex gap-4xs">
+                            <Input
+                              {...field}
+                              value={control.value ?? ""}
+                              onChange={control.onChange}
+                              type="date"
+                              className="flex-1"
+                            />
+                            <Button
+                              {...form.update.getButtonProps({
+                                name: field.name,
+                                value: "",
+                              })}
+                              variant="ghost"
+                              size="icon"
+                              aria-label="Clear"
+                            >
+                              <X />
+                            </Button>
+                          </span>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      name={startAfter.time.name}
+                      render={({ field, control }) => (
+                        <FormItem className="flex-[1_11rem]">
+                          <FormLabel>Time</FormLabel>
+                          <span className="flex gap-4xs">
+                            <Input
+                              {...field}
+                              value={control.value ?? ""}
+                              onChange={control.onChange}
+                              type="time"
+                              className="flex-1"
+                            />
+                            <Button
+                              {...form.update.getButtonProps({
+                                name: field.name,
+                                value: "",
+                              })}
+                              variant="ghost"
+                              size="icon"
+                              aria-label="Clear"
+                            >
+                              <X />
+                            </Button>
+                          </span>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <FormMessage />
+                </FormFieldSet>
+              </>
             )}
             {showScheduledAt && (
               <FormFieldSet

@@ -263,6 +263,14 @@ export default function TaskDetailRoute() {
             <dd>{task.deadline}</dd>
           </>
         )}
+        {task.startAfter != null && (
+          <>
+            <dt className="text-muted-foreground [&:not(:first-child)]:mt-2xs">
+              Start after
+            </dt>
+            <dd>{task.startAfter}</dd>
+          </>
+        )}
         {task.scheduledAt != null && (
           <>
             <dt className="text-muted-foreground">Scheduled at</dt>
