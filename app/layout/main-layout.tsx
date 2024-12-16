@@ -1,3 +1,4 @@
+import PsychologyAlt from "@material-design-icons/svg/filled/psychology_alt.svg?react";
 import { Link } from "@remix-run/react";
 import { Plus, Search, Settings } from "lucide-react";
 import logo from "./logo.png";
@@ -61,6 +62,12 @@ export function MainLayout({
                   <NavigationMenuLink to="/new-todo">
                     <Plus aria-hidden="true" />
                     <span className="max-sm:sr-only">New to-do</span>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink to="/advice">
+                    <PsychologyAlt aria-hidden="true" />
+                    <span className="max-sm:sr-only">Advice</span>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>

@@ -14,6 +14,7 @@ export default [
     route("new-todo", "task/new-task.route.tsx"),
     route("todo/:id", "task/task-detail.route.tsx"),
     route("edit-todo/:id", "task/edit-task.route.tsx"),
+    route("advice", "task/advice.route.tsx"),
     route("settings", "auth/settings.route.tsx"),
     route("*", "not-found.route.tsx"),
   ]),
