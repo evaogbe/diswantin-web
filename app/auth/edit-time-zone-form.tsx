@@ -4,12 +4,10 @@ import { Form, Link } from "@remix-run/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, Check, ChevronsUpDown, X } from "lucide-react";
 import { useId, useRef, useState } from "react";
-import { ClientOnly } from "remix-utils/client-only";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { uid } from "uid";
 import { editTimeZoneSchema } from "./model";
 import { FormField, FormItem, FormLabel, FormMessage } from "~/form/field";
-import { NativeSelect } from "~/form/select";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { CardTitle } from "~/ui/card";
@@ -104,80 +102,64 @@ export function EditTimeZoneForm({
               >
                 Time zone
               </FormLabel>
-              <ClientOnly
-                fallback={
-                  <NativeSelect {...field} defaultValue={control.initialValue}>
-                    {timeZones.map((timeZone) => (
-                      <option key={timeZone} value={timeZone}>
-                        {timeZone}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                }
-              >
-                {() => (
-                  <>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          ref={timeZoneButtonRef}
-                          className={cn(
-                            "w-full justify-between sm:w-96",
-                            !control.value && "text-muted-foreground",
-                          )}
-                        >
-                          <span className="truncate">
-                            {control.value ?? "Select time zone"}
-                          </span>
-                          <ChevronsUpDown
-                            aria-hidden="true"
-                            className="ms-2xs shrink-0 opacity-50"
-                          />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-full p-0 sm:w-96">
-                        <Command>
-                          <CommandInput placeholder="Search time zones…" />
-                          <CommandList>
-                            <CommandEmpty>No time zone found.</CommandEmpty>
-                            <CommandGroup>
-                              {timeZones.map((timeZone) => (
-                                <CommandItem
-                                  key={timeZone}
-                                  value={timeZone}
-                                  onSelect={() => {
-                                    form.update({
-                                      name: field.name,
-                                      value: timeZone,
-                                    });
-                                  }}
-                                >
-                                  {timeZone}
-                                  <Check
-                                    aria-label="Selected"
-                                    className={cn(
-                                      "ms-auto",
-                                      timeZone === control.value
-                                        ? "opacity-100"
-                                        : "opacity-0",
-                                    )}
-                                  />
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <input
-                      type="hidden"
-                      name={field.name}
-                      value={control.value ?? ""}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    ref={timeZoneButtonRef}
+                    className={cn(
+                      "w-full justify-between sm:w-96",
+                      !control.value && "text-muted-foreground",
+                    )}
+                  >
+                    <span className="truncate">
+                      {control.value ?? "Select time zone"}
+                    </span>
+                    <ChevronsUpDown
+                      aria-hidden="true"
+                      className="ms-2xs shrink-0 opacity-50"
                     />
-                  </>
-                )}
-              </ClientOnly>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0 sm:w-96">
+                  <Command>
+                    <CommandInput placeholder="Search time zones…" />
+                    <CommandList>
+                      <CommandEmpty>No time zone found.</CommandEmpty>
+                      <CommandGroup>
+                        {timeZones.map((timeZone) => (
+                          <CommandItem
+                            key={timeZone}
+                            value={timeZone}
+                            onSelect={() => {
+                              form.update({
+                                name: field.name,
+                                value: timeZone,
+                              });
+                            }}
+                          >
+                            {timeZone}
+                            <Check
+                              aria-label="Selected"
+                              className={cn(
+                                "ms-auto",
+                                timeZone === control.value
+                                  ? "opacity-100"
+                                  : "opacity-0",
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <input
+                type="hidden"
+                name={field.name}
+                value={control.value ?? ""}
+              />
               <FormMessage />
             </FormItem>
           )}
