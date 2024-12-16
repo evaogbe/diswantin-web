@@ -26,6 +26,7 @@ export const taskSchema = v.pipe(
     id: clientIdSchema,
     name: nameSchema,
     deadline: v.optional(dateTimeSchema),
+    startAfter: v.optional(dateTimeSchema),
     scheduledAt: v.optional(
       v.pipe(
         dateTimeSchema,
@@ -42,6 +43,13 @@ export const taskSchema = v.pipe(
       (input.deadline?.date == null && input.deadline?.time == null) ||
       (input.scheduledAt?.date == null && input.scheduledAt?.time == null),
     "Must not have both a deadline and a scheduled date/time",
+  ),
+  v.partialCheck(
+    [["startAfter"], ["scheduledAt"]],
+    (input) =>
+      (input.startAfter?.date == null && input.startAfter?.time == null) ||
+      (input.scheduledAt?.date == null && input.scheduledAt?.time == null),
+    "Must not have both a start after date/time and a scheduled date/time",
   ),
 );
 

@@ -20,8 +20,8 @@ import type { TaskForm } from "./model";
 import { db } from "~/db.server";
 import * as table from "~/db.server/schema";
 
-function nullsLast(col: AnyPgColumn | SQLChunk) {
-  return sql`${col} NULLS LAST`;
+function nullsFirst(col: AnyPgColumn | SQLChunk) {
+  return sql`${col} NULLS FIRST`;
 }
 
 type User = { id: number; timeZone: string };
@@ -52,19 +52,27 @@ export async function getCurrentTask(user: User) {
             ),
           ),
         ),
+        or(
+          isNull(table.task.startAfterDate),
+          lte(table.task.startAfterDate, today),
+        ),
+        or(
+          isNull(table.task.startAfterTime),
+          lte(table.task.startAfterTime, currentTime),
+        ),
       ),
     )
     .orderBy(
-      nullsLast(table.task.scheduledDate),
-      nullsLast(
-        sql`CASE
+      table.task.scheduledDate,
+      sql`CASE
         WHEN ${isNotNull(table.task.scheduledTime)} THEN ${table.task.scheduledTime}
         WHEN ${isNotNull(table.task.scheduledDate)} THEN '00:00:00'
         ELSE NULL
         END`,
-      ),
-      nullsLast(table.task.deadlineDate),
-      nullsLast(table.task.deadlineTime),
+      table.task.deadlineDate,
+      table.task.deadlineTime,
+      nullsFirst(table.task.startAfterDate),
+      nullsFirst(table.task.startAfterTime),
       table.task.createdAt,
       table.task.id,
     )
@@ -194,6 +202,8 @@ export async function getTaskDetail(taskClientId: string, user: User) {
       name: table.task.name,
       deadlineDate: table.task.deadlineDate,
       deadlineTime: table.task.deadlineTime,
+      startAfterDate: table.task.startAfterDate,
+      startAfterTime: table.task.startAfterTime,
       scheduledDate: table.task.scheduledDate,
       scheduledTime: table.task.scheduledTime,
       isDone: sql<boolean>`${table.taskCompletion.doneAt} IS NOT NULL`,
@@ -222,6 +232,11 @@ export async function getTaskDetail(taskClientId: string, user: User) {
       task.deadlineTime,
       user.timeZone,
     ),
+    startAfter: formatDateTime(
+      task.startAfterDate,
+      task.startAfterTime,
+      user.timeZone,
+    ),
     scheduledAt: formatDateTime(
       task.scheduledDate,
       task.scheduledTime,
@@ -240,6 +255,10 @@ export function getNewTaskForm(name: string | null) {
       date: "",
       time: "",
     },
+    startAfter: {
+      date: "",
+      time: "",
+    },
     scheduledAt: {
       date: "",
       time: "",
@@ -254,6 +273,8 @@ export async function getEditTaskForm(taskClientId: string, userId: number) {
       name: table.task.name,
       deadlineDate: table.task.deadlineDate,
       deadlineTime: table.task.deadlineTime,
+      startAfterDate: table.task.startAfterDate,
+      startAfterTime: table.task.startAfterTime,
       scheduledDate: table.task.scheduledDate,
       scheduledTime: table.task.scheduledTime,
     })
@@ -273,6 +294,10 @@ export async function getEditTaskForm(taskClientId: string, userId: number) {
       date: task.deadlineDate ?? "",
       time: task.deadlineTime?.slice(0, 5) ?? "",
     },
+    startAfter: {
+      date: task.startAfterDate ?? "",
+      time: task.startAfterTime?.slice(0, 5) ?? "",
+    },
     scheduledAt: {
       date: task.scheduledDate ?? "",
       time: task.scheduledTime?.slice(0, 5) ?? "",
@@ -289,6 +314,8 @@ export async function createTask(task: TaskForm, userId: number) {
       name: task.name,
       deadlineDate: task.deadline?.date,
       deadlineTime: task.deadline?.time,
+      startAfterDate: task.startAfter?.date,
+      startAfterTime: task.startAfter?.time,
       scheduledDate: task.scheduledAt?.date,
       scheduledTime: task.scheduledAt?.time,
     })
@@ -302,6 +329,8 @@ export async function updateTask(task: TaskForm, userId: number) {
       name: task.name,
       deadlineDate: task.deadline?.date ?? null,
       deadlineTime: task.deadline?.time ?? null,
+      startAfterDate: task.startAfter?.date ?? null,
+      startAfterTime: task.startAfter?.time ?? null,
       scheduledDate: task.scheduledAt?.date ?? null,
       scheduledTime: task.scheduledAt?.time ?? null,
     })

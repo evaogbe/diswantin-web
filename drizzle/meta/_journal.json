@@ -71,6 +71,13 @@
       "when": 1733698593677,
       "tag": "0009_shallow_devos",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1734330296995,
+      "tag": "0010_real_blindfold",
+      "breakpoints": true
     }
   ]
 }

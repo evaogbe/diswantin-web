@@ -31,6 +31,8 @@ export const task = pgTable(
     name: varchar({ length: 255 }).notNull(),
     deadlineDate: date(),
     deadlineTime: time(),
+    startAfterDate: date(),
+    startAfterTime: time(),
     scheduledDate: date(),
     scheduledTime: time(),
   },
