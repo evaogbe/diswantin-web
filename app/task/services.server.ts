@@ -31,7 +31,11 @@ export async function getCurrentTask(user: User) {
   const today = formatInTimeZone(now, user.timeZone, "yyyy-MM-dd");
   const currentTime = formatInTimeZone(now, user.timeZone, "HH:mm:ss");
   const [currentTask] = await db
-    .select({ id: table.task.clientId, name: table.task.name })
+    .select({
+      id: table.task.clientId,
+      name: table.task.name,
+      note: table.task.note,
+    })
     .from(table.task)
     .leftJoin(
       table.taskCompletion,
@@ -200,6 +204,7 @@ export async function getTaskDetail(taskClientId: string, user: User) {
     .select({
       id: table.task.clientId,
       name: table.task.name,
+      note: table.task.note,
       deadlineDate: table.task.deadlineDate,
       deadlineTime: table.task.deadlineTime,
       startAfterDate: table.task.startAfterDate,
@@ -227,6 +232,7 @@ export async function getTaskDetail(taskClientId: string, user: User) {
   return {
     id: task.id,
     name: task.name,
+    note: task.note,
     deadline: formatDateTime(
       task.deadlineDate,
       task.deadlineTime,
@@ -251,6 +257,7 @@ export function getNewTaskForm(name: string | null) {
   return {
     id: uid(),
     name: parseResult.success ? parseResult.output : "",
+    note: "",
     deadline: {
       date: "",
       time: "",
@@ -271,6 +278,7 @@ export async function getEditTaskForm(taskClientId: string, userId: number) {
     .select({
       id: table.task.clientId,
       name: table.task.name,
+      note: table.task.note,
       deadlineDate: table.task.deadlineDate,
       deadlineTime: table.task.deadlineTime,
       startAfterDate: table.task.startAfterDate,
@@ -290,6 +298,7 @@ export async function getEditTaskForm(taskClientId: string, userId: number) {
   return {
     id: task.id,
     name: task.name,
+    note: task.note ?? "",
     deadline: {
       date: task.deadlineDate ?? "",
       time: task.deadlineTime?.slice(0, 5) ?? "",
@@ -312,12 +321,13 @@ export async function createTask(task: TaskForm, userId: number) {
       userId,
       clientId: task.id,
       name: task.name,
-      deadlineDate: task.deadline?.date,
-      deadlineTime: task.deadline?.time,
-      startAfterDate: task.startAfter?.date,
-      startAfterTime: task.startAfter?.time,
-      scheduledDate: task.scheduledAt?.date,
-      scheduledTime: task.scheduledAt?.time,
+      note: task.note ?? null,
+      deadlineDate: task.deadline?.date ?? null,
+      deadlineTime: task.deadline?.time ?? null,
+      startAfterDate: task.startAfter?.date ?? null,
+      startAfterTime: task.startAfter?.time ?? null,
+      scheduledDate: task.scheduledAt?.date ?? null,
+      scheduledTime: task.scheduledAt?.time ?? null,
     })
     .onConflictDoNothing({ target: table.task.clientId });
 }
@@ -327,6 +337,7 @@ export async function updateTask(task: TaskForm, userId: number) {
     .update(table.task)
     .set({
       name: task.name,
+      note: task.note ?? null,
       deadlineDate: task.deadline?.date ?? null,
       deadlineTime: task.deadline?.time ?? null,
       startAfterDate: task.startAfter?.date ?? null,

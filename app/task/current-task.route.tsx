@@ -99,6 +99,11 @@ export default function CurrentTaskRoute() {
       <p className="mt-2xs text-center text-2xl tracking-tight">
         {currentTask.name}
       </p>
+      {currentTask.note != null && (
+        <p className="mt-sm whitespace-pre-wrap text-center text-lg text-muted-foreground">
+          {currentTask.note}
+        </p>
+      )}
       <footer className="mt-md flex w-full justify-around">
         <p>
           <Button asChild variant="outline">

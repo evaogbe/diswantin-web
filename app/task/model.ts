@@ -25,6 +25,9 @@ export const taskSchema = v.pipe(
   v.object({
     id: clientIdSchema,
     name: nameSchema,
+    note: v.optional(
+      v.pipe(v.string(), v.trim(), v.maxLength(256, "Too long")),
+    ),
     deadline: v.optional(dateTimeSchema),
     startAfter: v.optional(dateTimeSchema),
     scheduledAt: v.optional(
