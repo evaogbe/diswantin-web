@@ -18,6 +18,7 @@
     "node_modules",
     "/patches",
     "playwright-report",
-    "/project-words.txt"
+    "/project-words.txt",
+    "vite.config.ts.timestamp*"
   ]
 }
