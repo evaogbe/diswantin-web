@@ -71,7 +71,7 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4.2.2
       - name: ✏️ Spell check
-        uses: streetsidesoftware/cspell-action@v6.9.0
+        uses: streetsidesoftware/cspell-action@v6.10.0
 
   e2e-test:
     name: 🎭 End-to-end tests
