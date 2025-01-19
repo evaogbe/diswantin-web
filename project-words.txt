@@ -17,3 +17,4 @@ unmark
 unmarking
 valibot
 viewports
+vite
