@@ -61,6 +61,8 @@ jobs:
           node-version: 22
       - name: 📥 Install dependencies
         run: npm ci
+      - name: 🏷️ Generate types
+        run: npx react-router typegen
       - name: 🔬 Lint
         run: npm run lint
 

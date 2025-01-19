@@ -1,17 +1,11 @@
-import { useLocation, useMatches } from "@remix-run/react";
-import * as Sentry from "@sentry/remix";
-import { useEffect } from "react";
+import * as Sentry from "@sentry/react";
 
 export function initMonitoring() {
   Sentry.init({
     dsn: window.ENV.SENTRY_DSN,
     tracesSampleRate: 1,
     integrations: [
-      Sentry.browserTracingIntegration({
-        useEffect,
-        useLocation,
-        useMatches,
-      }),
+      Sentry.browserTracingIntegration(),
       Sentry.replayIntegration({
         maskAllText: true,
         blockAllMedia: true,

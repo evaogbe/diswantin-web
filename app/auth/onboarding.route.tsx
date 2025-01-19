@@ -1,14 +1,10 @@
 import { FormProvider, useForm } from "@conform-to/react";
-import type {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { Form } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import type { Route } from "./+types/onboarding.route";
 import { onboardingSchema } from "./model";
 import { getAuthenticatedUser, updateTimeZone } from "./services.server";
 import { formAction } from "~/form/action.server";
@@ -28,12 +24,12 @@ import {
 } from "~/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   await getAuthenticatedUser(request, { fresh: true });
   return { timeZones: Intl.supportedValuesOf("timeZone") };
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   const user = await getAuthenticatedUser(request, { fresh: true });
   const formData = await request.formData();
   return formAction({
@@ -54,16 +50,18 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 }
 
-export const meta: MetaFunction = ({ error }) => {
+export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "Account setup", error }) }];
-};
+}
 
-export default function OnboardingRoute() {
-  const { timeZones } = useLoaderData<typeof loader>();
-  const lastResult = useActionData<typeof action>();
+export default function OnboardingRoute({
+  loaderData,
+  actionData,
+}: Route.ComponentProps) {
+  const { timeZones } = loaderData;
   const timeZoneButtonRef = useRef<HTMLButtonElement>(null);
   const [form, fields] = useForm({
-    lastResult,
+    lastResult: actionData,
     constraint: getValibotConstraint(onboardingSchema),
     shouldRevalidate: "onInput",
     defaultNoValidate: false,

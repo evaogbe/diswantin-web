@@ -1,21 +1,21 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Outlet, useLoaderData, useRouteLoaderData } from "@remix-run/react";
+import { Outlet } from "react-router";
+import type { Route } from "./+types/main-layout.route";
 import { isFullyAuthenticated } from "~/auth/services.server";
 import { GeneralErrorBoundary } from "~/error/general-error-boundary";
 import { MainLayout } from "~/layout/main-layout";
 import { getTitle } from "~/layout/meta";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const isAuthenticated = await isFullyAuthenticated(request);
   return { isAuthenticated };
 }
 
-export const meta: MetaFunction = ({ error }) => {
+export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ error }) }];
-};
+}
 
-export default function AuthLayout() {
-  const { isAuthenticated } = useLoaderData<typeof loader>();
+export default function MainLayoutRoute({ loaderData }: Route.ComponentProps) {
+  const { isAuthenticated } = loaderData;
 
   return (
     <MainLayout isAuthenticated={isAuthenticated}>
@@ -24,9 +24,8 @@ export default function AuthLayout() {
   );
 }
 
-export function ErrorBoundary() {
-  const data = useRouteLoaderData<typeof loader>("main-layout.route");
-  const isAuthenticated = Boolean(data?.isAuthenticated);
+export function ErrorBoundary({ loaderData }: Route.ErrorBoundaryProps) {
+  const isAuthenticated = Boolean(loaderData?.isAuthenticated);
 
   return (
     <MainLayout isAuthenticated={isAuthenticated}>

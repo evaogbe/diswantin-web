@@ -1,12 +1,7 @@
-import { data, redirect } from "@remix-run/node";
-import type {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
 import { generateState, generateCodeVerifier } from "arctic";
 import { CircleCheck } from "lucide-react";
+import { Form, data, redirect } from "react-router";
+import type { Route } from "./+types/sign-in.route";
 import { google, stateCookie, codeVerifierCookie } from "./google.server";
 import { getFlashMessage, redirectAuthenticated } from "./services.server";
 import { getTitle } from "~/layout/meta";
@@ -14,13 +9,13 @@ import { ThemeToggle } from "~/theme/theme-toggle";
 import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
 import "./sign-in.route.css";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   await redirectAuthenticated(request);
   const [flashMessage, flashCookie] = await getFlashMessage(request);
   return data({ flashMessage }, { headers: { "Set-Cookie": flashCookie } });
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   await redirectAuthenticated(request);
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
@@ -38,7 +33,7 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 }
 
-export const meta: MetaFunction = ({ error }) => {
+export function meta({ error }: Route.MetaArgs) {
   return [
     { title: getTitle({ error }) },
     {
@@ -47,10 +42,10 @@ export const meta: MetaFunction = ({ error }) => {
         "Diswantin is a productivity app that shows you the one thing to do right now",
     },
   ];
-};
+}
 
-export default function SignInRoute() {
-  const { flashMessage } = useLoaderData<typeof loader>();
+export default function SignInRoute({ loaderData }: Route.ComponentProps) {
+  const { flashMessage } = loaderData;
 
   return (
     <>

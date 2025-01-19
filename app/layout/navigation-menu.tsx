@@ -1,8 +1,8 @@
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
-import { NavLink, useLocation } from "@remix-run/react";
 import { cva } from "class-variance-authority";
 import { ChevronDown } from "lucide-react";
 import { forwardRef } from "react";
+import { NavLink, useLocation } from "react-router";
 import { cn } from "~/ui/classes";
 
 const NavigationMenu = forwardRef<

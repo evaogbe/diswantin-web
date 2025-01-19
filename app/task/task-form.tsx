@@ -1,9 +1,9 @@
 import { FormProvider, useForm } from "@conform-to/react";
 import type { SubmissionResult } from "@conform-to/react";
-import { Form, Link } from "@remix-run/react";
-import * as Sentry from "@sentry/remix";
+import * as Sentry from "@sentry/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, CalendarDays, CalendarOff, X } from "lucide-react";
+import { Form, Link } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { taskSchema } from "./model";
 import type { TaskForm } from "./model";

@@ -9,7 +9,7 @@ console.log(
     platform: "node",
     sourcemap: true,
     format: "esm",
-    external: ["fsevents", "lightningcss"],
+    external: ["@sentry/profiling-node", "fsevents", "lightningcss"],
     inject: ["src/cjs-shim.ts"],
   }),
 );

@@ -5,6 +5,7 @@ node_modules
 /.cache
 
 # Build artifacts
+.react-router/
 /build
 /dist
 vite.config.ts.timestamp*

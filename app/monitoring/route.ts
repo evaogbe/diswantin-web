@@ -1,5 +1,5 @@
-import type { ActionFunctionArgs } from "@remix-run/node";
 import * as v from "valibot";
+import type { Route } from "./+types/route";
 import { env } from "~/env/private.server";
 
 const headerSchema = v.object({
@@ -10,7 +10,7 @@ const headerSchema = v.object({
   ),
 });
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   try {
     const sentryHost = new URL(env.SENTRY_DSN).hostname;
     const envelopeBytes = await request.arrayBuffer();

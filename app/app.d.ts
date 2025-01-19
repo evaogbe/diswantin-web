@@ -1,9 +1,9 @@
 /// <reference types="vite-plugin-svgr/client" />
 // Use interface for extensions
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import "@remix-run/server-runtime";
+import "react-router";
 
-declare module "@remix-run/server-runtime" {
+declare module "react-router" {
   export interface AppLoadContext {
     cspNonce: string;
   }

@@ -1,8 +1,6 @@
 import dotenv from "dotenv";
 import * as v from "valibot";
 
-// NODE_ENV can be undefined
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 dotenv.config({ path: `env/${process.env.NODE_ENV ?? "development"}.env` });
 
 const envSchema = v.object({

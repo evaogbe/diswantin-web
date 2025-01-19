@@ -1,6 +1,6 @@
-import { data, redirect } from "@remix-run/node";
-import type { Session } from "@remix-run/node";
 import { eq } from "drizzle-orm";
+import { data, redirect } from "react-router";
+import type { Session } from "react-router";
 import { uid } from "uid";
 import * as v from "valibot";
 import type { Credentials } from "./model";
