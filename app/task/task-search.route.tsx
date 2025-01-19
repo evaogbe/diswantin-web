@@ -1,14 +1,8 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  useLoaderData,
-  useRouteLoaderData,
-  useSubmit,
-} from "@remix-run/react";
 import { Plus, Search, X } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { Form, Link, useSubmit } from "react-router";
 import { useDebouncedCallback } from "use-debounce";
+import type { Route } from "./+types/task-search.route";
 import { searchTasks } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { GeneralErrorBoundary } from "~/error/general-error-boundary";
@@ -21,7 +15,7 @@ import { ThemeToggle } from "~/theme/theme-toggle";
 import { Button } from "~/ui/button";
 import { cn } from "~/ui/classes";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const user = await getAuthenticatedUser(request);
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
@@ -38,16 +32,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return { searchResults, query: q, isAuthenticated: true };
 }
 
-export const meta: MetaFunction = ({ error }) => {
+export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "To-do search", error }) }];
-};
+}
 
-export default function TaskSearchRoute() {
-  const { query, searchResults } = useLoaderData<typeof loader>();
+export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
+  const { query, searchResults } = loaderData;
   const submit = useSubmit();
   const queryRef = useRef<HTMLInputElement>(null);
   const search = useDebouncedCallback((form: HTMLFormElement) => {
-    submit(form, { replace: query != null });
+    void submit(form, { replace: query != null });
   });
   useEffect(() => {
     queryRef.current?.focus();
@@ -167,9 +161,8 @@ export default function TaskSearchRoute() {
   );
 }
 
-export function ErrorBoundary() {
-  const data = useRouteLoaderData<typeof loader>("task/task-search.route");
-  const isAuthenticated = Boolean(data?.isAuthenticated);
+export function ErrorBoundary({ loaderData }: Route.ErrorBoundaryProps) {
+  const isAuthenticated = Boolean(loaderData?.isAuthenticated);
 
   return (
     <MainLayout isAuthenticated={isAuthenticated}>

@@ -1,6 +1,6 @@
 import PsychologyAlt from "@material-design-icons/svg/filled/psychology_alt.svg?react";
-import { Link } from "@remix-run/react";
 import { Plus, Search, Settings } from "lucide-react";
+import { Link } from "react-router";
 import logo from "./logo.png";
 import {
   NavigationMenu,

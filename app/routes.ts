@@ -1,5 +1,5 @@
-import { index, layout, route } from "@remix-run/route-config";
-import type { RouteConfig } from "@remix-run/route-config";
+import { index, layout, route } from "@react-router/dev/routes";
+import type { RouteConfig } from "@react-router/dev/routes";
 
 export default [
   index("auth/sign-in.route.tsx"),

@@ -1,16 +1,16 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { Route } from "./+types/advice.route";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   await getAuthenticatedUser(request);
   return null;
 }
 
-export const meta: MetaFunction = ({ error }) => {
+export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "Advice", error }) }];
-};
+}
 
 export default function AdviceRoute() {
   return (

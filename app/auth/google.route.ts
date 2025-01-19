@@ -1,7 +1,7 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
 import { decodeIdToken } from "arctic";
 import type { OAuth2Tokens } from "arctic";
 import * as v from "valibot";
+import type { Route } from "./+types/google.route";
 import { google, stateCookie, codeVerifierCookie } from "./google.server";
 import { credentialsSchema } from "./model";
 import {
@@ -10,7 +10,7 @@ import {
   getAccountByGoogleId,
 } from "./services.server";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");

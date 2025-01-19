@@ -1,14 +1,10 @@
 import AddTask from "@material-design-icons/svg/filled/add_task.svg?react";
 import Check from "@material-design-icons/svg/filled/check.svg?react";
 import Details from "@material-design-icons/svg/filled/details.svg?react";
-import type {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
-import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { AlertCircle, Plus } from "lucide-react";
+import { Link, useFetcher } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import type { Route } from "./+types/current-task.route";
 import { markDoneSchema } from "./model";
 import { getCurrentTask, markTaskDone } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
@@ -18,13 +14,13 @@ import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
 import { Button } from "~/ui/button";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const user = await getAuthenticatedUser(request);
   const currentTask = await getCurrentTask(user);
   return { currentTask };
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   const user = await getAuthenticatedUser(request);
   const formData = await request.formData();
   return formAction({
@@ -40,12 +36,12 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 }
 
-export const meta: MetaFunction = ({ error }) => {
+export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ error }) }];
-};
+}
 
-export default function CurrentTaskRoute() {
-  const { currentTask } = useLoaderData<typeof loader>();
+export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
+  const { currentTask } = loaderData;
   const fetcher = useFetcher<typeof action>();
   const markDoneFormErrors = fetcher.data?.error;
 

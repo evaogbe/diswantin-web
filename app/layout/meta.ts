@@ -1,4 +1,4 @@
-import { isRouteErrorResponse } from "@remix-run/react";
+import { isRouteErrorResponse } from "react-router";
 
 export function getTitle({ page, error }: { page?: string; error?: unknown }) {
   if (isRouteErrorResponse(error)) {

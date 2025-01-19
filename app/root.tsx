@@ -1,26 +1,20 @@
-import { data } from "@remix-run/node";
-import type {
-  LinksFunction,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
+import { clsx } from "clsx";
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
+  data,
   useRouteLoaderData,
-} from "@remix-run/react";
-import { withSentry } from "@sentry/remix";
-import { clsx } from "clsx";
+} from "react-router";
 import {
   PreventFlashOnWrongTheme,
   ThemeProvider,
   useTheme,
 } from "remix-themes";
 import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
+import type { Route } from "./+types/root";
 import { PublicEnvScript, initPublicEnv } from "~/env/public";
 import { GeneralErrorBoundary } from "~/error/general-error-boundary";
 import { MainLayout } from "~/layout/main-layout";
@@ -35,7 +29,7 @@ if (initPublicEnv != null) {
   await initPublicEnv();
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const [csrfToken, csrfCookie] = await csrf.commitToken();
   const { getTheme } = await themeSessionResolver(request);
   return data(
@@ -44,11 +38,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
   );
 }
 
-export const meta: MetaFunction = ({ error }) => {
+export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ error }) }];
-};
+}
 
-export const links: LinksFunction = () => {
+export const links: Route.LinksFunction = () => {
   return [
     {
       rel: "apple-touch-icon",
@@ -113,16 +107,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-function App() {
-  const { csrfToken } = useLoaderData<typeof loader>();
+export default function App({ loaderData }: Route.ComponentProps) {
+  const { csrfToken } = loaderData;
+
   return (
     <AuthenticityTokenProvider token={csrfToken}>
       <Outlet />
     </AuthenticityTokenProvider>
   );
 }
-
-export default withSentry(App);
 
 export function ErrorBoundary() {
   return (

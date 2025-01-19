@@ -1,24 +1,13 @@
 import type { SubmissionResult } from "@conform-to/react";
 import Check from "@material-design-icons/svg/filled/check.svg?react";
 import RemoveDone from "@material-design-icons/svg/filled/remove_done.svg?react";
-import type {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
-import {
-  Form,
-  Link,
-  useActionData,
-  useFetcher,
-  useLoaderData,
-  useNavigation,
-} from "@remix-run/react";
-import type { Fetcher } from "@remix-run/react";
 import { AlertCircle, EllipsisVertical, Pencil, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Form, Link, useFetcher, useNavigation } from "react-router";
+import type { Fetcher } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import * as v from "valibot";
+import type { Route } from "./+types/task-detail.route";
 import { deleteTaskSchema, markDoneSchema, unmarkDoneSchema } from "./model";
 import {
   deleteTask,
@@ -44,7 +33,7 @@ const paramsSchema = v.object({
   id: v.string(),
 });
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: Route.LoaderArgs) {
   const user = await getAuthenticatedUser(request);
   const { id } = v.parse(paramsSchema, params);
   const task = await getTaskDetail(id, user);
@@ -55,7 +44,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return { task };
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   switch (formData.get("intent")) {
     case "mark-done": {
@@ -106,11 +95,9 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data, error }) => {
-  return [
-    { title: getTitle({ page: data?.task.name ?? "To-do Detail", error }) },
-  ];
-};
+export function meta({ data, error }: Route.MetaArgs) {
+  return [{ title: getTitle({ page: data.task.name, error }) }];
+}
 
 const errorHeadings = {
   "mark-done": "Error marking to-do done",
@@ -119,10 +106,10 @@ const errorHeadings = {
 };
 
 function useFormError(
+  lastResult: SubmissionResult | null | undefined,
   fetcher: Fetcher<SubmissionResult | null>,
   fetcherIntents: string[],
 ) {
-  const lastResult = useActionData<SubmissionResult | null>();
   const navigation = useNavigation();
   const [lastIntent, setLastIntent] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -150,10 +137,13 @@ function useFormError(
   return [lastIntent, formError] as const;
 }
 
-export default function TaskDetailRoute() {
-  const { task } = useLoaderData<typeof loader>();
+export default function TaskDetailRoute({
+  loaderData,
+  actionData,
+}: Route.ComponentProps) {
+  const { task } = loaderData;
   const fetcher = useFetcher<typeof action>();
-  const [lastIntent, formError] = useFormError(fetcher, [
+  const [lastIntent, formError] = useFormError(actionData, fetcher, [
     "mark-done",
     "unmark-done",
   ]);

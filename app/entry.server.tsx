@@ -1,10 +1,14 @@
 import { PassThrough } from "node:stream";
-import type { AppLoadContext, EntryContext } from "@remix-run/node";
-import { createReadableStreamFromReadable } from "@remix-run/node";
-import { RemixServer } from "@remix-run/react";
-import * as Sentry from "@sentry/remix";
+import { createReadableStreamFromReadable } from "@react-router/node";
+import * as Sentry from "@sentry/node";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
+import { ServerRouter } from "react-router";
+import type {
+  AppLoadContext,
+  EntryContext,
+  HandleErrorFunction,
+} from "react-router";
 import { extendSession } from "~/auth/session.server";
 import { NonceProvider } from "~/security/nonce";
 
@@ -14,7 +18,7 @@ export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
+  reactRouterContext: EntryContext,
   loadContext: AppLoadContext,
 ) {
   await extendSession(request, responseHeaders);
@@ -28,10 +32,9 @@ export default async function handleRequest(
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
       <NonceProvider value={nonce}>
-        <RemixServer
-          context={remixContext}
+        <ServerRouter
+          context={reactRouterContext}
           url={request.url}
-          abortDelay={ABORT_DELAY}
           nonce={nonce}
         />
       </NonceProvider>,
@@ -72,10 +75,9 @@ export default async function handleRequest(
   });
 }
 
-export const handleError = Sentry.wrapHandleErrorWithSentry(
-  (error, { request }) => {
-    if (!(request as Request).signal.aborted) {
-      console.error(error);
-    }
-  },
-);
+export const handleError: HandleErrorFunction = (error, { request }) => {
+  if (!request.signal.aborted) {
+    Sentry.captureException(error);
+    console.error(error);
+  }
+};

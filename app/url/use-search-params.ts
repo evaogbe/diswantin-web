@@ -1,4 +1,4 @@
-import { useSearchParams as useSearchParamsBase } from "@remix-run/react";
+import { useSearchParams as useSearchParamsBase } from "react-router";
 
 export function useSearchParams() {
   const [searchParams, setSearchParams] = useSearchParamsBase();

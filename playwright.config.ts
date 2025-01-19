@@ -1,8 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 import dotenv from "dotenv";
 
-// NODE_ENV can be undefined
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 dotenv.config({ path: `env/${process.env.NODE_ENV ?? "development"}.env` });
 
 /**

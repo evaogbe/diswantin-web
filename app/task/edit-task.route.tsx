@@ -1,10 +1,5 @@
-import type {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
-import { useActionData, useLoaderData } from "@remix-run/react";
 import * as v from "valibot";
+import type { Route } from "./+types/edit-task.route";
 import { taskSchema } from "./model";
 import { getEditTaskForm, updateTask } from "./services.server";
 import { TaskForm } from "./task-form";
@@ -16,7 +11,7 @@ const paramsSchema = v.object({
   id: v.string(),
 });
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: Route.LoaderArgs) {
   const user = await getAuthenticatedUser(request);
   const { id } = v.parse(paramsSchema, params);
   const taskForm = await getEditTaskForm(id, user.id);
@@ -27,7 +22,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return { taskForm };
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   const user = await getAuthenticatedUser(request);
   const formData = await request.formData();
   return formAction({
@@ -43,18 +38,20 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 }
 
-export const meta: MetaFunction = ({ error }) => {
+export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "Edit to-do", error }) }];
-};
+}
 
-export default function EditTaskRoute() {
-  const { taskForm } = useLoaderData<typeof loader>();
-  const lastResult = useActionData<typeof action>();
+export default function EditTaskRoute({
+  loaderData,
+  actionData,
+}: Route.ComponentProps) {
+  const { taskForm } = loaderData;
 
   return (
     <TaskForm
       taskForm={taskForm}
-      lastResult={lastResult}
+      lastResult={actionData}
       humanName="edit the to-do"
       title="Edit to-do"
       errorHeading="Error editing to-do"

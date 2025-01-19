@@ -1,5 +1,5 @@
-import { Link as LinkPrimitive } from "@remix-run/react";
 import { forwardRef } from "react";
+import { Link as LinkPrimitive } from "react-router";
 import { cn } from "~/ui/classes";
 
 const Link = forwardRef<

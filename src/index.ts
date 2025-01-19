@@ -1,7 +1,6 @@
 import crypto from "node:crypto";
-import { createRequestHandler } from "@remix-run/express";
-import type { ServerBuild } from "@remix-run/node";
-import Sentry from "@sentry/remix";
+import { createRequestHandler } from "@react-router/express";
+import * as Sentry from "@sentry/node";
 import closeWithGrace from "close-with-grace";
 import compression from "compression";
 import * as express from "express";
@@ -10,10 +9,9 @@ import { rateLimit } from "express-rate-limit";
 import getPort, { portNumbers } from "get-port";
 import helmet from "helmet";
 import * as morgan from "morgan";
+import type { ServerBuild } from "react-router";
 
 async function run() {
-  // NODE_ENV can be undefined
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const env = process.env.NODE_ENV ?? "development";
   const viteDevServer =
     env === "development"
@@ -99,7 +97,7 @@ async function run() {
       build: viteDevServer
         ? () =>
             viteDevServer.ssrLoadModule(
-              "virtual:remix/server-build",
+              "virtual:react-router/server-build",
             ) as Promise<ServerBuild>
         : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore: Build file is generated

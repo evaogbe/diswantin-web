@@ -1,21 +1,20 @@
-import { data } from "@remix-run/node";
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { data } from "react-router";
+import type { Route } from "./+types/not-found.route";
 import { isFullyAuthenticated } from "~/auth/services.server";
 import { NotFoundPage } from "~/error/not-found-page";
 import { getTitle } from "~/layout/meta";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const isAuthenticated = await isFullyAuthenticated(request);
   return data({ isAuthenticated }, 404);
 }
 
-export const meta: MetaFunction = ({ error }) => {
+export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "Page not found", error }) }];
-};
+}
 
-export default function NotFoundRoute() {
-  const { isAuthenticated } = useLoaderData<typeof loader>();
+export default function NotFoundRoute({ loaderData }: Route.ComponentProps) {
+  const { isAuthenticated } = loaderData;
 
   return <NotFoundPage homePath={isAuthenticated ? "/home" : "/"} />;
 }

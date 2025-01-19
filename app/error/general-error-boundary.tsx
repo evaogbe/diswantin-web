@@ -1,5 +1,5 @@
-import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
-import { captureRemixErrorBoundaryError } from "@sentry/remix";
+import * as Sentry from "@sentry/react";
+import { isRouteErrorResponse, useRouteError } from "react-router";
 import { NotFoundPage } from "./not-found-page";
 import { Page, PageHeading } from "~/layout/page";
 
@@ -7,7 +7,9 @@ export function GeneralErrorBoundary({
   isAuthenticated,
 }: { isAuthenticated?: boolean } = {}) {
   const error = useRouteError();
-  captureRemixErrorBoundaryError(error);
+  if (!isRouteErrorResponse(error) && error instanceof Error) {
+    Sentry.captureException(error);
+  }
 
   switch (isRouteErrorResponse(error) ? error.status : 500) {
     case 400: {

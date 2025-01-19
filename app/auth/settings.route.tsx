@@ -1,8 +1,6 @@
-import { redirect } from "@remix-run/node";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
 import { Eye, EyeOff, LogOut, Pencil } from "lucide-react";
+import { Form, Link, redirect } from "react-router";
+import type { Route } from "./+types/settings.route";
 import { DeleteUserForm } from "./delete-user-form";
 import { EditTimeZoneForm } from "./edit-time-zone-form";
 import { deleteUserSchema, editTimeZoneSchema } from "./model";
@@ -19,7 +17,7 @@ import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { useSearchParams } from "~/url/use-search-params";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const { email, timeZone } = await getAuthenticatedUser(request);
   return {
     account: { email, timeZone },
@@ -27,7 +25,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   };
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   switch (formData.get("intent")) {
     case "update-time-zone": {
@@ -87,13 +85,15 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
-export const meta: MetaFunction = ({ error }) => {
+export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "Account settings", error }) }];
-};
+}
 
-export default function SettingsRoute() {
-  const { account, timeZones } = useLoaderData<typeof loader>();
-  const lastResult = useActionData<typeof action>();
+export default function SettingsRoute({
+  loaderData,
+  actionData,
+}: Route.ComponentProps) {
+  const { account, timeZones } = loaderData;
   const { searchParams, withSearchParam, withoutSearchParam } =
     useSearchParams();
 
@@ -103,8 +103,8 @@ export default function SettingsRoute() {
       {searchParams.has("update-time-zone") ? (
         <EditTimeZoneForm
           lastResult={
-            lastResult?.initialValue?.intent === "update-time-zone"
-              ? lastResult
+            actionData?.initialValue?.intent === "update-time-zone"
+              ? actionData
               : null
           }
           timeZones={timeZones}
@@ -177,8 +177,8 @@ export default function SettingsRoute() {
       </Form>
       <DeleteUserForm
         lastResult={
-          lastResult?.initialValue?.intent === "delete-account"
-            ? lastResult
+          actionData?.initialValue?.intent === "delete-account"
+            ? actionData
             : null
         }
       />
