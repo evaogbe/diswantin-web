@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import { cn } from "~/ui/classes";
 
 const Page = forwardRef<
-  React.ElementRef<"article">,
+  React.ComponentRef<"article">,
   React.JSX.IntrinsicElements["article"] & { asChild?: boolean }
 >(({ className, asChild, ...props }, ref) => {
   const Comp = asChild ? Slot : "article";
@@ -19,7 +19,7 @@ const Page = forwardRef<
 Page.displayName = "Page";
 
 const PageHeading = forwardRef<
-  React.ElementRef<"h2">,
+  React.ComponentRef<"h2">,
   React.JSX.IntrinsicElements["h2"]
 >(({ className, children, ...props }, ref) => (
   <h2

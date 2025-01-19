@@ -3,7 +3,7 @@ import { Link as LinkPrimitive } from "react-router";
 import { cn } from "~/ui/classes";
 
 const Link = forwardRef<
-  React.ElementRef<typeof LinkPrimitive>,
+  React.ComponentRef<typeof LinkPrimitive>,
   React.ComponentPropsWithoutRef<typeof LinkPrimitive>
 >(({ className, ...props }, ref) => (
   <LinkPrimitive
