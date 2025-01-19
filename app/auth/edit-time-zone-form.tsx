@@ -98,7 +98,9 @@ export function EditTimeZoneForm({
             <FormItem className="flex flex-col">
               <FormLabel
                 htmlFor={undefined}
-                onClick={() => timeZoneButtonRef.current?.focus()}
+                onClick={() => {
+                  timeZoneButtonRef.current?.focus();
+                }}
               >
                 Time zone
               </FormLabel>
