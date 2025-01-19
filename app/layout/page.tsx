@@ -1,11 +1,12 @@
 import { Slot } from "@radix-ui/react-slot";
-import { forwardRef } from "react";
 import { cn } from "~/ui/classes";
 
-const Page = forwardRef<
-  React.ComponentRef<"article">,
-  React.JSX.IntrinsicElements["article"] & { asChild?: boolean }
->(({ className, asChild, ...props }, ref) => {
+function Page({
+  ref,
+  className,
+  asChild,
+  ...props
+}: React.JSX.IntrinsicElements["article"] & { asChild?: boolean }) {
   const Comp = asChild ? Slot : "article";
 
   return (
@@ -15,24 +16,26 @@ const Page = forwardRef<
       {...props}
     />
   );
-});
-Page.displayName = "Page";
+}
 
-const PageHeading = forwardRef<
-  React.ComponentRef<"h2">,
-  React.JSX.IntrinsicElements["h2"]
->(({ className, children, ...props }, ref) => (
-  <h2
-    ref={ref}
-    className={cn(
-      "font-display text-3xl font-extrabold leading-tight tracking-tight",
-      className,
-    )}
-    {...props}
-  >
-    {children}
-  </h2>
-));
-PageHeading.displayName = "PageHeading";
+function PageHeading({
+  ref,
+  className,
+  children,
+  ...props
+}: React.JSX.IntrinsicElements["h2"]) {
+  return (
+    <h2
+      ref={ref}
+      className={cn(
+        "font-display text-3xl font-extrabold leading-tight tracking-tight",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </h2>
+  );
+}
 
 export { Page, PageHeading };

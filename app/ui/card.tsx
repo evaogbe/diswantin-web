@@ -1,8 +1,11 @@
-import { forwardRef } from "react";
 import { cn } from "~/ui/classes";
 
-const Card = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
-  ({ className, ...props }, ref) => (
+function Card({
+  ref,
+  className,
+  ...props
+}: React.JSX.IntrinsicElements["section"]) {
+  return (
     <section
       ref={ref}
       className={cn(
@@ -11,20 +14,22 @@ const Card = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
       )}
       {...props}
     />
-  ),
-);
-Card.displayName = "Card";
+  );
+}
 
-const CardHeader = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
-  ({ className, ...props }, ref) => (
+function CardHeader({
+  ref,
+  className,
+  ...props
+}: React.JSX.IntrinsicElements["header"]) {
+  return (
     <header
       ref={ref}
       className={cn("flex flex-col space-y-3xs p-sm", className)}
       {...props}
     />
-  ),
-);
-CardHeader.displayName = "CardHeader";
+  );
+}
 
 const headings = {
   1: "h1",
@@ -35,10 +40,16 @@ const headings = {
   6: "h6",
 } as const;
 
-const CardTitle = forwardRef<
-  HTMLHeadingElement,
-  React.HTMLAttributes<HTMLHeadingElement> & { level?: 1 | 2 | 3 | 4 | 5 | 6 }
->(({ className, children, level = 3, ...props }, ref) => {
+function CardTitle({
+  ref,
+  className,
+  children,
+  level = 3,
+  ...props
+}: React.HTMLAttributes<HTMLHeadingElement> & {
+  ref?: React.RefObject<HTMLHeadingElement>;
+  level?: 1 | 2 | 3 | 4 | 5 | 6;
+}) {
   const Comp = headings[level];
 
   return (
@@ -53,39 +64,43 @@ const CardTitle = forwardRef<
       {children}
     </Comp>
   );
-});
-CardTitle.displayName = "CardTitle";
+}
 
-const CardDescription = forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
-    {...props}
-  />
-));
-CardDescription.displayName = "CardDescription";
+function CardDescription({
+  ref,
+  className,
+  ...props
+}: React.JSX.IntrinsicElements["p"]) {
+  return (
+    <p
+      ref={ref}
+      className={cn("text-sm text-muted-foreground", className)}
+      {...props}
+    />
+  );
+}
 
-const CardContent = forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-sm pt-0", className)} {...props} />
-));
-CardContent.displayName = "CardContent";
+function CardContent({
+  ref,
+  className,
+  ...props
+}: React.JSX.IntrinsicElements["div"]) {
+  return <div ref={ref} className={cn("p-sm pt-0", className)} {...props} />;
+}
 
-const CardFooter = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
-  ({ className, ...props }, ref) => (
+function CardFooter({
+  ref,
+  className,
+  ...props
+}: React.JSX.IntrinsicElements["footer"]) {
+  return (
     <footer
       ref={ref}
       className={cn("flex items-center p-sm pt-0", className)}
       {...props}
     />
-  ),
-);
-CardFooter.displayName = "CardFooter";
+  );
+}
 
 export {
   Card,

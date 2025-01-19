@@ -1,6 +1,5 @@
 import { cva } from "class-variance-authority";
 import type { VariantProps } from "class-variance-authority";
-import { forwardRef } from "react";
 import { cn } from "~/ui/classes";
 
 const alertVariants = cva(
@@ -21,18 +20,22 @@ const alertVariants = cva(
   },
 );
 
-const Alert = forwardRef<
-  HTMLElement,
-  React.HTMLAttributes<HTMLElement> & VariantProps<typeof alertVariants>
->(({ className, variant, ...props }, ref) => (
-  <section
-    ref={ref}
-    role="alert"
-    className={cn(alertVariants({ variant }), className)}
-    {...props}
-  />
-));
-Alert.displayName = "Alert";
+function Alert({
+  ref,
+  className,
+  variant,
+  ...props
+}: React.JSX.IntrinsicElements["section"] &
+  VariantProps<typeof alertVariants>) {
+  return (
+    <section
+      ref={ref}
+      role="alert"
+      className={cn(alertVariants({ variant }), className)}
+      {...props}
+    />
+  );
+}
 
 const headings = {
   1: "h1",
@@ -43,10 +46,16 @@ const headings = {
   6: "h6",
 } as const;
 
-const AlertTitle = forwardRef<
-  HTMLHeadingElement,
-  React.HTMLAttributes<HTMLHeadingElement> & { level?: 1 | 2 | 3 | 4 | 5 | 6 }
->(({ className, children, level = 3, ...props }, ref) => {
+function AlertTitle({
+  ref,
+  className,
+  children,
+  level = 3,
+  ...props
+}: React.HTMLAttributes<HTMLHeadingElement> & {
+  ref?: React.RefObject<HTMLHeadingElement>;
+  level?: 1 | 2 | 3 | 4 | 5 | 6;
+}) {
   const Comp = headings[level];
 
   return (
@@ -61,19 +70,20 @@ const AlertTitle = forwardRef<
       {children}
     </Comp>
   );
-});
-AlertTitle.displayName = "AlertTitle";
+}
 
-const AlertDescription = forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn("text-sm leading-relaxed", className)}
-    {...props}
-  />
-));
-AlertDescription.displayName = "AlertDescription";
+function AlertDescription({
+  ref,
+  className,
+  ...props
+}: React.JSX.IntrinsicElements["p"]) {
+  return (
+    <p
+      ref={ref}
+      className={cn("text-sm leading-relaxed", className)}
+      {...props}
+    />
+  );
+}
 
 export { Alert, AlertTitle, AlertDescription };
