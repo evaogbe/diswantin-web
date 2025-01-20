@@ -45,7 +45,7 @@ export function meta({ error }: Route.MetaArgs) {
 export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
   const { currentTask } = loaderData;
   const fetcher = useFetcher();
-  const markDoneFormErrors = useFormError(fetcher);
+  const markDoneFormError = useFormError(fetcher);
 
   if (currentTask == null) {
     return (
@@ -78,7 +78,7 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
       className="flex flex-col items-center"
     >
       <PageHeading id="current-task-heading">Current to-do</PageHeading>
-      {markDoneFormErrors != null && (
+      {markDoneFormError != null && (
         <Alert
           variant="destructive"
           id="mark-done-form-error"
@@ -89,7 +89,7 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
           <AlertTitle id="mark-done-form-error-heading">
             Error marking to-do done
           </AlertTitle>
-          <AlertDescription>{markDoneFormErrors}</AlertDescription>
+          <AlertDescription>{markDoneFormError}</AlertDescription>
         </Alert>
       )}
       <div
@@ -122,7 +122,7 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
           <fetcher.Form
             method="post"
             aria-describedby={
-              markDoneFormErrors != null ? "mark-done-form-error" : undefined
+              markDoneFormError != null ? "mark-done-form-error" : undefined
             }
           >
             <div hidden>
