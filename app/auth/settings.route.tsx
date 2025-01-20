@@ -1,5 +1,5 @@
 import { Eye, EyeOff, LogOut, Pencil } from "lucide-react";
-import { Form, Link, redirect } from "react-router";
+import { Form, Link, useNavigation } from "react-router";
 import type { Route } from "./+types/settings.route";
 import { DeleteUserForm } from "./delete-user-form";
 import { EditTimeZoneForm } from "./edit-time-zone-form";
@@ -15,6 +15,8 @@ import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
+import { cn } from "~/ui/classes";
+import { PendingButton } from "~/ui/pending-button";
 import { useSearchParams } from "~/url/use-search-params";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -30,7 +32,7 @@ export async function action({ request }: Route.ActionArgs) {
   switch (formData.get("intent")) {
     case "update-time-zone": {
       const user = await getAuthenticatedUser(request);
-      const result = await formAction({
+      return formAction({
         formData,
         requestHeaders: request.headers,
         schema: editTimeZoneSchema,
@@ -42,17 +44,13 @@ export async function action({ request }: Route.ActionArgs) {
           }
 
           await updateTimeZone(user.id, timeZone);
-          return ["success", null];
+
+          const url = new URL(request.url);
+          url.searchParams.delete("update-time-zone");
+          return { status: "success", path: `/settings?${url.searchParams}` };
         },
         humanName: "edit the time zone",
       });
-      if (result != null) {
-        return result;
-      }
-
-      const url = new URL(request.url);
-      url.searchParams.delete("update-time-zone");
-      return redirect(`/settings?${url.searchParams}`, 303);
     }
     case "sign-out": {
       return await invalidateSession("Signed out");
@@ -65,11 +63,11 @@ export async function action({ request }: Route.ActionArgs) {
         schema: deleteUserSchema,
         mutation: async (values) => {
           if (values.email !== user.email) {
-            return ["error", "Incorrect email"];
+            return { status: "error", message: "Incorrect email" };
           }
 
           await deleteUser(user.id);
-          return ["success", null];
+          return { status: "success" };
         },
         humanName: "delete your account",
       });
@@ -89,24 +87,17 @@ export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "Account settings", error }) }];
 }
 
-export default function SettingsRoute({
-  loaderData,
-  actionData,
-}: Route.ComponentProps) {
+export default function SettingsRoute({ loaderData }: Route.ComponentProps) {
   const { account, timeZones } = loaderData;
   const { searchParams, withSearchParam, withoutSearchParam } =
     useSearchParams();
+  const navigation = useNavigation();
 
   return (
     <Page aria-labelledby="account-settings-heading">
       <PageHeading id="account-settings-heading">Account settings</PageHeading>
       {searchParams.has("update-time-zone") ? (
         <EditTimeZoneForm
-          lastResult={
-            actionData?.initialValue?.intent === "update-time-zone"
-              ? actionData
-              : null
-          }
           timeZones={timeZones}
           initialTimeZone={account.timeZone}
         />
@@ -168,20 +159,26 @@ export default function SettingsRoute({
           </CardContent>
         </Card>
       )}
-      <Form method="post" className="mt-sm">
+      <Form
+        method="post"
+        className={cn(
+          "mt-sm",
+          navigation.state === "submitting" && "[&_*]:cursor-wait",
+        )}
+      >
         <p>
-          <Button name="intent" value="sign-out" variant="secondary">
+          <PendingButton
+            pending={navigation.state === "submitting"}
+            pendingText="Signing out…"
+            name="intent"
+            value="sign-out"
+            variant="secondary"
+          >
             <LogOut aria-hidden="true" /> Sign out
-          </Button>
+          </PendingButton>
         </p>
       </Form>
-      <DeleteUserForm
-        lastResult={
-          actionData?.initialValue?.intent === "delete-account"
-            ? actionData
-            : null
-        }
-      />
+      <DeleteUserForm />
     </Page>
   );
 }

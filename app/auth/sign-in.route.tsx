@@ -72,7 +72,7 @@ export default function SignInRoute({ loaderData }: Route.ComponentProps) {
         <p className="max-w-prose text-2xl tracking-tight">
           The app that shows you the one thing to do right now.
         </p>
-        <Form method="post" className="mt-xs">
+        <Form method="post" className="mt-xs" reloadDocument>
           <p>
             <button className="gsi-material-button">
               <div className="gsi-material-button-state"></div>

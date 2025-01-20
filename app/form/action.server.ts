@@ -1,12 +1,17 @@
 import * as Sentry from "@sentry/node";
-import { parseWithValibot } from "conform-to-valibot";
+import type { FieldValues } from "react-hook-form";
 import { data, redirect } from "react-router";
+import { getValidatedFormData } from "remix-hook-form";
 import { CSRFError } from "remix-utils/csrf/server";
-import type { GenericSchema, InferOutput } from "valibot";
+import type * as v from "valibot";
+import { valibotResolver } from "./resolver";
 import { generalError } from "./validation";
 import { csrf } from "~/security/csrf.server";
 
-export async function formAction<S extends GenericSchema>({
+export async function formAction<
+  Schema extends v.GenericSchema,
+  TFieldValues extends FieldValues = v.InferOutput<Schema> & FieldValues,
+>({
   formData,
   requestHeaders,
   schema,
@@ -16,26 +21,33 @@ export async function formAction<S extends GenericSchema>({
 }: {
   formData: FormData;
   requestHeaders: Headers;
-  schema: S;
+  schema: Schema;
   mutation: (
-    values: InferOutput<S>,
-  ) => Promise<["success", string | null] | ["error", string]>;
+    values: v.InferOutput<Schema>,
+  ) => Promise<
+    { status: "success"; path?: string } | { status: "error"; message: string }
+  >;
   humanName: string;
   hiddenFields?: string[];
 }) {
-  const submission = parseWithValibot(formData, { schema });
+  const {
+    errors,
+    data: inputs,
+    receivedValues: defaultValues,
+  } = await getValidatedFormData<TFieldValues>(
+    formData,
+    valibotResolver(schema),
+  );
 
-  if (submission.status !== "success") {
-    for (const field of hiddenFields ?? []) {
-      if (submission.error?.[field] != null) {
-        Sentry.captureMessage(`Invalid ${field}`, {
-          extra: { error: submission.error, humanName },
-        });
-        throw new Response(`Invalid ${field}`, { status: 400 });
-      }
+  if (errors != null) {
+    if (hiddenFields?.some((field) => errors[field] != null)) {
+      Sentry.captureMessage("Invalid hidden field", {
+        extra: { errors, humanName },
+      });
+      throw new Response("Invalid hidden field", { status: 400 });
     }
 
-    return data(submission.reply(), submission.status === "error" ? 422 : 200);
+    return data({ errors, defaultValues }, 422);
   }
 
   try {
@@ -47,24 +59,31 @@ export async function formAction<S extends GenericSchema>({
     }
 
     return data(
-      submission.reply({
-        formErrors: [generalError(humanName)],
-      }),
+      {
+        errors: { root: { message: generalError(humanName) } },
+        defaultValues,
+      },
       500,
     );
   }
 
   try {
-    const [status, result] = await mutation(submission.value);
-    if (status === "error") {
-      return data(submission.reply({ formErrors: [result] }), 422);
+    const result = await mutation(inputs);
+    if (result.status === "error") {
+      return data(
+        {
+          errors: { root: { message: result.message } },
+          defaultValues,
+        },
+        422,
+      );
     }
 
-    if (result == null) {
-      return null;
+    if (result.path != null) {
+      return redirect(result.path, 303);
     }
 
-    return redirect(result, 303);
+    return null;
   } catch (e) {
     Sentry.captureException(e);
 
@@ -74,9 +93,10 @@ export async function formAction<S extends GenericSchema>({
 
     console.error(e);
     return data(
-      submission.reply({
-        formErrors: [generalError(humanName)],
-      }),
+      {
+        errors: { root: { message: generalError(humanName) } },
+        defaultValues,
+      },
       500,
     );
   }

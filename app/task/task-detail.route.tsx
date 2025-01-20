@@ -1,10 +1,7 @@
-import type { SubmissionResult } from "@conform-to/react";
 import Check from "@material-design-icons/svg/filled/check.svg?react";
 import RemoveDone from "@material-design-icons/svg/filled/remove_done.svg?react";
 import { AlertCircle, EllipsisVertical, Pencil, Trash } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Form, Link, useFetcher, useNavigation } from "react-router";
-import type { Fetcher } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import * as v from "valibot";
 import type { Route } from "./+types/task-detail.route";
@@ -17,6 +14,8 @@ import {
 } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
+import { useFormError } from "~/form/form-error";
+import { useIntents } from "~/form/intents";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
@@ -55,7 +54,7 @@ export async function action({ request }: Route.ActionArgs) {
         schema: markDoneSchema,
         mutation: async (values) => {
           await markTaskDone(values.id, user.id);
-          return ["success", null];
+          return { status: "success" };
         },
         humanName: "mark the to-do done",
         hiddenFields: ["id"],
@@ -69,7 +68,7 @@ export async function action({ request }: Route.ActionArgs) {
         schema: unmarkDoneSchema,
         mutation: async (values) => {
           await unmarkTaskDone(values.id, user.id);
-          return ["success", null];
+          return { status: "success" };
         },
         humanName: "unmark the to-do done",
         hiddenFields: ["id"],
@@ -83,7 +82,7 @@ export async function action({ request }: Route.ActionArgs) {
         schema: deleteTaskSchema,
         mutation: async (values) => {
           await deleteTask(values.id, user.id);
-          return ["success", "/home"];
+          return { status: "success", path: "/home" };
         },
         humanName: "delete the to-do",
         hiddenFields: ["id"],
@@ -99,64 +98,39 @@ export function meta({ data, error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: data.task.name, error }) }];
 }
 
-const errorHeadings = {
-  "mark-done": "Error marking to-do done",
-  "unmark-done": "Error unmarking to-do done",
-  delete: "Error deleting to-do",
-};
+const errorHeadings = new Map([
+  ["mark-done", "Error marking to-do done"],
+  ["unmark-done", "Error unmarking to-do done"],
+  ["delete", "Error deleting to-do"],
+]);
 
-function useFormError(
-  lastResult: SubmissionResult | null | undefined,
-  fetcher: Fetcher<SubmissionResult | null>,
-  fetcherIntents: string[],
-) {
-  const navigation = useNavigation();
-  const [lastIntent, setLastIntent] = useState<string | null>(null);
-  const [formError, setFormError] = useState<string | null>(null);
-  useEffect(() => {
-    if (navigation.state === "submitting") {
-      setLastIntent(
-        (navigation.formData?.get("intent") ?? null) as string | null,
-      );
-      setFormError(null);
-    } else if (fetcher.state === "submitting") {
-      setLastIntent((fetcher.formData?.get("intent") ?? null) as string | null);
-      setFormError(null);
-    } else if (
-      navigation.state === "idle" &&
-      fetcher.state === "idle" &&
-      lastIntent != null
-    ) {
-      if (fetcherIntents.includes(lastIntent)) {
-        setFormError(Object.values(fetcher.data?.error ?? {})[0]?.[0] ?? null);
-      } else {
-        setFormError(Object.values(lastResult?.error ?? {})[0]?.[0] ?? null);
-      }
-    }
-  }, [fetcherIntents, lastResult, navigation, fetcher, lastIntent]);
-  return [lastIntent, formError] as const;
-}
-
-export default function TaskDetailRoute({
-  loaderData,
-  actionData,
-}: Route.ComponentProps) {
+export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
   const { task } = loaderData;
-  const fetcher = useFetcher<typeof action>();
-  const [lastIntent, formError] = useFormError(actionData, fetcher, [
-    "mark-done",
-    "unmark-done",
-  ]);
+  const navigation = useNavigation();
+  const fetcher = useFetcher();
+  const lastIntent = useIntents(fetcher);
+  const formError = useFormError(
+    lastIntent === "mark-done" || lastIntent === "unmark-done"
+      ? fetcher
+      : undefined,
+  );
+
   const isDone =
     fetcher.formData == null
       ? task.isDone
       : fetcher.formData.get("intent") === "mark-done";
 
   return (
-    <Page aria-labelledby="todo-detail-heading" className="space-y-sm">
+    <Page
+      aria-labelledby="task-detail-heading"
+      className={cn(
+        "space-y-sm transition-opacity",
+        navigation.state === "submitting" && "opacity-0",
+      )}
+    >
       <header className="space-y-xs">
         <PageHeading
-          id="todo-detail-heading"
+          id="task-detail-heading"
           className={cn(isDone && "line-through")}
         >
           {task.name}
@@ -170,9 +144,7 @@ export default function TaskDetailRoute({
           >
             <AlertCircle aria-hidden="true" className="size-xs" />
             <AlertTitle id="form-error-heading">
-              {lastIntent != null && lastIntent in errorHeadings
-                ? errorHeadings[lastIntent as keyof typeof errorHeadings]
-                : "Unexpected error"}
+              {errorHeadings.get(lastIntent ?? "") ?? "Unexpected error"}
             </AlertTitle>
             <AlertDescription>{formError}</AlertDescription>
           </Alert>
@@ -246,6 +218,11 @@ export default function TaskDetailRoute({
           </DropdownMenu>
         </div>
       </header>
+      {navigation.state === "submitting" && (
+        <p role="status" className="sr-only">
+          Deleting…
+        </p>
+      )}
       {task.note != null && <p className="whitespace-pre-wrap">{task.note}</p>}
       <dl>
         {task.deadline != null && (

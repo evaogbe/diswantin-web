@@ -31,7 +31,7 @@ export async function action({ request }: Route.ActionArgs) {
     schema: taskSchema,
     mutation: async (values) => {
       await updateTask(values, user.id);
-      return ["success", `/todo/${values.id}`];
+      return { status: "success", path: `/todo/${values.id}` };
     },
     humanName: "edit the to-do",
     hiddenFields: ["id"],
@@ -42,16 +42,12 @@ export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "Edit to-do", error }) }];
 }
 
-export default function EditTaskRoute({
-  loaderData,
-  actionData,
-}: Route.ComponentProps) {
+export default function EditTaskRoute({ loaderData }: Route.ComponentProps) {
   const { taskForm } = loaderData;
 
   return (
     <TaskForm
       taskForm={taskForm}
-      lastResult={actionData}
       humanName="edit the to-do"
       title="Edit to-do"
       errorHeading="Error editing to-do"
