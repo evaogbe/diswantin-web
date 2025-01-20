@@ -45,9 +45,10 @@ async function run() {
           ],
           fontSrc: ["'self'"],
           styleSrc: ["'self'", "'unsafe-inline'"],
-          connectSrc: ["'self'", env === "development" ? "ws:" : null].filter(
-            (dir) => dir != null,
-          ),
+          connectSrc:
+            env === "development"
+              ? ["'self'", "ws:", "localhost:*"]
+              : ["'self'"],
           imgSrc: ["'self'", "data:"],
           formAction: ["'self'", "https://accounts.google.com"],
           baseUri: ["'none'"],
