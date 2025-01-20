@@ -22,7 +22,7 @@
     "spellcheck": "cspell \"**\"",
     "pretest": "cross-env NODE_ENV=test run-s test:setup build",
     "test": "cross-env NODE_ENV=test playwright test",
-    "test:setup": "tsx ./scripts/setup-test-server.ts",
+    "test:setup": "tsx ./scripts/create-test-db.ts",
     "validate": "run-p format:check lint typecheck spellcheck test",
     "init": "run-p init:*",
     "init:db": "docker-compose up -d && npm run db:migrate",
