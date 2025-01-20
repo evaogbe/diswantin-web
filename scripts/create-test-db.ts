@@ -5,17 +5,8 @@ import pg from "pg";
 
 const exec = util.promisify(baseExec);
 
-function randomString({
-  length = 11,
-  pool = "abcdefghijklmnopqrstuvwxyz",
-} = {}) {
-  return Array.from({ length })
-    .map(() => pool.charAt(Math.random() * pool.length))
-    .join("");
-}
-
 const dbUrl = "postgres://postgres:password@localhost:5433";
-const dbName = randomString();
+const dbName = "diswantin_test";
 
 const env = await fs.readFile("env/example.env", { encoding: "utf8" });
 await fs.writeFile(
@@ -32,7 +23,9 @@ await db.query(`CREATE DATABASE ${dbName}`);
 await db.end();
 console.log(`Database "${dbName}" created`);
 
-const { stderr } = await exec("npm run db:push -- --force");
+const { stderr } = await exec("npm run db:push -- --force", {
+  env: { ...process.env, NODE_ENV: "test" },
+});
 if (stderr) {
   console.error(stderr);
   process.exit(1);
