@@ -1,3 +1,4 @@
+import { data } from "react-router";
 import * as v from "valibot";
 import type { Route } from "./+types/edit-task.route";
 import { taskSchema } from "./model";
@@ -16,7 +17,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   const { id } = v.parse(paramsSchema, params);
   const taskForm = await getEditTaskForm(id, user.id);
   if (taskForm == null) {
-    throw new Response(null, { status: 404 });
+    throw data(null, { status: 404 });
   }
 
   return { taskForm };
