@@ -22,7 +22,7 @@ export async function action({ request }: Route.ActionArgs) {
     schema: taskSchema,
     mutation: async (values) => {
       await createTask(values, user.id);
-      return ["success", "/home"];
+      return { status: "success", path: "/home" };
     },
     humanName: "create the to-do",
     hiddenFields: ["id"],
@@ -33,16 +33,12 @@ export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "New to-do", error }) }];
 }
 
-export default function NewTaskRoute({
-  loaderData,
-  actionData,
-}: Route.ComponentProps) {
+export default function NewTaskRoute({ loaderData }: Route.ComponentProps) {
   const { taskForm } = loaderData;
 
   return (
     <TaskForm
       taskForm={taskForm}
-      lastResult={actionData}
       humanName="create the to-do"
       title="New to-do"
       errorHeading="Error adding to-do"

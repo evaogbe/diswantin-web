@@ -1,13 +1,17 @@
-import { FormProvider, useForm } from "@conform-to/react";
-import type { SubmissionResult } from "@conform-to/react";
-import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, Check, ChevronsUpDown, X } from "lucide-react";
-import { useId, useRef, useState } from "react";
+import { useRef } from "react";
 import { Form, Link } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
-import { uid } from "uid";
 import { editTimeZoneSchema } from "./model";
-import { FormField, FormItem, FormLabel, FormMessage } from "~/form/field";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormProvider,
+  useForm,
+} from "~/form/form";
+import { useIntents } from "~/form/intents";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { CardTitle } from "~/ui/card";
@@ -20,47 +24,42 @@ import {
   CommandGroup,
   CommandItem,
 } from "~/ui/command";
+import { PendingButton } from "~/ui/pending-button";
 import { Popover, PopoverTrigger, PopoverContent } from "~/ui/popover";
 import { useSearchParams } from "~/url/use-search-params";
 
 export function EditTimeZoneForm({
-  lastResult,
   timeZones,
   initialTimeZone,
 }: {
-  lastResult?: SubmissionResult | null;
   timeZones: string[];
   initialTimeZone: string;
 }) {
   const { withoutSearchParam } = useSearchParams();
   const timeZoneButtonRef = useRef<HTMLButtonElement>(null);
-  const initialFormId = useId();
-  const [formId, setFormId] = useState(`form-${initialFormId}`);
-  const [form, fields] = useForm({
-    id: formId,
-    lastResult,
-    constraint: getValibotConstraint(editTimeZoneSchema),
-    shouldRevalidate: "onInput",
-    defaultNoValidate: false,
-    onValidate({ formData }) {
-      return parseWithValibot(formData, { schema: editTimeZoneSchema });
-    },
-    defaultValue: { timeZone: initialTimeZone },
+  const lastIntent = useIntents();
+  const form = useForm({
+    schema: editTimeZoneSchema,
+    defaultValues: { timeZone: initialTimeZone },
   });
+  const formError = lastIntent === "update-time-zone" ? form.error : null;
 
   return (
-    <FormProvider context={form.context}>
+    <FormProvider form={form}>
       <Form
         method="post"
         id={form.id}
         noValidate={form.noValidate}
-        aria-labelledby={`${form.id}-title`}
-        aria-describedby={form.errors != null ? form.errorId : undefined}
+        aria-labelledby={form.titleId}
+        aria-describedby={formError != null ? form.errorId : undefined}
         onSubmit={form.onSubmit}
-        className="space-y-xs rounded-xl border bg-card p-sm text-card-foreground shadow"
+        className={cn(
+          "space-y-xs rounded-xl border bg-card p-sm text-card-foreground shadow",
+          form.formState.isSubmitting && "[&_*]:cursor-wait",
+        )}
       >
         <header className="flex items-center justify-between">
-          <CardTitle id={`${form.id}-title`}>Edit time zone</CardTitle>
+          <CardTitle id={form.titleId}>Edit time zone</CardTitle>
           <Button variant="ghost" size="icon" asChild>
             <Link
               to={withoutSearchParam("update-time-zone")}
@@ -68,34 +67,34 @@ export function EditTimeZoneForm({
               preventScrollReset
               aria-label="Close"
               onClick={() => {
-                setFormId(`form-${uid()}`);
+                form.reset();
               }}
             >
               <X />
             </Link>
           </Button>
         </header>
-        {form.errors != null && (
+        {formError != null && (
           <Alert
             variant="destructive"
             id={form.errorId}
-            aria-labelledby={`${form.errorId}-heading`}
+            aria-labelledby={form.errorHeadingId}
           >
             <AlertCircle aria-hidden="true" className="size-xs" />
-            <AlertTitle id={`${form.errorId}-heading`}>
+            <AlertTitle id={form.errorHeadingId}>
               Error editing time zone
             </AlertTitle>
-            <AlertDescription>{form.errors[0]}</AlertDescription>
+            <AlertDescription>{formError}</AlertDescription>
           </Alert>
         )}
         <div hidden>
           <AuthenticityTokenInput />
         </div>
         <FormField
-          name={fields.timeZone.name}
-          type="select"
-          render={({ field, control }) => (
-            <FormItem className="flex flex-col">
+          control={form.control}
+          name="timeZone"
+          render={({ field }) => (
+            <FormItem className="flex max-w-96 flex-col">
               <FormLabel
                 htmlFor={undefined}
                 onClick={() => {
@@ -110,12 +109,12 @@ export function EditTimeZoneForm({
                     variant="outline"
                     ref={timeZoneButtonRef}
                     className={cn(
-                      "w-full justify-between sm:w-96",
-                      !control.value && "text-muted-foreground",
+                      "justify-between",
+                      !field.value && "text-muted-foreground",
                     )}
                   >
                     <span className="truncate">
-                      {control.value ?? "Select time zone"}
+                      {field.value || "Select time zone"}
                     </span>
                     <ChevronsUpDown
                       aria-hidden="true"
@@ -123,7 +122,7 @@ export function EditTimeZoneForm({
                     />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0 sm:w-96">
+                <PopoverContent className="w-full p-0">
                   <Command>
                     <CommandInput placeholder="Search time zones…" />
                     <CommandList>
@@ -134,10 +133,7 @@ export function EditTimeZoneForm({
                             key={timeZone}
                             value={timeZone}
                             onSelect={() => {
-                              form.update({
-                                name: field.name,
-                                value: timeZone,
-                              });
+                              form.setValue("timeZone", timeZone);
                             }}
                           >
                             {timeZone}
@@ -145,7 +141,7 @@ export function EditTimeZoneForm({
                               aria-label="Selected"
                               className={cn(
                                 "ms-auto",
-                                timeZone === control.value
+                                timeZone === field.value
                                   ? "opacity-100"
                                   : "opacity-0",
                               )}
@@ -157,19 +153,21 @@ export function EditTimeZoneForm({
                   </Command>
                 </PopoverContent>
               </Popover>
-              <input
-                type="hidden"
-                name={field.name}
-                value={control.value ?? ""}
-              />
+              <input type="hidden" name={field.name} value={field.value} />
               <FormMessage />
             </FormItem>
           )}
         />
         <p className="flex justify-end">
-          <Button name="intent" value="update-time-zone" variant="secondary">
+          <PendingButton
+            pending={form.formState.isSubmitting}
+            pendingText="Saving…"
+            name="intent"
+            value="update-time-zone"
+            variant="secondary"
+          >
             Save
-          </Button>
+          </PendingButton>
         </p>
       </Form>
     </FormProvider>

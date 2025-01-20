@@ -9,10 +9,12 @@ import { markDoneSchema } from "./model";
 import { getCurrentTask, markTaskDone } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
+import { useFormError } from "~/form/form-error";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
 import { Button } from "~/ui/button";
+import { cn } from "~/ui/classes";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await getAuthenticatedUser(request);
@@ -29,7 +31,7 @@ export async function action({ request }: Route.ActionArgs) {
     schema: markDoneSchema,
     mutation: async (values) => {
       await markTaskDone(values.id, user.id);
-      return ["success", null];
+      return { status: "success" };
     },
     humanName: "mark the to-do done",
     hiddenFields: ["id"],
@@ -42,16 +44,16 @@ export function meta({ error }: Route.MetaArgs) {
 
 export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
   const { currentTask } = loaderData;
-  const fetcher = useFetcher<typeof action>();
-  const markDoneFormErrors = fetcher.data?.error;
+  const fetcher = useFetcher();
+  const markDoneFormErrors = useFormError(fetcher);
 
   if (currentTask == null) {
     return (
       <Page
-        aria-labelledby="current-todo-heading"
+        aria-labelledby="current-task-heading"
         className="flex flex-col items-center"
       >
-        <PageHeading id="current-todo-heading">Current to-do</PageHeading>
+        <PageHeading id="current-task-heading">Current to-do</PageHeading>
         <AddTask
           aria-hidden="true"
           className="mt-xs size-2xl text-muted-foreground"
@@ -72,10 +74,10 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
 
   return (
     <Page
-      aria-labelledby="current-todo-heading"
+      aria-labelledby="current-task-heading"
       className="flex flex-col items-center"
     >
-      <PageHeading id="current-todo-heading">Current to-do</PageHeading>
+      <PageHeading id="current-task-heading">Current to-do</PageHeading>
       {markDoneFormErrors != null && (
         <Alert
           variant="destructive"
@@ -87,44 +89,54 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
           <AlertTitle id="mark-done-form-error-heading">
             Error marking to-do done
           </AlertTitle>
-          <AlertDescription>
-            {Object.values(markDoneFormErrors)[0]?.[0]}
-          </AlertDescription>
+          <AlertDescription>{markDoneFormErrors}</AlertDescription>
         </Alert>
       )}
-      <p className="mt-2xs text-center text-2xl tracking-tight">
-        {currentTask.name}
-      </p>
-      {currentTask.note != null && (
-        <p className="mt-sm whitespace-pre-wrap text-center text-lg text-muted-foreground">
-          {currentTask.note}
+      <div
+        className={cn(
+          "w-full transition-opacity",
+          fetcher.state === "submitting" && "opacity-0",
+        )}
+      >
+        {fetcher.state === "submitting" && (
+          <p role="status" className="sr-only">
+            Marking done…
+          </p>
+        )}
+        <p className="mt-2xs text-center text-2xl tracking-tight">
+          {currentTask.name}
         </p>
-      )}
-      <footer className="mt-md flex w-full justify-around">
-        <p>
-          <Button asChild variant="outline">
-            <Link to={`/todo/${currentTask.id}`}>
-              <Details aria-hidden="true" /> Details
-            </Link>
-          </Button>
-        </p>
-        <fetcher.Form
-          method="post"
-          aria-describedby={
-            markDoneFormErrors != null ? "mark-done-form-error" : undefined
-          }
-        >
-          <div hidden>
-            <AuthenticityTokenInput />
-            <input type="hidden" name="id" value={currentTask.id} />
-          </div>
+        {currentTask.note != null && (
+          <p className="mt-sm whitespace-pre-wrap text-center text-lg text-muted-foreground">
+            {currentTask.note}
+          </p>
+        )}
+        <footer className="mt-md flex justify-around">
           <p>
-            <Button variant="secondary">
-              <Check aria-hidden="true" /> Done
+            <Button asChild variant="outline">
+              <Link to={`/todo/${currentTask.id}`}>
+                <Details aria-hidden="true" /> Details
+              </Link>
             </Button>
           </p>
-        </fetcher.Form>
-      </footer>
+          <fetcher.Form
+            method="post"
+            aria-describedby={
+              markDoneFormErrors != null ? "mark-done-form-error" : undefined
+            }
+          >
+            <div hidden>
+              <AuthenticityTokenInput />
+              <input type="hidden" name="id" value={currentTask.id} />
+            </div>
+            <p>
+              <Button variant="secondary">
+                <Check aria-hidden="true" /> Done
+              </Button>
+            </p>
+          </fetcher.Form>
+        </footer>
+      </div>
     </Page>
   );
 }

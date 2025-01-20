@@ -9,6 +9,7 @@ node_modules
 /build
 /dist
 vite.config.ts.timestamp*
+*.tsbuildinfo
 
 # Environment
 *.env
