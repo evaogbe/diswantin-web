@@ -21,7 +21,6 @@ const alertVariants = cva(
 );
 
 function Alert({
-  ref,
   className,
   variant,
   ...props
@@ -29,7 +28,6 @@ function Alert({
   VariantProps<typeof alertVariants>) {
   return (
     <section
-      ref={ref}
       role="alert"
       className={cn(alertVariants({ variant }), className)}
       {...props}
@@ -47,7 +45,6 @@ const headings = {
 } as const;
 
 function AlertTitle({
-  ref,
   className,
   children,
   level = 3,
@@ -60,7 +57,6 @@ function AlertTitle({
 
   return (
     <Comp
-      ref={ref}
       className={cn(
         "mb-3xs text-balance font-medium leading-none tracking-tight",
         className,
@@ -73,13 +69,11 @@ function AlertTitle({
 }
 
 function AlertDescription({
-  ref,
   className,
   ...props
 }: React.JSX.IntrinsicElements["p"]) {
   return (
     <p
-      ref={ref}
       className={cn("break-words text-sm leading-relaxed", className)}
       {...props}
     />
