@@ -1,7 +1,6 @@
 import AddTask from "@material-design-icons/svg/filled/add_task.svg?react";
 import Check from "@material-design-icons/svg/filled/check.svg?react";
-import Details from "@material-design-icons/svg/filled/details.svg?react";
-import { AlertCircle, Plus } from "lucide-react";
+import { AlertCircle, Microscope, Plus } from "lucide-react";
 import { Link, useFetcher } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import type { Route } from "./+types/current-task.route";
@@ -115,7 +114,7 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
           <p>
             <Button asChild variant="outline">
               <Link to={`/todo/${currentTask.id}`}>
-                <Details aria-hidden="true" /> Details
+                <Microscope aria-hidden="true" /> Details
               </Link>
             </Button>
           </p>
