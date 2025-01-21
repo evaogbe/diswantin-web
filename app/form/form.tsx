@@ -200,6 +200,11 @@ function useForm<
   };
 }
 
+type UseFormReturn<
+  Schema extends v.GenericSchema,
+  TFieldValues extends FieldValues = v.InferInput<Schema> & FieldValues,
+> = ReturnType<typeof useForm<Schema, TFieldValues>>;
+
 function FormProvider<
   Schema extends v.GenericSchema,
   TFieldValues extends FieldValues = v.InferInput<Schema> & FieldValues,
@@ -419,3 +424,5 @@ export {
   FormDescription,
   FormMessage,
 };
+
+export type { UseFormReturn };
