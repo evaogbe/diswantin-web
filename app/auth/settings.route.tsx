@@ -102,19 +102,19 @@ export default function SettingsRoute({ loaderData }: Route.ComponentProps) {
           initialTimeZone={account.timeZone}
         />
       ) : (
-        <Card aria-labelledby="account-info-heading">
-          <CardHeader className="pb-2xs">
+        <Card aria-labelledby="account-info-heading" className="mt-xs">
+          <CardHeader className="pb-xs">
             <CardTitle id="account-info-heading">Account Info</CardTitle>
           </CardHeader>
           <CardContent>
             <dl className="text-sm">
               <dt className="text-muted-foreground">Sign-in method</dt>
               <dd>
-                <p>Google</p>
+                <p className="mt-4xs">Google</p>
                 {searchParams.has("email") ? (
                   <>
-                    <p>{account.email}</p>
-                    <p className="mt-3xs">
+                    <p className="mt-4xs">{account.email}</p>
+                    <p className="mt-2xs">
                       <Button variant="outline" size="sm" asChild>
                         <Link
                           to={withoutSearchParam("email")}
@@ -127,7 +127,7 @@ export default function SettingsRoute({ loaderData }: Route.ComponentProps) {
                     </p>
                   </>
                 ) : (
-                  <p className="mt-3xs">
+                  <p className="mt-2xs">
                     <Button variant="outline" size="sm" asChild>
                       <Link
                         to={withSearchParam("email")}
@@ -140,10 +140,10 @@ export default function SettingsRoute({ loaderData }: Route.ComponentProps) {
                   </p>
                 )}
               </dd>
-              <dt className="mt-2xs text-muted-foreground">Time zone</dt>
+              <dt className="mt-xs text-muted-foreground">Time zone</dt>
               <dd>
-                <p>{account.timeZone}</p>
-                <p className="mt-3xs">
+                <p className="mt-4xs">{account.timeZone}</p>
+                <p className="mt-2xs">
                   <Button variant="outline" size="sm" asChild>
                     <Link
                       to={withSearchParam("update-time-zone")}
