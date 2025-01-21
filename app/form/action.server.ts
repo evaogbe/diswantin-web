@@ -40,6 +40,7 @@ export async function formAction<
   );
 
   if (errors != null) {
+    console.error("Invalid input", errors);
     if (hiddenFields?.some((field) => errors[field] != null)) {
       Sentry.captureMessage("Invalid hidden field", {
         extra: { errors, humanName },

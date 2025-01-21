@@ -18,13 +18,13 @@ export async function loader({ request }: Route.LoaderArgs) {
   const storedState: unknown = await stateCookie.parse(cookieHeader);
   const codeVerifier: unknown = await codeVerifierCookie.parse(cookieHeader);
 
-  if (
-    code == null ||
-    state == null ||
-    storedState == null ||
-    typeof codeVerifier !== "string" ||
-    state !== storedState
-  ) {
+  if (code == null || typeof codeVerifier !== "string") {
+    console.error("Invalid auth code");
+    throw new Response(null, { status: 400 });
+  }
+
+  if (state == null || storedState == null || state !== storedState) {
+    console.error("Invalid auth state");
     throw new Response(null, { status: 400 });
   }
 
@@ -32,6 +32,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   try {
     tokens = await google.validateAuthorizationCode(code, codeVerifier);
   } catch {
+    console.error("Invalid auth code");
     throw new Response(null, { status: 400 });
   }
 
@@ -40,6 +41,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     decodeIdToken(tokens.idToken()),
   );
   if (!parseResult.success) {
+    console.error("Invalid credentials", parseResult.issues);
     throw new Response(null, { status: 400 });
   }
 

@@ -53,9 +53,13 @@ export async function action({ request }: Route.ActionArgs) {
       });
     }
     case "sign-out": {
+      console.log("Sign out requested");
       return await invalidateSession("Signed out");
     }
     case "delete-account": {
+      console.log("Delete user requested", {
+        formData: Object.fromEntries(formData),
+      });
       const user = await getAuthenticatedUser(request);
       const result = await formAction({
         formData,

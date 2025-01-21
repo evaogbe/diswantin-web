@@ -17,4 +17,4 @@ if (env.NODE_ENV === "development") {
   globalForDb.dbPool = pool;
 }
 
-export const db = drizzle({ client: pool, casing: "snake_case" });
+export const db = drizzle({ client: pool, casing: "snake_case", logger: true });
