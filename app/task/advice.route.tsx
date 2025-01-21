@@ -65,6 +65,9 @@ export default function AdviceRoute() {
           Hungry? Grab a <strong>snack</strong>
         </li>
         <li>
+          Sleepy? Take a <strong>nap</strong>
+        </li>
+        <li>
           Call/text/video chat/visit a <strong>friend</strong>. Try to brighten
           their day or ask them if you can vent
         </li>
