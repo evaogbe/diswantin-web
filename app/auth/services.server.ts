@@ -41,6 +41,7 @@ export async function updateTimeZone(userId: number, timeZone: string) {
 export async function authenticate(request: Request, account: Account) {
   const session = await getSession(request.headers.get("Cookie"));
   session.set("userId", account.clientId);
+  console.log("User authenticated", { userId: account.clientId });
   return redirect(account.timeZone == null ? "/onboarding" : "/home", {
     status: 303,
     headers: {
@@ -116,6 +117,7 @@ export async function getAuthenticatedUser(
   const user = await getUserBySession(session);
 
   if (user == null) {
+    console.error("User not authenticated");
     throw redirect("/", {
       status: 303,
       headers: {

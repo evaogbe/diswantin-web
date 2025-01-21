@@ -6,6 +6,7 @@ import compression from "compression";
 import * as express from "express";
 import type { Response } from "express";
 import { rateLimit } from "express-rate-limit";
+import type { Options as RateLimitOptions } from "express-rate-limit";
 import getPort, { portNumbers } from "get-port";
 import helmet from "helmet";
 import * as morgan from "morgan";
@@ -71,10 +72,16 @@ async function run() {
   const rateLimitDefaults = {
     standardHeaders: "draft-8",
     legacyHeaders: false,
-    keyGenerator(req: express.Request) {
+    keyGenerator(req) {
       return req.get("x-envoy-external-address") ?? req.ip ?? "";
     },
-  };
+    handler(req, res, _next, options) {
+      console.error("Rate limit exceeded", {
+        ip: req.get("x-envoy-external-address") ?? req.ip,
+      });
+      res.status(options.statusCode).send(options.message);
+    },
+  } as Partial<RateLimitOptions>;
   const generalRateLimit = rateLimit({
     ...rateLimitDefaults,
     limit: 1000,
