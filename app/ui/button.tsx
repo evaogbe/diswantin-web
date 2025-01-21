@@ -39,7 +39,6 @@ export type ButtonProps = {
   VariantProps<typeof buttonVariants>;
 
 function Button({
-  ref,
   className,
   variant,
   size,
@@ -50,7 +49,6 @@ function Button({
   return (
     <Comp
       className={cn(buttonVariants({ variant, size }), className)}
-      ref={ref}
       {...props}
     />
   );

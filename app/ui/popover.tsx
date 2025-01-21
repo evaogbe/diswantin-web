@@ -6,7 +6,6 @@ const Popover = PopoverPrimitive.Root;
 const PopoverTrigger = PopoverPrimitive.Trigger;
 
 function PopoverContent({
-  ref,
   className,
   align = "center",
   sideOffset = 4,
@@ -17,7 +16,6 @@ function PopoverContent({
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
-        ref={ref}
         align={align}
         sideOffset={sideOffset}
         className={cn(

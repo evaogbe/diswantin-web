@@ -1,13 +1,8 @@
 import { cn } from "~/ui/classes";
 
-function Card({
-  ref,
-  className,
-  ...props
-}: React.JSX.IntrinsicElements["section"]) {
+function Card({ className, ...props }: React.JSX.IntrinsicElements["section"]) {
   return (
     <section
-      ref={ref}
       className={cn(
         "min-w-fit rounded-lg border bg-card text-card-foreground shadow-sm",
         className,
@@ -18,13 +13,11 @@ function Card({
 }
 
 function CardHeader({
-  ref,
   className,
   ...props
 }: React.JSX.IntrinsicElements["header"]) {
   return (
     <header
-      ref={ref}
       className={cn("flex flex-col space-y-3xs p-sm", className)}
       {...props}
     />
@@ -41,7 +34,6 @@ const headings = {
 } as const;
 
 function CardTitle({
-  ref,
   className,
   children,
   level = 3,
@@ -54,7 +46,6 @@ function CardTitle({
 
   return (
     <Comp
-      ref={ref}
       className={cn(
         "text-balance text-lg font-semibold leading-none tracking-tight",
         className,
@@ -67,13 +58,11 @@ function CardTitle({
 }
 
 function CardDescription({
-  ref,
   className,
   ...props
 }: React.JSX.IntrinsicElements["p"]) {
   return (
     <p
-      ref={ref}
       className={cn("break-words text-sm text-muted-foreground", className)}
       {...props}
     />
@@ -81,21 +70,18 @@ function CardDescription({
 }
 
 function CardContent({
-  ref,
   className,
   ...props
 }: React.JSX.IntrinsicElements["div"]) {
-  return <div ref={ref} className={cn("p-sm pt-0", className)} {...props} />;
+  return <div className={cn("p-sm pt-0", className)} {...props} />;
 }
 
 function CardFooter({
-  ref,
   className,
   ...props
 }: React.JSX.IntrinsicElements["footer"]) {
   return (
     <footer
-      ref={ref}
       className={cn("flex items-center p-sm pt-0", className)}
       {...props}
     />
