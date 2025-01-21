@@ -14,6 +14,7 @@ import {
   FormProvider,
   useForm,
 } from "~/form/form";
+import type { UseFormReturn } from "~/form/form";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
@@ -60,19 +61,26 @@ export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "Account setup", error }) }];
 }
 
-export default function OnboardingRoute({ loaderData }: Route.ComponentProps) {
-  const { timeZones } = loaderData;
-  const timeZoneButtonRef = useRef<HTMLButtonElement>(null);
-  const form = useForm({
-    schema: onboardingSchema,
-    defaultValues: { timeZone: "" },
-  });
+function useSetTimeZone(
+  timeZones: string[],
+  form: UseFormReturn<typeof onboardingSchema>,
+) {
   useEffect(() => {
     const defaultTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     if (!form.getValues("timeZone") && timeZones.includes(defaultTimeZone)) {
       form.setValue("timeZone", defaultTimeZone);
     }
   }, [timeZones, form]);
+}
+
+export default function OnboardingRoute({ loaderData }: Route.ComponentProps) {
+  const { timeZones } = loaderData;
+  const timeZoneButtonRef = useRef<HTMLButtonElement>(null);
+  const form = useForm<typeof onboardingSchema>({
+    schema: onboardingSchema,
+    defaultValues: { timeZone: "" },
+  });
+  useSetTimeZone(timeZones, form);
 
   return (
     <Page asChild className="px-sm-lg">
