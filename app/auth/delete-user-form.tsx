@@ -13,7 +13,7 @@ import {
 } from "~/form/form";
 import { Input } from "~/form/input";
 import { useIntents } from "~/form/intents";
-import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { cn } from "~/ui/classes";
@@ -61,10 +61,10 @@ export function DeleteUserForm() {
               </Link>
             </Button>
           </header>
-          <p>
+          <p className="break-words">
             <strong>Warning: Deleting your account cannot be undone</strong>
           </p>
-          <p>
+          <p className="break-words">
             Enter the email associated with your account to permanently delete
             your account
           </p>
