@@ -62,7 +62,7 @@ function AlertTitle({
     <Comp
       ref={ref}
       className={cn(
-        "mb-3xs text-balance break-words font-medium leading-none tracking-tight",
+        "mb-3xs text-balance font-medium leading-none tracking-tight",
         className,
       )}
       {...props}

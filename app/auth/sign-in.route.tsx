@@ -49,7 +49,7 @@ export default function SignInRoute({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-10 flex justify-end border-b border-primary-container bg-primary-container p-2xs shadow dark:border-accent">
+      <header className="top-0 z-10 flex justify-end border-b border-primary-container bg-primary-container p-2xs shadow dark:border-accent sm:sticky">
         <ThemeToggle />
       </header>
       <main className="p-sm">

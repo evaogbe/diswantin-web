@@ -60,7 +60,7 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="sticky top-0 z-10 flex flex-wrap items-center gap-xs border-b border-primary-container bg-primary-container p-2xs shadow dark:border-accent">
+      <header className="top-0 z-10 flex flex-wrap items-center gap-xs border-b border-primary-container bg-primary-container p-2xs shadow dark:border-accent sm:sticky">
         <h1>
           <Link
             to="/home"
@@ -70,7 +70,7 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
             <span className="max-sm:sr-only">Diswantin</span>
           </Link>
         </h1>
-        <search className="flex-1">
+        <search className="flex-[calc((20ch-100%)*99)]">
           <Form
             onChange={(e) => {
               search(e.currentTarget);
@@ -121,21 +121,29 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
                     <Link
                       to={`/todo/${result.id}`}
                       className={cn(
-                        "inline-flex h-lg w-full items-center rounded-sm px-xs py-2xs transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
+                        "flex w-full rounded-sm transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none max-sm:min-w-max",
                         result.isDone && "line-through",
                       )}
                     >
-                      {result.headline.map(({ value, highlight }, i) =>
-                        highlight ? (
-                          <b key={i} className="bg-primary/50 font-normal">
-                            {value}
-                          </b>
-                        ) : (
-                          <span key={i} className="whitespace-pre-wrap">
-                            {value}
-                          </span>
-                        ),
-                      )}
+                      <div className="mx-xs my-2xs inline-flex overflow-hidden">
+                        {result.headline.map(({ value, highlight }, i) =>
+                          highlight ? (
+                            <b
+                              key={i}
+                              className="flex-none bg-primary/50 font-normal"
+                            >
+                              {value}
+                            </b>
+                          ) : (
+                            <span
+                              key={i}
+                              className="flex-none whitespace-pre-wrap"
+                            >
+                              {value}
+                            </span>
+                          ),
+                        )}
+                      </div>
                       {result.isDone && <span className="sr-only">Done</span>}
                     </Link>
                   </li>

@@ -30,6 +30,7 @@ import {
 } from "~/ui/command";
 import { PendingButton } from "~/ui/pending-button";
 import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
+import { useScrollIntoView } from "~/ui/scroll-into-view";
 
 export async function loader({ request }: Route.LoaderArgs) {
   await getAuthenticatedUser(request, { fresh: true });
@@ -80,6 +81,7 @@ export default function OnboardingRoute({ loaderData }: Route.ComponentProps) {
     schema: onboardingSchema,
     defaultValues: { timeZone: "" },
   });
+  const formErrorRef = useScrollIntoView<HTMLElement>([form.error]);
   useSetTimeZone(timeZones, form);
 
   return (
@@ -104,6 +106,7 @@ export default function OnboardingRoute({ loaderData }: Route.ComponentProps) {
                 variant="destructive"
                 id={form.errorId}
                 aria-labelledby={form.errorHeadingId}
+                ref={formErrorRef}
               >
                 <AlertCircle aria-hidden="true" className="size-xs" />
                 <AlertTitle id={form.errorHeadingId}>

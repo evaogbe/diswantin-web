@@ -18,7 +18,8 @@ import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { cn } from "~/ui/classes";
 import { PendingButton } from "~/ui/pending-button";
-import { useSearchParams } from "~/url/use-search-params";
+import { useScrollIntoView } from "~/ui/scroll-into-view";
+import { useSearchParams } from "~/url/search-params";
 
 export function DeleteUserForm() {
   const { searchParams, withSearchParam, withoutSearchParam } =
@@ -29,6 +30,7 @@ export function DeleteUserForm() {
     defaultValues: { email: "" },
   });
   const formError = lastIntent === "delete-account" ? form.error : null;
+  const formErrorRef = useScrollIntoView<HTMLElement>([formError]);
 
   if (searchParams.has("delete-account")) {
     return (
@@ -73,6 +75,7 @@ export function DeleteUserForm() {
               variant="destructive"
               id={form.errorId}
               aria-labelledby={form.errorHeadingId}
+              ref={formErrorRef}
             >
               <AlertCircle aria-hidden="true" className="size-xs" />
               <AlertTitle level={4} id={form.errorHeadingId}>

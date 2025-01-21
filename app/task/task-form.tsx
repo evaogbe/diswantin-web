@@ -23,7 +23,8 @@ import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { cn } from "~/ui/classes";
 import { PendingButton } from "~/ui/pending-button";
-import { useSearchParams } from "~/url/use-search-params";
+import { useScrollIntoView } from "~/ui/scroll-into-view";
+import { useSearchParams } from "~/url/search-params";
 
 export function TaskForm({
   taskForm,
@@ -67,7 +68,6 @@ export function TaskForm({
       }
     },
   });
-  const scheduledDate = form.watch("scheduledAt.date");
   const showScheduledAt =
     searchParams.get("scheduled") === "1" ||
     (searchParams.get("scheduled") !== "0" &&
@@ -80,6 +80,8 @@ export function TaskForm({
     (form.formState.errors.scheduledAt != null && !showScheduledAt)
       ? generalError(humanName)
       : null);
+  const formErrorRef = useScrollIntoView<HTMLElement>([formError]);
+  const scheduledDate = form.watch("scheduledAt.date");
 
   return (
     <Page asChild className="px-sm-lg">
@@ -104,6 +106,7 @@ export function TaskForm({
                 variant="destructive"
                 id={form.errorId}
                 aria-labelledby={form.errorHeadingId}
+                ref={formErrorRef}
               >
                 <AlertCircle aria-hidden="true" className="size-xs" />
                 <AlertTitle id={form.errorHeadingId}>{errorHeading}</AlertTitle>

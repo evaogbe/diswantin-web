@@ -22,7 +22,7 @@ export function MainLayout({
 }) {
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="sticky top-0 z-10 flex flex-wrap items-center gap-xs border-b border-primary-container bg-primary-container p-2xs shadow dark:border-accent">
+      <header className="top-0 z-10 flex flex-wrap items-center gap-xs border-b border-primary-container bg-primary-container p-2xs shadow dark:border-accent sm:sticky">
         <h1 className={cn(!isAuthenticated && "flex-1")}>
           <Link
             to={isAuthenticated ? "/home" : "/"}
@@ -82,7 +82,7 @@ export function MainLayout({
         )}
         <ThemeToggle />
       </header>
-      <main className="mx-auto flex w-full max-w-prose flex-1 flex-col p-sm">
+      <main className="mx-auto flex w-full max-w-prose flex-1 flex-col p-sm max-sm:min-w-fit">
         {children}
       </main>
     </div>

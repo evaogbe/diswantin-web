@@ -14,6 +14,7 @@ import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { cn } from "~/ui/classes";
+import { useScrollIntoView } from "~/ui/scroll-into-view";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await getAuthenticatedUser(request);
@@ -45,6 +46,7 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
   const { currentTask } = loaderData;
   const fetcher = useFetcher();
   const markDoneFormError = useFormError(fetcher);
+  const formErrorRef = useScrollIntoView<HTMLElement>([markDoneFormError]);
 
   if (currentTask == null) {
     return (
@@ -52,12 +54,14 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
         aria-labelledby="current-task-heading"
         className="flex flex-col items-center"
       >
-        <PageHeading id="current-task-heading">Current to-do</PageHeading>
+        <PageHeading id="current-task-heading" className="text-center">
+          Current to-do
+        </PageHeading>
         <AddTask
           aria-hidden="true"
           className="mt-xs size-2xl text-muted-foreground"
         />
-        <p className="mt-sm text-xl text-muted-foreground">
+        <p className="mt-sm text-center text-xl text-muted-foreground">
           No upcoming to-dos
         </p>
         <p className="mt-sm">
@@ -76,12 +80,15 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
       aria-labelledby="current-task-heading"
       className="flex flex-col items-center"
     >
-      <PageHeading id="current-task-heading">Current to-do</PageHeading>
+      <PageHeading id="current-task-heading" className="text-center">
+        Current to-do
+      </PageHeading>
       {markDoneFormError != null && (
         <Alert
           variant="destructive"
           id="mark-done-form-error"
           aria-labelledby="mark-done-form-error-heading"
+          ref={formErrorRef}
           className="mt-xs"
         >
           <AlertCircle aria-hidden="true" className="size-xs" />
@@ -110,7 +117,7 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
             {currentTask.note}
           </p>
         )}
-        <footer className="mt-md flex justify-around">
+        <footer className="mt-md flex justify-around gap-3xs">
           <p>
             <Button asChild variant="outline">
               <Link to={`/todo/${currentTask.id}`}>
