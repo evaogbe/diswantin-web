@@ -1,7 +1,7 @@
 import Check from "@material-design-icons/svg/filled/check.svg?react";
 import RemoveDone from "@material-design-icons/svg/filled/remove_done.svg?react";
 import { AlertCircle, EllipsisVertical, Pencil, Trash } from "lucide-react";
-import { Form, Link, useFetcher, useNavigation } from "react-router";
+import { data, Form, Link, useFetcher, useNavigation } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import * as v from "valibot";
 import type { Route } from "./+types/task-detail.route";
@@ -37,7 +37,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   const { id } = v.parse(paramsSchema, params);
   const task = await getTaskDetail(id, user);
   if (task == null) {
-    throw new Response(null, { status: 404 });
+    throw data(null, { status: 404 });
   }
 
   return { task };
@@ -89,7 +89,7 @@ export async function action({ request }: Route.ActionArgs) {
       });
     }
     default: {
-      throw new Response(null, { status: 400 });
+      throw data(null, { status: 400 });
     }
   }
 }

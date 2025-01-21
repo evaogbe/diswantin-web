@@ -1,12 +1,12 @@
-import { generateState, generateCodeVerifier } from "arctic";
+import { generateCodeVerifier, generateState } from "arctic";
 import { CircleCheck } from "lucide-react";
-import { Form, data, redirect } from "react-router";
+import { data, Form, redirect } from "react-router";
 import type { Route } from "./+types/sign-in.route";
-import { google, stateCookie, codeVerifierCookie } from "./google.server";
+import { codeVerifierCookie, google, stateCookie } from "./google.server";
 import { getFlashMessage, redirectAuthenticated } from "./services.server";
 import { getTitle } from "~/layout/meta";
 import { ThemeToggle } from "~/theme/theme-toggle";
-import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import "./sign-in.route.css";
 
 export async function loader({ request }: Route.LoaderArgs) {

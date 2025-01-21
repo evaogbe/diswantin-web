@@ -1,5 +1,5 @@
 import { Eye, EyeOff, LogOut, Pencil } from "lucide-react";
-import { Form, Link, useNavigation } from "react-router";
+import { data, Form, Link, useNavigation } from "react-router";
 import type { Route } from "./+types/settings.route";
 import { DeleteUserForm } from "./delete-user-form";
 import { EditTimeZoneForm } from "./edit-time-zone-form";
@@ -78,7 +78,7 @@ export async function action({ request }: Route.ActionArgs) {
       return await invalidateSession("Account deleted");
     }
     default: {
-      throw new Response(null, { status: 400 });
+      throw data(null, { status: 400 });
     }
   }
 }

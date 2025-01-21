@@ -44,7 +44,7 @@ export async function formAction<
       Sentry.captureMessage("Invalid hidden field", {
         extra: { errors, humanName },
       });
-      throw new Response("Invalid hidden field", { status: 400 });
+      throw data("Invalid hidden field", { status: 400 });
     }
 
     return data({ errors, defaultValues }, 422);
@@ -55,7 +55,7 @@ export async function formAction<
   } catch (e) {
     Sentry.captureException(e);
     if (e instanceof CSRFError) {
-      throw new Response("Invalid CSRF token", { status: 403 });
+      throw data("Invalid CSRF token", { status: 403 });
     }
 
     return data(
