@@ -146,12 +146,17 @@
   * {
     @apply border-border;
   }
+
+  @media (prefers-reduced-motion: no-preference) {
+    * {
+      @apply scroll-smooth;
+    }
+  }
+
   body {
     @apply bg-primary-container font-body text-base text-primary-container-foreground;
   }
-}
 
-@layer base {
   :target {
     scroll-margin-block: 5ex;
   }

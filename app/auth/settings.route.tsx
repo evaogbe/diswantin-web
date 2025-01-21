@@ -17,7 +17,7 @@ import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { cn } from "~/ui/classes";
 import { PendingButton } from "~/ui/pending-button";
-import { useSearchParams } from "~/url/use-search-params";
+import { useSearchParams } from "~/url/search-params";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const { email, timeZone } = await getAuthenticatedUser(request);

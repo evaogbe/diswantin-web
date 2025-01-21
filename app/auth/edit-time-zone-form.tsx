@@ -26,7 +26,8 @@ import {
 } from "~/ui/command";
 import { PendingButton } from "~/ui/pending-button";
 import { Popover, PopoverTrigger, PopoverContent } from "~/ui/popover";
-import { useSearchParams } from "~/url/use-search-params";
+import { useScrollIntoView } from "~/ui/scroll-into-view";
+import { useSearchParams } from "~/url/search-params";
 
 export function EditTimeZoneForm({
   timeZones,
@@ -43,6 +44,7 @@ export function EditTimeZoneForm({
     defaultValues: { timeZone: initialTimeZone },
   });
   const formError = lastIntent === "update-time-zone" ? form.error : null;
+  const formErrorRef = useScrollIntoView<HTMLElement>(formError);
 
   return (
     <FormProvider form={form}>
@@ -79,6 +81,7 @@ export function EditTimeZoneForm({
             variant="destructive"
             id={form.errorId}
             aria-labelledby={form.errorHeadingId}
+            ref={formErrorRef}
           >
             <AlertCircle aria-hidden="true" className="size-xs" />
             <AlertTitle id={form.errorHeadingId}>

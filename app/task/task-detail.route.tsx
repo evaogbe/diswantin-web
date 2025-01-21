@@ -27,6 +27,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/ui/dropdown-menu";
+import { useScrollIntoView } from "~/ui/scroll-into-view";
 
 const paramsSchema = v.object({
   id: v.string(),
@@ -114,7 +115,7 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
       ? fetcher
       : undefined,
   );
-
+  const formErrorRef = useScrollIntoView<HTMLElement>(formError);
   const isDone =
     fetcher.formData == null
       ? task.isDone
@@ -141,6 +142,7 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
             variant="destructive"
             id="form-error"
             aria-labelledby="form-error-heading"
+            ref={formErrorRef}
           >
             <AlertCircle aria-hidden="true" className="size-xs" />
             <AlertTitle id="form-error-heading">
