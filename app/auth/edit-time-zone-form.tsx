@@ -54,7 +54,7 @@ export function EditTimeZoneForm({
         aria-describedby={formError != null ? form.errorId : undefined}
         onSubmit={form.onSubmit}
         className={cn(
-          "space-y-xs rounded-xl border bg-card p-sm text-card-foreground shadow",
+          "mt-xs space-y-xs rounded-xl border bg-card p-sm text-card-foreground shadow",
           form.formState.isSubmitting && "[&_*]:cursor-wait",
         )}
       >
