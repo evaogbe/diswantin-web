@@ -12,7 +12,7 @@ import { formAction } from "~/form/action.server";
 import { useFormError } from "~/form/form-error";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
-import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { cn } from "~/ui/classes";
 

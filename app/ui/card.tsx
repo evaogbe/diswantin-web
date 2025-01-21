@@ -56,7 +56,7 @@ function CardTitle({
     <Comp
       ref={ref}
       className={cn(
-        "text-lg font-semibold leading-none tracking-tight",
+        "text-balance break-words text-lg font-semibold leading-none tracking-tight",
         className,
       )}
       {...props}
@@ -74,7 +74,7 @@ function CardDescription({
   return (
     <p
       ref={ref}
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("break-words text-sm text-muted-foreground", className)}
       {...props}
     />
   );

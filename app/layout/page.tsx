@@ -28,7 +28,7 @@ function PageHeading({
     <h2
       ref={ref}
       className={cn(
-        "font-display text-3xl font-extrabold leading-tight tracking-tight",
+        "text-balance break-words font-display text-3xl font-extrabold leading-tight tracking-tight",
         className,
       )}
       {...props}

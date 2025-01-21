@@ -19,7 +19,7 @@ import { Input } from "~/form/input";
 import { TextArea } from "~/form/text-area";
 import { generalError } from "~/form/validation";
 import { Page, PageHeading } from "~/layout/page";
-import { Alert, AlertTitle, AlertDescription } from "~/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { cn } from "~/ui/classes";
 import { PendingButton } from "~/ui/pending-button";
