@@ -174,26 +174,35 @@ function formatDateTime(
 ) {
   if (date != null && time != null) {
     const dateTime = toDate(`${date}T${time}`, { timeZone });
-    return new Intl.DateTimeFormat("en-US", {
-      dateStyle: "full",
-      timeStyle: "short",
-      timeZone,
-    }).format(dateTime);
+    return {
+      iso: dateTime.toISOString(),
+      human: new Intl.DateTimeFormat("en-US", {
+        dateStyle: "full",
+        timeStyle: "short",
+        timeZone,
+      }).format(dateTime),
+    };
   }
 
   if (date != null) {
     const dateTime = toDate(`${date}T00:00:00`, { timeZone });
-    return new Intl.DateTimeFormat("en-US", {
-      dateStyle: "full",
-      timeZone,
-    }).format(dateTime);
+    return {
+      iso: dateTime.toISOString(),
+      human: new Intl.DateTimeFormat("en-US", {
+        dateStyle: "full",
+        timeZone,
+      }).format(dateTime),
+    };
   }
 
   if (time != null) {
     const dateTime = parse(time, "HH:mm:ss", new Date());
-    return new Intl.DateTimeFormat("en-US", {
-      timeStyle: "short",
-    }).format(dateTime);
+    return {
+      iso: dateTime.toISOString(),
+      human: new Intl.DateTimeFormat("en-US", {
+        timeStyle: "short",
+      }).format(dateTime),
+    };
   }
 
   return null;

@@ -227,8 +227,12 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
       <dl>
         {task.deadline != null && (
           <>
-            <dt className="text-muted-foreground">Deadline</dt>
-            <dd>{task.deadline}</dd>
+            <dt className="text-muted-foreground [&:not(:first-child)]:mt-2xs">
+              Deadline
+            </dt>
+            <dd>
+              <time dateTime={task.deadline.iso}>{task.deadline.human}</time>
+            </dd>
           </>
         )}
         {task.startAfter != null && (
@@ -236,13 +240,23 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
             <dt className="text-muted-foreground [&:not(:first-child)]:mt-2xs">
               Start after
             </dt>
-            <dd>{task.startAfter}</dd>
+            <dd>
+              <time dateTime={task.startAfter.iso}>
+                {task.startAfter.human}
+              </time>
+            </dd>
           </>
         )}
         {task.scheduledAt != null && (
           <>
-            <dt className="text-muted-foreground">Scheduled at</dt>
-            <dd>{task.scheduledAt}</dd>
+            <dt className="text-muted-foreground [&:not(:first-child)]:mt-2xs">
+              Scheduled at
+            </dt>
+            <dd>
+              <time dateTime={task.scheduledAt.iso}>
+                {task.scheduledAt.human}
+              </time>
+            </dd>
           </>
         )}
       </dl>
