@@ -36,8 +36,7 @@ export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "To-do search", error }) }];
 }
 
-export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
-  const { query, searchResults } = loaderData;
+function useSearch(query: string | null) {
   const submit = useSubmit();
   const queryRef = useRef<HTMLInputElement>(null);
   const search = useDebouncedCallback((form: HTMLFormElement) => {
@@ -52,6 +51,12 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
       queryRef.current.value = query ?? "";
     }
   }, [query, search]);
+  return { queryRef, search };
+}
+
+export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
+  const { query, searchResults } = loaderData;
+  const { queryRef, search } = useSearch(query);
 
   return (
     <div className="flex min-h-svh flex-col">
