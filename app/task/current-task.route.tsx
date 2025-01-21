@@ -46,7 +46,7 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
   const { currentTask } = loaderData;
   const fetcher = useFetcher();
   const markDoneFormError = useFormError(fetcher);
-  const formErrorRef = useScrollIntoView<HTMLElement>([markDoneFormError]);
+  const formErrorRef = useScrollIntoView<HTMLElement>(markDoneFormError);
 
   if (currentTask == null) {
     return (

@@ -80,7 +80,7 @@ export function TaskForm({
     (form.formState.errors.scheduledAt != null && !showScheduledAt)
       ? generalError(humanName)
       : null);
-  const formErrorRef = useScrollIntoView<HTMLElement>([formError]);
+  const formErrorRef = useScrollIntoView<HTMLElement>(formError);
   const scheduledDate = form.watch("scheduledAt.date");
 
   return (

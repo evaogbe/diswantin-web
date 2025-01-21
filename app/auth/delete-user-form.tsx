@@ -30,7 +30,7 @@ export function DeleteUserForm() {
     defaultValues: { email: "" },
   });
   const formError = lastIntent === "delete-account" ? form.error : null;
-  const formErrorRef = useScrollIntoView<HTMLElement>([formError]);
+  const formErrorRef = useScrollIntoView<HTMLElement>(formError);
 
   if (searchParams.has("delete-account")) {
     return (

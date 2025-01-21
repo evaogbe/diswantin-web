@@ -44,7 +44,7 @@ export function EditTimeZoneForm({
     defaultValues: { timeZone: initialTimeZone },
   });
   const formError = lastIntent === "update-time-zone" ? form.error : null;
-  const formErrorRef = useScrollIntoView<HTMLElement>([formError]);
+  const formErrorRef = useScrollIntoView<HTMLElement>(formError);
 
   return (
     <FormProvider form={form}>

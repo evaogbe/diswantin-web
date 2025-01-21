@@ -115,7 +115,7 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
       ? fetcher
       : undefined,
   );
-  const formErrorRef = useScrollIntoView<HTMLElement>([formError]);
+  const formErrorRef = useScrollIntoView<HTMLElement>(formError);
   const isDone =
     fetcher.formData == null
       ? task.isDone

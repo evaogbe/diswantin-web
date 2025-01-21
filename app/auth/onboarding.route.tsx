@@ -81,7 +81,7 @@ export default function OnboardingRoute({ loaderData }: Route.ComponentProps) {
     schema: onboardingSchema,
     defaultValues: { timeZone: "" },
   });
-  const formErrorRef = useScrollIntoView<HTMLElement>([form.error]);
+  const formErrorRef = useScrollIntoView<HTMLElement>(form.error);
   useSetTimeZone(timeZones, form);
 
   return (

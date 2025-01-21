@@ -1,10 +1,11 @@
 import { useEffect, useRef } from "react";
 
-export function useScrollIntoView<E extends Element>(deps: unknown[]) {
+export function useScrollIntoView<E extends Element>(dep: unknown) {
   const ref = useRef<E>(null);
   useEffect(() => {
-    ref.current?.scrollIntoView();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+    if (dep != null) {
+      ref.current?.scrollIntoView();
+    }
+  }, [dep]);
   return ref;
 }
