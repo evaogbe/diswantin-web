@@ -167,25 +167,27 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
               {isDone ? (
                 <Button name="intent" value="unmark-done" variant="outline">
                   <RemoveDone aria-hidden="true" />
-                  Unmark done
+                  <span className="max-sm:sr-only">Unmark done</span>
                 </Button>
               ) : (
                 <Button name="intent" value="mark-done" variant="outline">
                   <Check aria-hidden="true" />
-                  Mark done
+                  <span className="max-sm:sr-only">Mark done</span>
                 </Button>
               )}
             </p>
           </fetcher.Form>
           <Button variant="outline" asChild>
             <Link to={`/edit-todo/${task.id}`}>
-              <Pencil aria-hidden="true" /> Edit
+              <Pencil aria-hidden="true" />
+              <span className="max-sm:sr-only">Edit</span>
             </Link>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
-                <EllipsisVertical aria-hidden="true" /> More
+                <EllipsisVertical aria-hidden="true" />
+                <span className="max-sm:sr-only">More</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
