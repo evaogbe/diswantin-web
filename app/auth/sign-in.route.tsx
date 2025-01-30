@@ -50,17 +50,17 @@ export default function SignInRoute({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <header className="top-0 z-10 flex justify-end border-b border-primary-container bg-primary-container p-2xs shadow dark:border-accent sm:sticky">
+      <header className="top-0 z-10 flex justify-end border-b border-primary-container bg-primary-container p-fl-2xs shadow dark:border-accent sm:sticky">
         <ThemeToggle />
       </header>
-      <main className="p-sm">
+      <main className="p-fl-sm">
         {flashMessage != null && (
           <Alert
             variant="success"
             aria-labelledby="flash-heading"
             className="mx-auto max-w-prose"
           >
-            <CircleCheck aria-hidden="true" className="size-xs" />
+            <CircleCheck aria-hidden="true" className="size-fl-xs" />
             <AlertTitle level={2} id="flash-heading">
               Success
             </AlertTitle>
@@ -73,7 +73,7 @@ export default function SignInRoute({ loaderData }: Route.ComponentProps) {
         <p className="max-w-prose text-2xl tracking-tight">
           The app that shows you the one thing to do right now.
         </p>
-        <Form method="post" className="mt-xs" reloadDocument>
+        <Form method="post" className="mt-fl-xs" reloadDocument>
           <p>
             <button className="gsi-material-button">
               <div className="gsi-material-button-state"></div>

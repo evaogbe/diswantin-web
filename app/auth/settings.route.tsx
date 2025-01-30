@@ -11,6 +11,7 @@ import {
   updateTimeZone,
 } from "./services.server";
 import { formAction } from "~/form/action.server";
+import { useIntents } from "~/form/intents";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Button } from "~/ui/button";
@@ -91,34 +92,40 @@ export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "Account settings", error }) }];
 }
 
-export default function SettingsRoute({ loaderData }: Route.ComponentProps) {
+export default function SettingsRoute({
+  loaderData,
+  actionData,
+}: Route.ComponentProps) {
   const { account, timeZones } = loaderData;
   const { searchParams, withSearchParam, withoutSearchParam } =
     useSearchParams();
   const navigation = useNavigation();
+  const lastIntent = useIntents();
 
   return (
-    <Page aria-labelledby="account-settings-heading">
+    <Page aria-labelledby="account-settings-heading" className="space-y-fl-sm">
       <PageHeading id="account-settings-heading">Account settings</PageHeading>
       {searchParams.has("update-time-zone") ? (
         <EditTimeZoneForm
           timeZones={timeZones}
           initialTimeZone={account.timeZone}
+          lastResult={actionData}
+          lastIntent={lastIntent}
         />
       ) : (
-        <Card aria-labelledby="account-info-heading" className="mt-xs">
-          <CardHeader className="pb-xs">
+        <Card aria-labelledby="account-info-heading">
+          <CardHeader className="pb-fl-xs">
             <CardTitle id="account-info-heading">Account Info</CardTitle>
           </CardHeader>
           <CardContent>
             <dl className="text-sm">
               <dt className="text-muted-foreground">Sign-in method</dt>
               <dd>
-                <p className="mt-4xs">Google</p>
+                <p className="mt-fl-4xs">Google</p>
                 {searchParams.has("email") ? (
                   <>
-                    <p className="mt-4xs">{account.email}</p>
-                    <p className="mt-2xs">
+                    <p className="mt-fl-4xs">{account.email}</p>
+                    <p className="mt-fl-2xs">
                       <Button variant="outline" size="sm" asChild>
                         <Link
                           to={withoutSearchParam("email")}
@@ -131,7 +138,7 @@ export default function SettingsRoute({ loaderData }: Route.ComponentProps) {
                     </p>
                   </>
                 ) : (
-                  <p className="mt-2xs">
+                  <p className="mt-fl-2xs">
                     <Button variant="outline" size="sm" asChild>
                       <Link
                         to={withSearchParam("email")}
@@ -144,10 +151,10 @@ export default function SettingsRoute({ loaderData }: Route.ComponentProps) {
                   </p>
                 )}
               </dd>
-              <dt className="mt-xs text-muted-foreground">Time zone</dt>
+              <dt className="mt-fl-xs text-muted-foreground">Time zone</dt>
               <dd>
-                <p className="mt-4xs">{account.timeZone}</p>
-                <p className="mt-2xs">
+                <p className="mt-fl-4xs">{account.timeZone}</p>
+                <p className="mt-fl-2xs">
                   <Button variant="outline" size="sm" asChild>
                     <Link
                       to={withSearchParam("update-time-zone")}
@@ -165,14 +172,13 @@ export default function SettingsRoute({ loaderData }: Route.ComponentProps) {
       )}
       <Form
         method="post"
-        className={cn(
-          "mt-sm",
-          navigation.state === "submitting" && "[&_*]:cursor-wait",
-        )}
+        className={cn(navigation.state === "submitting" && "[&_*]:cursor-wait")}
       >
         <p>
           <PendingButton
-            pending={navigation.state === "submitting"}
+            pending={
+              lastIntent === "sign-out" && navigation.state === "submitting"
+            }
             pendingText="Signing out…"
             name="intent"
             value="sign-out"
@@ -182,7 +188,7 @@ export default function SettingsRoute({ loaderData }: Route.ComponentProps) {
           </PendingButton>
         </p>
       </Form>
-      <DeleteUserForm />
+      <DeleteUserForm lastResult={actionData} lastIntent={lastIntent} />
     </Page>
   );
 }

@@ -8,7 +8,6 @@ import { markDoneSchema } from "./model";
 import { getCurrentTask, markTaskDone } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
-import { useFormError } from "~/form/form-error";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
@@ -30,7 +29,7 @@ export async function action({ request }: Route.ActionArgs) {
     requestHeaders: request.headers,
     schema: markDoneSchema,
     mutation: async (values) => {
-      await markTaskDone(values.id, user.id);
+      await markTaskDone(values.id, user);
       return { status: "success" };
     },
     humanName: "mark the to-do done",
@@ -44,8 +43,8 @@ export function meta({ error }: Route.MetaArgs) {
 
 export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
   const { currentTask } = loaderData;
-  const fetcher = useFetcher();
-  const markDoneFormError = useFormError(fetcher);
+  const fetcher = useFetcher<typeof action>();
+  const markDoneFormError = Object.values(fetcher.data?.error ?? {})[0];
   const formErrorRef = useScrollIntoView<HTMLElement>(markDoneFormError);
 
   if (currentTask == null) {
@@ -59,12 +58,12 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
         </PageHeading>
         <AddTask
           aria-hidden="true"
-          className="mt-xs size-2xl text-muted-foreground"
+          className="mt-fl-xs size-fl-2xl text-muted-foreground"
         />
-        <p className="mt-sm text-center text-xl text-muted-foreground">
+        <p className="mt-fl-sm text-center text-xl text-muted-foreground">
           No upcoming to-dos
         </p>
-        <p className="mt-sm">
+        <p className="mt-fl-sm">
           <Button asChild>
             <Link to="/new-todo">
               <Plus aria-hidden="true" /> Add to-do
@@ -83,21 +82,6 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
       <PageHeading id="current-task-heading" className="text-center">
         Current to-do
       </PageHeading>
-      {markDoneFormError != null && (
-        <Alert
-          variant="destructive"
-          id="mark-done-form-error"
-          aria-labelledby="mark-done-form-error-heading"
-          ref={formErrorRef}
-          className="mt-xs"
-        >
-          <AlertCircle aria-hidden="true" className="size-xs" />
-          <AlertTitle id="mark-done-form-error-heading">
-            Error marking to-do done
-          </AlertTitle>
-          <AlertDescription>{markDoneFormError}</AlertDescription>
-        </Alert>
-      )}
       <div
         className={cn(
           "w-full transition-opacity",
@@ -109,15 +93,30 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
             Marking done…
           </p>
         )}
-        <p className="mt-2xs text-center text-2xl tracking-tight">
+        {markDoneFormError != null && (
+          <Alert
+            variant="destructive"
+            id="mark-done-form-error"
+            aria-labelledby="mark-done-form-error-heading"
+            ref={formErrorRef}
+            className="mt-fl-sm"
+          >
+            <AlertCircle aria-hidden="true" className="size-fl-xs" />
+            <AlertTitle id="mark-done-form-error-heading">
+              Error marking to-do done
+            </AlertTitle>
+            <AlertDescription>{markDoneFormError}</AlertDescription>
+          </Alert>
+        )}
+        <p className="mt-fl-xs text-center text-2xl tracking-tight">
           {currentTask.name}
         </p>
         {currentTask.note != null && (
-          <p className="mt-sm whitespace-pre-wrap text-center text-lg text-muted-foreground">
+          <p className="mt-fl-sm whitespace-pre-wrap text-center text-lg text-muted-foreground">
             {currentTask.note}
           </p>
         )}
-        <footer className="mt-md flex justify-around gap-3xs">
+        <footer className="mt-fl-md flex justify-around gap-fl-3xs">
           <p>
             <Button asChild variant="outline">
               <Link to={`/todo/${currentTask.id}`}>

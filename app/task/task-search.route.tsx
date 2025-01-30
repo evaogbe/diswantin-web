@@ -28,7 +28,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     };
   }
 
-  const searchResults = await searchTasks(query, user.id);
+  const searchResults = await searchTasks(query, user);
   return { searchResults, query: q, isAuthenticated: true };
 }
 
@@ -60,13 +60,13 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="top-0 z-10 flex flex-wrap items-center gap-xs border-b border-primary-container bg-primary-container p-2xs shadow dark:border-accent sm:sticky">
+      <header className="top-0 z-10 flex flex-wrap items-center gap-fl-xs border-b border-primary-container bg-primary-container p-fl-2xs shadow dark:border-accent sm:sticky">
         <h1>
           <Link
             to="/home"
             className={cn(navigationMenuTriggerStyle(), "text-base")}
           >
-            <img src={logo} alt="" width="24" height="24" />
+            <img src={logo} alt="" width="32" height="32" />
             <span className="max-sm:sr-only">Diswantin</span>
           </Link>
         </h1>
@@ -76,9 +76,9 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
               search(e.currentTarget);
             }}
           >
-            <p className="flex h-lg items-center gap-2xs rounded-md border border-input py-3xs ps-xs shadow-sm ring-offset-primary-container transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+            <p className="flex h-fl-lg items-center gap-fl-2xs rounded-md border border-input py-fl-3xs ps-fl-xs shadow-sm ring-offset-primary-container transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
               <label htmlFor="search-form-query">
-                <Search aria-hidden="true" className="size-xs" />
+                <Search aria-hidden="true" className="size-fl-xs" />
                 <span className="sr-only">Search</span>
               </label>
               <input
@@ -109,13 +109,13 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
         <ThemeToggle />
       </header>
       {query != null && query.trim().length > 1 && (
-        <main className="mx-auto flex w-full max-w-prose flex-1 flex-col p-sm">
+        <main className="mx-auto flex w-full max-w-prose flex-1 flex-col p-fl-sm">
           <Page aria-labelledby="search-results-heading">
             <PageHeading id="search-results-heading">
               Search results
             </PageHeading>
             {searchResults.length > 0 ? (
-              <ul className="space-y-xs">
+              <ul className="mt-fl-2xs space-y-fl-2xs">
                 {searchResults.map((result) => (
                   <li key={result.id}>
                     <Link
@@ -125,7 +125,7 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
                         result.isDone && "line-through",
                       )}
                     >
-                      <div className="mx-xs my-2xs inline-flex overflow-hidden">
+                      <div className="mx-fl-2xs my-fl-3xs inline-flex overflow-hidden">
                         {result.headline.map(({ value, highlight }, i) =>
                           highlight ? (
                             <b
@@ -153,12 +153,12 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
               <div className="flex flex-col items-center">
                 <Search
                   aria-hidden="true"
-                  className="mt-xs size-2xl text-muted-foreground"
+                  className="mt-fl-xs size-fl-2xl text-muted-foreground"
                 />
-                <p className="mt-sm text-xl text-muted-foreground">
+                <p className="mt-fl-sm text-xl text-muted-foreground">
                   No matching to-dos
                 </p>
-                <p className="mt-sm">
+                <p className="mt-fl-sm">
                   <Button asChild>
                     <Link to={`/new-todo?name=${query.trim()}`}>
                       <Plus aria-hidden="true" /> Add to-do

@@ -3,7 +3,7 @@ import type { VariantProps } from "class-variance-authority";
 import { cn } from "~/ui/classes";
 
 const alertVariants = cva(
-  "relative w-full rounded-lg border p-xs text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:start-xs [&>svg]:top-xs [&>svg]:text-foreground [&>svg~*]:ps-md",
+  "relative w-full scroll-my-[5ex] rounded-lg border p-fl-xs text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:start-fl-xs [&>svg]:top-fl-xs [&>svg]:text-foreground [&>svg~*]:ps-fl-md",
   {
     variants: {
       variant: {
@@ -58,7 +58,7 @@ function AlertTitle({
   return (
     <Comp
       className={cn(
-        "mb-3xs text-balance font-medium leading-none tracking-tight",
+        "mb-fl-3xs text-balance font-medium leading-none tracking-tight",
         className,
       )}
       {...props}

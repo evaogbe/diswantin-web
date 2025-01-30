@@ -10,7 +10,7 @@ function Link({
   return (
     <LinkPrimitive
       className={cn(
-        "whitespace-nowrap text-link underline transition-colors hover:text-link/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+        "text-link underline transition-colors hover:text-link/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
         className,
       )}
       {...props}

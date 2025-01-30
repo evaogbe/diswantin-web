@@ -14,7 +14,6 @@ import {
 } from "./services.server";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
-import { useFormError } from "~/form/form-error";
 import { useIntents } from "~/form/intents";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
@@ -54,7 +53,7 @@ export async function action({ request }: Route.ActionArgs) {
         requestHeaders: request.headers,
         schema: markDoneSchema,
         mutation: async (values) => {
-          await markTaskDone(values.id, user.id);
+          await markTaskDone(values.id, user);
           return { status: "success" };
         },
         humanName: "mark the to-do done",
@@ -68,7 +67,7 @@ export async function action({ request }: Route.ActionArgs) {
         requestHeaders: request.headers,
         schema: unmarkDoneSchema,
         mutation: async (values) => {
-          await unmarkTaskDone(values.id, user.id);
+          await unmarkTaskDone(values.id, user);
           return { status: "success" };
         },
         humanName: "unmark the to-do done",
@@ -105,16 +104,18 @@ const errorHeadings = new Map([
   ["delete", "Error deleting to-do"],
 ]);
 
-export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
+export default function TaskDetailRoute({
+  loaderData,
+  actionData,
+}: Route.ComponentProps) {
   const { task } = loaderData;
   const navigation = useNavigation();
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<typeof action>();
   const lastIntent = useIntents(fetcher);
-  const formError = useFormError(
+  const formError =
     lastIntent === "mark-done" || lastIntent === "unmark-done"
-      ? fetcher
-      : undefined,
-  );
+      ? Object.values(fetcher.data?.error ?? {})[0]
+      : Object.values(actionData?.error ?? {})[0];
   const formErrorRef = useScrollIntoView<HTMLElement>(formError);
   const isDone =
     fetcher.formData == null
@@ -125,11 +126,11 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
     <Page
       aria-labelledby="task-detail-heading"
       className={cn(
-        "space-y-sm transition-opacity",
+        "space-y-fl-sm transition-opacity",
         navigation.state === "submitting" && "opacity-0",
       )}
     >
-      <header className="space-y-xs">
+      <header className="space-y-fl-xs">
         <PageHeading
           id="task-detail-heading"
           className={cn(isDone && "line-through")}
@@ -144,14 +145,14 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
             aria-labelledby="form-error-heading"
             ref={formErrorRef}
           >
-            <AlertCircle aria-hidden="true" className="size-xs" />
+            <AlertCircle aria-hidden="true" className="size-fl-xs" />
             <AlertTitle id="form-error-heading">
               {errorHeadings.get(lastIntent ?? "") ?? "Unexpected error"}
             </AlertTitle>
             <AlertDescription>{formError}</AlertDescription>
           </Alert>
         )}
-        <div className="flex justify-end gap-2xs">
+        <div className="flex justify-end gap-fl-2xs">
           <fetcher.Form
             method="post"
             aria-describedby={
@@ -210,9 +211,9 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
                     <button
                       name="intent"
                       value="delete"
-                      className="inline-flex items-center gap-2xs"
+                      className="inline-flex items-center gap-fl-2xs"
                     >
-                      <Trash aria-hidden="true" className="size-xs" />
+                      <Trash aria-hidden="true" className="size-fl-xs" />
                       Delete
                     </button>
                   </p>
@@ -229,9 +230,17 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
       )}
       {task.note != null && <p className="whitespace-pre-wrap">{task.note}</p>}
       <dl>
+        {task.recurrence != null && (
+          <>
+            <dt className="text-muted-foreground [&:not(:first-child)]:mt-fl-2xs">
+              Repeats
+            </dt>
+            <dd>{task.recurrence}</dd>
+          </>
+        )}
         {task.deadline != null && (
           <>
-            <dt className="text-muted-foreground [&:not(:first-child)]:mt-2xs">
+            <dt className="text-muted-foreground [&:not(:first-child)]:mt-fl-2xs">
               Deadline
             </dt>
             <dd>
@@ -241,7 +250,7 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
         )}
         {task.startAfter != null && (
           <>
-            <dt className="text-muted-foreground [&:not(:first-child)]:mt-2xs">
+            <dt className="text-muted-foreground [&:not(:first-child)]:mt-fl-2xs">
               Start after
             </dt>
             <dd>
@@ -253,7 +262,7 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
         )}
         {task.scheduledAt != null && (
           <>
-            <dt className="text-muted-foreground [&:not(:first-child)]:mt-2xs">
+            <dt className="text-muted-foreground [&:not(:first-child)]:mt-fl-2xs">
               Scheduled at
             </dt>
             <dd>

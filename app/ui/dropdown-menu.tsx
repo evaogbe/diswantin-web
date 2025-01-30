@@ -28,8 +28,8 @@ function DropdownMenuSubTrigger({
   return (
     <DropdownMenuPrimitive.SubTrigger
       className={cn(
-        "flex cursor-default select-none items-center gap-2xs rounded-sm px-2xs py-3xs text-sm outline-none focus:bg-accent data-[state=open]:bg-accent [&_svg]:pointer-events-none [&_svg]:size-xs [&_svg]:shrink-0",
-        inset && "ps-md",
+        "flex cursor-default select-none items-center gap-fl-2xs rounded-sm px-fl-2xs py-fl-3xs text-sm outline-none focus:bg-accent data-[state=open]:bg-accent [&_svg]:pointer-events-none [&_svg]:size-fl-xs [&_svg]:shrink-0",
+        inset && "ps-fl-md",
         className,
       )}
       {...props}
@@ -51,7 +51,7 @@ function DropdownMenuSubContent({
   return (
     <DropdownMenuPrimitive.SubContent
       className={cn(
-        "z-50 min-w-3xl overflow-hidden rounded-md border bg-popover p-3xs text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "z-50 min-w-fl-3xl overflow-hidden rounded-md border bg-popover p-fl-3xs text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         className,
       )}
       {...props}
@@ -73,7 +73,7 @@ function DropdownMenuContent({
       <DropdownMenuPrimitive.Content
         sideOffset={sideOffset}
         className={cn(
-          "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-3xs text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          "z-50 min-w-32 overflow-hidden rounded-md border bg-popover p-fl-3xs text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           className,
         )}
         {...props}
@@ -93,8 +93,8 @@ function DropdownMenuItem({
   return (
     <DropdownMenuPrimitive.Item
       className={cn(
-        "relative flex cursor-default select-none items-center gap-2xs rounded-sm px-2xs py-3xs text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-xs [&>svg]:shrink-0",
-        inset && "ps-md",
+        "relative flex cursor-default select-none items-center gap-fl-2xs rounded-sm px-fl-2xs py-fl-3xs text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-fl-xs [&>svg]:shrink-0",
+        inset && "ps-fl-md",
         className,
       )}
       {...props}
@@ -115,15 +115,15 @@ function DropdownMenuCheckboxItem({
   return (
     <DropdownMenuPrimitive.CheckboxItem
       className={cn(
-        "relative flex cursor-default select-none items-center rounded-sm py-3xs pe-2xs ps-md text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex cursor-default select-none items-center rounded-sm py-fl-3xs pe-fl-2xs ps-fl-md text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
       )}
       checked={checked}
       {...props}
     >
-      <span className="absolute start-2xs flex size-xs items-center justify-center">
+      <span className="absolute start-fl-2xs flex size-fl-xs items-center justify-center">
         <DropdownMenuPrimitive.ItemIndicator>
-          <Check className="size-xs" />
+          <Check className="size-fl-xs" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -143,14 +143,14 @@ function DropdownMenuRadioItem({
   return (
     <DropdownMenuPrimitive.RadioItem
       className={cn(
-        "relative flex cursor-default select-none items-center rounded-sm py-3xs pe-2xs ps-md text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex cursor-default select-none items-center rounded-sm py-fl-3xs pe-fl-2xs ps-fl-md text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
       )}
       {...props}
     >
-      <span className="absolute start-2xs flex size-xs items-center justify-center">
+      <span className="absolute start-fl-2xs flex size-fl-xs items-center justify-center">
         <DropdownMenuPrimitive.ItemIndicator>
-          <Circle className="size-2xs" />
+          <Circle className="size-fl-2xs" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -169,8 +169,8 @@ function DropdownMenuLabel({
   return (
     <DropdownMenuPrimitive.Label
       className={cn(
-        "px-2xs py-3xs text-sm font-semibold",
-        inset && "ps-md",
+        "px-fl-2xs py-fl-3xs text-sm font-semibold",
+        inset && "ps-fl-md",
         className,
       )}
       {...props}
@@ -188,7 +188,7 @@ function DropdownMenuSeparator({
 }) {
   return (
     <DropdownMenuPrimitive.Separator
-      className={cn("-mx-3xs my-3xs h-px bg-muted", className)}
+      className={cn("-mx-fl-3xs my-fl-3xs h-px bg-muted", className)}
       {...props}
     />
   );
