@@ -4,6 +4,7 @@ import {
   date,
   index,
   integer,
+  pgEnum,
   pgTable,
   time,
   timestamp,
@@ -27,7 +28,7 @@ export const task = pgTable(
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     userId: integer()
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onUpdate: "cascade", onDelete: "cascade" }),
     name: varchar({ length: 255 }).notNull(),
     note: varchar({ length: 256 }),
     deadlineDate: date(),
@@ -52,9 +53,31 @@ export const taskCompletion = pgTable(
     doneAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     taskId: integer()
       .notNull()
-      .references(() => task.id, { onDelete: "cascade" }),
+      .references(() => task.id, { onUpdate: "cascade", onDelete: "cascade" }),
   },
   (table) => [unique().on(table.doneAt, table.taskId)],
+);
+
+export const recurrenceType = pgEnum("recurrence_type", [
+  "day",
+  "week",
+  "day_of_month",
+  "week_of_month",
+  "year",
+]);
+
+export const taskRecurrence = pgTable(
+  "task_recurrence",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    taskId: integer()
+      .notNull()
+      .references(() => task.id, { onUpdate: "cascade", onDelete: "cascade" }),
+    start: date().notNull(),
+    type: recurrenceType().notNull(),
+    step: integer().notNull(),
+  },
+  (table) => [unique().on(table.taskId, table.start)],
 );
 
 export const userRelations = relations(user, ({ many }) => ({
@@ -67,11 +90,19 @@ export const taskRelations = relations(task, ({ one, many }) => ({
     references: [user.id],
   }),
   completions: many(taskCompletion),
+  recurrences: many(taskRecurrence),
 }));
 
 export const taskCompletionRelations = relations(taskCompletion, ({ one }) => ({
   task: one(task, {
     fields: [taskCompletion.taskId],
+    references: [task.id],
+  }),
+}));
+
+export const taskRecurrenceRelations = relations(taskRecurrence, ({ one }) => ({
+  task: one(task, {
+    fields: [taskRecurrence.taskId],
     references: [task.id],
   }),
 }));

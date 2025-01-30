@@ -11,7 +11,7 @@ function Page({
   return (
     <Comp
       className={cn(
-        "flex-1 rounded-sm bg-background p-sm pt-2xs max-sm:min-w-fit",
+        "flex-1 rounded-sm bg-background p-fl-sm pt-fl-2xs max-sm:min-w-fit",
         className,
       )}
       {...props}

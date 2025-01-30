@@ -5,6 +5,7 @@ import { defineConfig } from "vite";
 import { envOnlyMacros } from "vite-env-only";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { configDefaults } from "vitest/config";
 
 dotenv.config({ path: `env/${process.env.NODE_ENV ?? "development"}.env` });
 
@@ -33,5 +34,9 @@ export default defineConfig({
   build: {
     target: "esnext",
     sourcemap: true,
+  },
+  test: {
+    exclude: [...configDefaults.exclude, "tests/**"],
+    setupFiles: ["./scripts/vitest-setup.ts"],
   },
 });

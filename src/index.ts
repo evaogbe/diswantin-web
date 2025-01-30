@@ -69,7 +69,7 @@ async function run() {
     }),
   );
 
-  const rateLimitDefaults = {
+  const rateLimitDefaults: Partial<RateLimitOptions> = {
     standardHeaders: "draft-8",
     legacyHeaders: false,
     keyGenerator(req) {
@@ -81,7 +81,7 @@ async function run() {
       });
       res.status(options.statusCode).send(options.message);
     },
-  } as Partial<RateLimitOptions>;
+  };
   const generalRateLimit = rateLimit({
     ...rateLimitDefaults,
     limit: 1000,

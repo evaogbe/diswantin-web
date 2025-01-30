@@ -127,6 +127,14 @@ module.exports = {
           "error",
           { prefer: "parameter-property" },
         ],
+        "@typescript-eslint/prefer-nullish-coalescing": [
+          "error",
+          {
+            ignoreBooleanCoercion: true,
+            ignoreConditionalTests: true,
+            ignoreMixedLogicalExpressions: true,
+          },
+        ],
         "@typescript-eslint/prefer-promise-reject-errors": [
           "error",
           { allowThrowingUnknown: true },
@@ -136,6 +144,14 @@ module.exports = {
           "error",
           { allowNumber: true },
         ],
+      },
+    },
+
+    // Unit tests
+    {
+      files: ["app/**/*.spec.{ts,tsx}"],
+      rules: {
+        "@typescript-eslint/no-non-null-assertion": "off",
       },
     },
 

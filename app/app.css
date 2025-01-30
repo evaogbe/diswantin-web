@@ -92,7 +92,7 @@
     --step-5: clamp(2.7994rem, 2.4312rem + 1.7852vw, 3.8147rem);
   }
 
-  /* @link https://utopia.fyi/space/calculator?c=330,18,1.2,1240,20,1.25,5,2,&s=0.75|0.5|0.25|0.125,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+  /* @link https://utopia.fyi/space/calculator?c=330,18,1.2,1240,20,1.25,5,2,&s=0.75|0.5|0.25|0.125,1.5|2|3|4|6,s-l|s-2xl&g=s,l,xl,12 */
 
   :root {
     /* Space 4xs: 2px → 3px */
@@ -139,6 +139,8 @@
     /* Custom pairs */
     /* Space s-l: 18px → 40px */
     --space-s-l: clamp(1.125rem, 0.6264rem + 2.4176vw, 2.5rem);
+    /* Space s-2xl: 18px → 80px */
+    --space-s-2xl: clamp(1.125rem, -0.2802rem + 6.8132vw, 5rem);
   }
 }
 

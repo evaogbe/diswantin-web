@@ -18,7 +18,7 @@ function CardHeader({
 }: React.JSX.IntrinsicElements["header"]) {
   return (
     <header
-      className={cn("flex flex-col space-y-3xs p-sm", className)}
+      className={cn("flex flex-col gap-fl-3xs p-fl-sm", className)}
       {...props}
     />
   );
@@ -73,7 +73,7 @@ function CardContent({
   className,
   ...props
 }: React.JSX.IntrinsicElements["div"]) {
-  return <div className={cn("p-sm pt-0", className)} {...props} />;
+  return <div className={cn("p-fl-sm pt-0", className)} {...props} />;
 }
 
 function CardFooter({
@@ -82,7 +82,7 @@ function CardFooter({
 }: React.JSX.IntrinsicElements["footer"]) {
   return (
     <footer
-      className={cn("flex items-center p-sm pt-0", className)}
+      className={cn("flex items-center p-fl-sm pt-0", className)}
       {...props}
     />
   );

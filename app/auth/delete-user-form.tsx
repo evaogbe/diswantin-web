@@ -1,18 +1,19 @@
+import type { SubmissionResult } from "@conform-to/dom";
+import { FormProvider, useForm } from "@conform-to/react";
+import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, X } from "lucide-react";
-import { Form, Link } from "react-router";
+import { Form, Link, useNavigation } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { deleteUserSchema } from "./model";
 import {
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormProvider,
-  useForm,
+  getFormProps,
 } from "~/form/form";
+import { useIdGenerator } from "~/form/id-generator";
 import { Input } from "~/form/input";
-import { useIntents } from "~/form/intents";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
@@ -21,47 +22,58 @@ import { PendingButton } from "~/ui/pending-button";
 import { useScrollIntoView } from "~/ui/scroll-into-view";
 import { useSearchParams } from "~/url/search-params";
 
-export function DeleteUserForm() {
+export function DeleteUserForm({
+  lastResult,
+  lastIntent,
+}: {
+  lastResult?: SubmissionResult | null;
+  lastIntent: string | null;
+}) {
   const { searchParams, withSearchParam, withoutSearchParam } =
     useSearchParams();
-  const lastIntent = useIntents();
-  const form = useForm({
-    schema: deleteUserSchema,
-    defaultValues: { email: "" },
+  const navigation = useNavigation();
+  const [formId, genFormId] = useIdGenerator();
+  const [form, fields] = useForm({
+    id: formId,
+    lastResult,
+    constraint: getValibotConstraint(deleteUserSchema),
+    shouldRevalidate: "onInput",
+    defaultNoValidate: false,
+    onValidate: ({ formData }) => {
+      return parseWithValibot(formData, { schema: deleteUserSchema });
+    },
   });
-  const formError = lastIntent === "delete-account" ? form.error : null;
+  const formError = lastIntent === "delete-account" ? form.errors?.[0] : null;
   const formErrorRef = useScrollIntoView<HTMLElement>(formError);
 
   if (searchParams.has("delete-account")) {
     return (
-      <FormProvider form={form}>
+      <FormProvider context={form.context}>
         <Form
+          {...getFormProps(form)}
           method="post"
-          id={form.id}
-          noValidate={form.noValidate}
-          aria-labelledby={form.titleId}
-          aria-describedby={formError != null ? form.errorId : undefined}
-          onSubmit={form.onSubmit}
+          aria-labelledby={`${form.id}-title`}
           className={cn(
-            "mt-sm space-y-xs rounded-xl border bg-card p-sm text-card-foreground shadow",
-            form.formState.isSubmitting && "[&_*]:cursor-wait",
+            "relative space-y-fl-xs rounded-xl border bg-card p-fl-sm text-card-foreground shadow",
+            navigation.state === "submitting" && "[&_*]:cursor-wait",
           )}
         >
-          <header className="flex items-center justify-between">
-            <CardTitle id={form.titleId}>Danger Zone</CardTitle>
-            <Button variant="ghost" size="icon" asChild>
-              <Link
-                to={withoutSearchParam("delete-account")}
-                replace
-                preventScrollReset
-                aria-label="Close"
-                onClick={() => {
-                  form.reset();
-                }}
-              >
-                <X />
-              </Link>
-            </Button>
+          <header>
+            <CardTitle id={`${form.id}-title`} className="me-fl-xs">
+              Danger Zone
+            </CardTitle>
+            <Link
+              to={withoutSearchParam("delete-account")}
+              replace
+              preventScrollReset
+              aria-label="Close"
+              onClick={() => {
+                genFormId();
+              }}
+              className="absolute end-fl-xs top-fl-xs rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+            >
+              <X className="size-fl-xs" />
+            </Link>
           </header>
           <p className="break-words">
             <strong>Warning: Deleting your account cannot be undone</strong>
@@ -74,11 +86,11 @@ export function DeleteUserForm() {
             <Alert
               variant="destructive"
               id={form.errorId}
-              aria-labelledby={form.errorHeadingId}
+              aria-labelledby={`${form.errorId}-heading`}
               ref={formErrorRef}
             >
-              <AlertCircle aria-hidden="true" className="size-xs" />
-              <AlertTitle level={4} id={form.errorHeadingId}>
+              <AlertCircle aria-hidden="true" className="size-fl-xs" />
+              <AlertTitle level={4} id={`${form.errorId}-heading`}>
                 Error deleting account
               </AlertTitle>
               <AlertDescription>{formError}</AlertDescription>
@@ -88,21 +100,26 @@ export function DeleteUserForm() {
             <AuthenticityTokenInput />
           </div>
           <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
+            name={fields.email.name}
+            render={({ field, control }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input {...field} type="email" autoComplete="email" />
-                </FormControl>
+                <Input
+                  {...field}
+                  defaultValue={control.defaultValue}
+                  type="email"
+                  autoComplete="email"
+                />
                 <FormMessage />
               </FormItem>
             )}
           />
           <p>
             <PendingButton
-              pending={form.formState.isSubmitting}
+              pending={
+                lastIntent === "delete-account" &&
+                navigation.state === "submitting"
+              }
               pendingText="Deleting…"
               name="intent"
               value="delete-account"
@@ -117,11 +134,9 @@ export function DeleteUserForm() {
   }
 
   return (
-    <Card aria-labelledby="danger-zone-heading" className="mt-sm">
+    <Card aria-labelledby="danger-zone-heading">
       <CardHeader>
-        <CardTitle id="danger-zone-heading" className="flex h-lg items-center">
-          Danger Zone
-        </CardTitle>
+        <CardTitle id="danger-zone-heading">Danger Zone</CardTitle>
       </CardHeader>
       <CardContent>
         <p>

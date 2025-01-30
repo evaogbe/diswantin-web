@@ -1,7 +1,11 @@
+import { FormProvider, useForm } from "@conform-to/react";
+import type { FormMetadata } from "@conform-to/react";
+import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { Form } from "react-router";
+import { Form, useNavigation } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import type * as v from "valibot";
 import type { Route } from "./+types/onboarding.route";
 import { onboardingSchema } from "./model";
 import { getAuthenticatedUser, updateTimeZone } from "./services.server";
@@ -11,10 +15,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormProvider,
-  useForm,
+  getFormProps,
 } from "~/form/form";
-import type { UseFormReturn } from "~/form/form";
 import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
@@ -64,65 +66,77 @@ export function meta({ error }: Route.MetaArgs) {
 
 function useSetTimeZone(
   timeZones: string[],
-  form: UseFormReturn<typeof onboardingSchema>,
+  form: FormMetadata<v.InferOutput<typeof onboardingSchema>>,
+  fields: ReturnType<
+    FormMetadata<v.InferOutput<typeof onboardingSchema>>["getFieldset"]
+  >,
 ) {
   useEffect(() => {
     const defaultTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (!form.getValues("timeZone") && timeZones.includes(defaultTimeZone)) {
-      form.setValue("timeZone", defaultTimeZone);
+    if (!fields.timeZone.value && timeZones.includes(defaultTimeZone)) {
+      form.update({
+        name: fields.timeZone.name,
+        value: defaultTimeZone,
+      });
     }
-  }, [timeZones, form]);
+  }, [timeZones, form, fields.timeZone]);
 }
 
-export default function OnboardingRoute({ loaderData }: Route.ComponentProps) {
+export default function OnboardingRoute({
+  loaderData,
+  actionData,
+}: Route.ComponentProps) {
   const { timeZones } = loaderData;
   const timeZoneButtonRef = useRef<HTMLButtonElement>(null);
-  const form = useForm<typeof onboardingSchema>({
-    schema: onboardingSchema,
-    defaultValues: { timeZone: "" },
+  const navigation = useNavigation();
+  const [form, fields] = useForm({
+    lastResult: actionData,
+    constraint: getValibotConstraint(onboardingSchema),
+    shouldRevalidate: "onInput",
+    defaultNoValidate: false,
+    onValidate: ({ formData }) => {
+      return parseWithValibot(formData, { schema: onboardingSchema });
+    },
   });
-  const formErrorRef = useScrollIntoView<HTMLElement>(form.error);
-  useSetTimeZone(timeZones, form);
+  const formErrorRef = useScrollIntoView<HTMLElement>(form.errors);
+  useSetTimeZone(timeZones, form, fields);
 
   return (
-    <Page asChild className="px-sm-lg">
+    <Page asChild className="px-fl-sm-2xl">
       <div>
-        <FormProvider form={form}>
+        <FormProvider context={form.context}>
           <Form
+            {...getFormProps(form)}
             method="post"
-            id={form.id}
-            noValidate={form.noValidate}
-            aria-labelledby={form.titleId}
-            aria-describedby={form.error != null ? form.errorId : undefined}
-            onSubmit={form.onSubmit}
+            aria-labelledby={`${form.id}-title`}
             className={cn(
-              "flex flex-col space-y-xs",
-              form.formState.isSubmitting && "[&_*]:cursor-wait",
+              "flex flex-col gap-fl-sm",
+              navigation.state === "submitting" && "[&_*]:cursor-wait",
             )}
           >
-            <PageHeading id={form.titleId}>Account setup</PageHeading>
-            {form.error != null && (
+            <PageHeading id={`${form.id}-title`}>Account setup</PageHeading>
+            {form.errors != null && (
               <Alert
                 variant="destructive"
                 id={form.errorId}
-                aria-labelledby={form.errorHeadingId}
+                aria-labelledby={`${form.errorId}-heading`}
                 ref={formErrorRef}
               >
-                <AlertCircle aria-hidden="true" className="size-xs" />
-                <AlertTitle id={form.errorHeadingId}>
+                <AlertCircle aria-hidden="true" className="size-fl-xs" />
+                <AlertTitle id={`${form.errorId}-heading`}>
                   Error setting up account
                 </AlertTitle>
-                <AlertDescription>{form.error}</AlertDescription>
+                <AlertDescription>{form.errors[0]}</AlertDescription>
               </Alert>
             )}
             <div hidden>
               <AuthenticityTokenInput />
             </div>
             <FormField
-              control={form.control}
-              name="timeZone"
-              render={({ field }) => (
-                <FormItem className="flex w-full max-w-96 flex-col self-center">
+              name={fields.timeZone.name}
+              kind="select"
+              render={({ field, control }) => (
+                <FormItem className="flex w-full max-w-96 flex-col gap-fl-3xs self-center">
                   <FormLabel
                     htmlFor={undefined}
                     onClick={() => {
@@ -139,11 +153,11 @@ export default function OnboardingRoute({ loaderData }: Route.ComponentProps) {
                         data-testid="time-zone-button"
                         className={cn(
                           "justify-between",
-                          !field.value && "text-muted-foreground",
+                          !control.value && "text-muted-foreground",
                         )}
                       >
                         <span className="truncate">
-                          {field.value || "Select time zone"}
+                          {control.value || "Select time zone"}
                         </span>
                         <ChevronsUpDown
                           aria-hidden="true"
@@ -161,16 +175,14 @@ export default function OnboardingRoute({ loaderData }: Route.ComponentProps) {
                               <CommandItem
                                 key={timeZone}
                                 value={timeZone}
-                                onSelect={() => {
-                                  form.setValue("timeZone", timeZone);
-                                }}
+                                onSelect={control.onValueChange}
                               >
                                 {timeZone}
                                 <Check
                                   aria-label="Selected"
                                   className={cn(
                                     "ms-auto",
-                                    timeZone === field.value
+                                    timeZone === control.value
                                       ? "opacity-100"
                                       : "opacity-0",
                                   )}
@@ -182,14 +194,18 @@ export default function OnboardingRoute({ loaderData }: Route.ComponentProps) {
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <input type="hidden" name={field.name} value={field.value} />
+                  <input
+                    type="hidden"
+                    name={field.name}
+                    value={control.value}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
             />
             <p className="flex justify-end">
               <PendingButton
-                pending={form.formState.isSubmitting}
+                pending={navigation.state === "submitting"}
                 pendingText="Saving…"
               >
                 Save

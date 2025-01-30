@@ -75,6 +75,36 @@ jobs:
       - name: ✏️ Spell check
         uses: streetsidesoftware/cspell-action@v6.10.0
 
+  unit-test:
+    name: ⚡ Unit tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: password
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5433:5432
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4.2.2
+      - name: ⎔ Set up Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          cache: npm
+          node-version: 22
+      - name: 📥 Install dependencies
+        run: npm ci
+      - name: 🩹 Patch package
+        run: npx patch-package
+      - name: 🗃️ Setup test DB
+        run: npm run test:setup
+      - name: ⚡ Run unit tests
+        run: npm run test:unit -- --run
+
   e2e-test:
     name: 🎭 End-to-end tests
     timeout-minutes: 60
@@ -103,8 +133,10 @@ jobs:
         run: npx patch-package
       - name: 📥 Install browsers
         run: npm run init:test
+      - name: 🗃️ Setup test DB
+        run: npm run test:setup
       - name: 🎭 Run end-to-end tests
-        run: npm test
+        run: npm run test:e2e
       - name: 📊 Upload report
         uses: actions/upload-artifact@v4.6.0
         if: ${{ !cancelled() }}
@@ -116,7 +148,7 @@ jobs:
   deploy:
     name: 🚀 Deploy
     runs-on: ubuntu-latest
-    needs: [format, typecheck, lint, spellcheck, e2e-test]
+    needs: [format, typecheck, lint, spellcheck, unit-test, e2e-test]
     # only deploy main branch on pushes
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     steps:

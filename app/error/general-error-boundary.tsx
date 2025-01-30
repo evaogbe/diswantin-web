@@ -14,7 +14,10 @@ export function GeneralErrorBoundary({
   switch (isRouteErrorResponse(error) ? error.status : 500) {
     case 400: {
       return (
-        <Page aria-labelledby="incorrect-input-heading" className="space-y-sm">
+        <Page
+          aria-labelledby="incorrect-input-heading"
+          className="space-y-fl-sm"
+        >
           <PageHeading id="incorrect-input-heading">
             Incorrect input
           </PageHeading>
@@ -26,7 +29,7 @@ export function GeneralErrorBoundary({
     }
     case 403: {
       return (
-        <Page aria-labelledby="access-denied-heading" className="space-y-sm">
+        <Page aria-labelledby="access-denied-heading" className="space-y-fl-sm">
           <PageHeading id="access-denied-heading">Access denied</PageHeading>
           <p className="break-words leading-7">
             You are not allowed to do that
@@ -41,7 +44,7 @@ export function GeneralErrorBoundary({
       return (
         <Page
           aria-labelledby="too-many-requests-heading"
-          className="space-y-sm"
+          className="space-y-fl-sm"
         >
           <PageHeading id="too-many-requests-heading">
             Rate limit exceeded
@@ -54,7 +57,10 @@ export function GeneralErrorBoundary({
     }
     default: {
       return (
-        <Page aria-labelledby="unexpected-error-heading" className="space-y-sm">
+        <Page
+          aria-labelledby="unexpected-error-heading"
+          className="space-y-fl-sm"
+        >
           <PageHeading id="unexpected-error-heading">
             Unexpected error
           </PageHeading>
