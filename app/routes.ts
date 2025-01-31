@@ -7,8 +7,9 @@ export default [
   route("monitoring", "monitoring/route.ts"),
   route("resources/theme", "theme/route.ts"),
   route("auth/google/callback", "auth/google.route.ts"),
+  route("cookies", "legal/cookies.route.tsx"),
   route("search", "task/task-search.route.tsx"),
-  layout("main-layout.route.tsx", [
+  layout("auth/auth-layout.route.tsx", [
     route("onboarding", "auth/onboarding.route.tsx"),
     route("home", "task/current-task.route.tsx"),
     route("new-todo", "task/new-task.route.tsx"),

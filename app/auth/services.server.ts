@@ -96,9 +96,14 @@ type FreshUser = User & { timeZone: null };
 type FullUser = User & { timeZone: NonNullable<User["timeZone"]> };
 
 export async function isFullyAuthenticated(request: Request) {
-  const session = await getSession(request.headers.get("Cookie"));
-  const user = await getUserBySession(session);
-  return user?.timeZone != null;
+  try {
+    const session = await getSession(request.headers.get("Cookie"));
+    const user = await getUserBySession(session);
+    return user?.timeZone != null;
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
 }
 
 export function getAuthenticatedUser(

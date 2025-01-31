@@ -1,6 +1,6 @@
 import PsychologyAlt from "@material-design-icons/svg/filled/psychology_alt.svg?react";
 import { Plus, Search, Settings } from "lucide-react";
-import { Link } from "react-router";
+import { Link as RouteLink } from "react-router";
 import logo from "./logo.png";
 import {
   NavigationMenu,
@@ -12,6 +12,7 @@ import {
 import { ThemeToggle } from "~/theme/theme-toggle";
 import { Button } from "~/ui/button";
 import { cn } from "~/ui/classes";
+import { Link } from "~/ui/link";
 
 export function MainLayout({
   isAuthenticated,
@@ -24,13 +25,13 @@ export function MainLayout({
     <div className="flex min-h-svh flex-col">
       <header className="top-0 z-10 flex flex-wrap items-center gap-fl-xs border-b border-primary-container bg-primary-container p-fl-2xs shadow dark:border-accent sm:sticky">
         <h1 className={cn(!isAuthenticated && "flex-1")}>
-          <Link
+          <RouteLink
             to={isAuthenticated ? "/home" : "/"}
             className={cn(navigationMenuTriggerStyle(), "text-base")}
           >
             <img src={logo} alt="" width="32" height="32" />
             <span className="max-sm:sr-only">Diswantin</span>
-          </Link>
+          </RouteLink>
         </h1>
         {isAuthenticated && (
           <>
@@ -41,19 +42,19 @@ export function MainLayout({
                 asChild
                 className="sm:hidden"
               >
-                <Link to="/search">
+                <RouteLink to="/search">
                   <Search aria-label="Search" />
-                </Link>
+                </RouteLink>
               </Button>
               <Button
                 variant="secondary"
                 asChild
                 className="w-full justify-start max-sm:hidden"
               >
-                <Link to="/search">
+                <RouteLink to="/search">
                   <Search aria-hidden="true" />
                   <span>Search</span>
-                </Link>
+                </RouteLink>
               </Button>
             </p>
             <NavigationMenu>
@@ -85,6 +86,13 @@ export function MainLayout({
       <main className="mx-auto flex w-full max-w-prose flex-1 flex-col p-fl-sm max-sm:min-w-fit">
         {children}
       </main>
+      {!isAuthenticated && (
+        <footer className="border-t p-fl-2xs text-sm">
+          <p>
+            <Link to="/cookies">Cookie policy</Link>
+          </p>
+        </footer>
+      )}
     </div>
   );
 }

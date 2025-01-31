@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
-import type { Route } from "./+types/main-layout.route";
-import { isFullyAuthenticated } from "~/auth/services.server";
+import type { Route } from "./+types/auth-layout.route";
+import { isFullyAuthenticated } from "./services.server";
 import { GeneralErrorBoundary } from "~/error/general-error-boundary";
 import { MainLayout } from "~/layout/main-layout";
 import { getTitle } from "~/layout/meta";
@@ -14,7 +14,7 @@ export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ error }) }];
 }
 
-export default function MainLayoutRoute({ loaderData }: Route.ComponentProps) {
+export default function AuthLayoutRoute({ loaderData }: Route.ComponentProps) {
   const { isAuthenticated } = loaderData;
 
   return (
