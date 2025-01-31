@@ -50,7 +50,12 @@ async function run() {
             env === "development"
               ? ["'self'", "ws:", "localhost:*"]
               : ["'self'"],
-          imgSrc: ["'self'", "data:"],
+          imgSrc: [
+            "'self'",
+            "data:",
+            "https://www.websitepolicies.com",
+            "https://cdnapp.websitepolicies.com",
+          ],
           formAction: ["'self'", "https://accounts.google.com"],
           baseUri: ["'none'"],
           "upgrade-insecure-requests": null,

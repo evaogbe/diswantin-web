@@ -44,7 +44,7 @@ export function meta({ error }: Route.MetaArgs) {
 export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
   const { currentTask } = loaderData;
   const fetcher = useFetcher<typeof action>();
-  const markDoneFormError = Object.values(fetcher.data?.error ?? {})[0];
+  const markDoneFormError = Object.values(fetcher.data?.error ?? {})[0]?.[0];
   const formErrorRef = useScrollIntoView<HTMLElement>(markDoneFormError);
 
   if (currentTask == null) {

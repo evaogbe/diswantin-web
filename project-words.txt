@@ -2,6 +2,7 @@
 cmdk
 Diswantin
 Evawere
+internetcookies
 isbot
 lightningcss
 Nunito

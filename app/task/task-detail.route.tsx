@@ -114,8 +114,8 @@ export default function TaskDetailRoute({
   const lastIntent = useIntents(fetcher);
   const formError =
     lastIntent === "mark-done" || lastIntent === "unmark-done"
-      ? Object.values(fetcher.data?.error ?? {})[0]
-      : Object.values(actionData?.error ?? {})[0];
+      ? Object.values(fetcher.data?.error ?? {})[0]?.[0]
+      : Object.values(actionData?.error ?? {})[0]?.[0];
   const formErrorRef = useScrollIntoView<HTMLElement>(formError);
   const isDone =
     fetcher.formData == null
