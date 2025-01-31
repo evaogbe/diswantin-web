@@ -128,6 +128,20 @@ export default function CookiesRoute() {
               to access the content.
             </p>
           </section>
+          <section aria-labelledby="functionality-cookies">
+            <h4
+              id="functionality-cookies"
+              className="text-balance text-xl font-semibold tracking-tight"
+            >
+              Functionality cookies
+            </h4>
+            <p className="break-words leading-7">
+              Functionality cookies let us operate the Website and Services in
+              accordance with the choices you make. For example, we will
+              recognize your color theme and remember how you customized the
+              Website and Services during future visits.
+            </p>
+          </section>
         </section>
         <section
           aria-labelledby="what-are-your-cookie-options"
