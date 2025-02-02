@@ -56,7 +56,12 @@ export const taskCompletion = pgTable(
       .notNull()
       .references(() => task.id, { onUpdate: "cascade", onDelete: "cascade" }),
   },
-  (table) => [unique("task_completion_task_id_done_at_unique").on(table.taskId, table.doneAt)],
+  (table) => [
+    unique("task_completion_task_id_done_at_unique").on(
+      table.taskId,
+      table.doneAt,
+    ),
+  ],
 );
 
 export const recurrenceType = pgEnum("recurrence_type", [
@@ -78,7 +83,12 @@ export const taskRecurrence = pgTable(
     type: recurrenceType().notNull(),
     step: integer().notNull(),
   },
-  (table) => [unique("task_recurrence_task_id_start_unique").on(table.taskId, table.start)],
+  (table) => [
+    unique("task_recurrence_task_id_start_unique").on(
+      table.taskId,
+      table.start,
+    ),
+  ],
 );
 
 export const userRelations = relations(user, ({ many }) => ({
