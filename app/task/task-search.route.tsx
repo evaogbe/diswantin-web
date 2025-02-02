@@ -1,6 +1,7 @@
 import { Plus, Search, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Form, Link, useSubmit } from "react-router";
+import { twJoin } from "tailwind-merge";
 import { useDebouncedCallback } from "use-debounce";
 import type { Route } from "./+types/task-search.route";
 import { searchTasks } from "./services.server";
@@ -120,7 +121,7 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
                   <li key={result.id}>
                     <Link
                       to={`/todo/${result.id}`}
-                      className={cn(
+                      className={twJoin(
                         "flex w-full rounded-sm transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none max-sm:min-w-max",
                         result.isDone && "line-through",
                       )}

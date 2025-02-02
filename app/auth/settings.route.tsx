@@ -1,5 +1,6 @@
 import { Eye, EyeOff, LogOut, Pencil } from "lucide-react";
 import { data, Form, Link, useNavigation } from "react-router";
+import { twJoin } from "tailwind-merge";
 import type { Route } from "./+types/settings.route";
 import { DeleteUserForm } from "./delete-user-form";
 import { EditTimeZoneForm } from "./edit-time-zone-form";
@@ -16,7 +17,6 @@ import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
-import { cn } from "~/ui/classes";
 import { PendingButton } from "~/ui/pending-button";
 import { useSearchParams } from "~/url/search-params";
 
@@ -172,7 +172,9 @@ export default function SettingsRoute({
       )}
       <Form
         method="post"
-        className={cn(navigation.state === "submitting" && "[&_*]:cursor-wait")}
+        className={twJoin(
+          navigation.state === "submitting" && "[&_*]:cursor-wait",
+        )}
       >
         <p>
           <PendingButton

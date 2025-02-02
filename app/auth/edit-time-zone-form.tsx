@@ -5,6 +5,7 @@ import { AlertCircle, Check, ChevronsUpDown, X } from "lucide-react";
 import { useRef } from "react";
 import { Form, Link, useNavigation } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { twJoin } from "tailwind-merge";
 import { editTimeZoneSchema } from "./model";
 import {
   FormField,
@@ -17,7 +18,6 @@ import { useIdGenerator } from "~/form/id-generator";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { CardTitle } from "~/ui/card";
-import { cn } from "~/ui/classes";
 import {
   Command,
   CommandInput,
@@ -66,7 +66,7 @@ export function EditTimeZoneForm({
         {...getFormProps(form)}
         method="post"
         aria-labelledby={`${form.id}-title`}
-        className={cn(
+        className={twJoin(
           "relative space-y-fl-xs rounded-xl border bg-card p-fl-sm text-card-foreground shadow",
           navigation.state === "submitting" && "[&_*]:cursor-wait",
         )}
@@ -123,7 +123,7 @@ export function EditTimeZoneForm({
                   <Button
                     variant="outline"
                     ref={timeZoneButtonRef}
-                    className={cn(
+                    className={twJoin(
                       "justify-between",
                       !control.value && "text-muted-foreground",
                     )}
@@ -152,7 +152,7 @@ export function EditTimeZoneForm({
                             {timeZone}
                             <Check
                               aria-label="Selected"
-                              className={cn(
+                              className={twJoin(
                                 "ms-auto",
                                 timeZone === control.value
                                   ? "opacity-100"

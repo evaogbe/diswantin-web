@@ -99,6 +99,7 @@ function NavigationMenuLink({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<typeof NavLink> & {
+  className?: string;
   ref?: React.RefObject<React.ComponentRef<typeof NavLink>>;
 }) {
   const location = useLocation();
@@ -125,7 +126,7 @@ function NavigationMenuViewport({
   >;
 }) {
   return (
-    <div className={cn("absolute start-0 top-full flex justify-center")}>
+    <div className="absolute start-0 top-full flex justify-center">
       <NavigationMenuPrimitive.Viewport
         className={cn(
           "origin-top-center relative mt-fl-3xs h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 md:w-[var(--radix-navigation-menu-viewport-width)]",

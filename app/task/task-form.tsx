@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { Form, Link, useNavigation } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { twJoin } from "tailwind-merge";
 import { formatRecurrence } from "./format";
 import { recurrenceSchema, taskSchema } from "./model";
 import type { TaskForm, TaskRecurrence } from "./model";
@@ -32,7 +33,6 @@ import { generalError } from "~/form/validation";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
-import { cn } from "~/ui/classes";
 import { PendingButton } from "~/ui/pending-button";
 import { useScrollIntoView } from "~/ui/scroll-into-view";
 import { Sheet, SheetTrigger } from "~/ui/sheet";
@@ -161,7 +161,7 @@ export function TaskForm({
               method="post"
               aria-labelledby={`${form.id}-title`}
               autoComplete="off"
-              className={cn(
+              className={twJoin(
                 "space-y-fl-sm",
                 navigation.state === "submitting" && "[&_*]:cursor-wait",
               )}

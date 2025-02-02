@@ -5,6 +5,7 @@ import { formatInTimeZone, toDate, toZonedTime } from "date-fns-tz";
 import { AlertCircle } from "lucide-react";
 import { useFetcher } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { twJoin } from "tailwind-merge";
 import {
   recurrenceFormSchema,
   recurrenceFormToRecurrence,
@@ -24,7 +25,6 @@ import {
 import { Input } from "~/form/input";
 import { Select } from "~/form/select";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
-import { cn } from "~/ui/classes";
 import { PendingButton } from "~/ui/pending-button";
 import { useScrollIntoView } from "~/ui/scroll-into-view";
 import { SheetContent, SheetFooter, SheetHeader, SheetTitle } from "~/ui/sheet";
@@ -110,7 +110,7 @@ export function TaskRecurrenceForm({
         <fetcher.Form
           {...getFormProps(form)}
           method="post"
-          className={cn(
+          className={twJoin(
             "space-y-fl-sm",
             fetcher.state === "submitting" && "[&_*]:cursor-wait",
           )}

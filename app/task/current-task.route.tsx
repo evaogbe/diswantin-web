@@ -3,6 +3,7 @@ import Check from "@material-design-icons/svg/filled/check.svg?react";
 import { AlertCircle, Microscope, Plus } from "lucide-react";
 import { Link, useFetcher } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { twJoin } from "tailwind-merge";
 import type { Route } from "./+types/current-task.route";
 import { markDoneSchema } from "./model";
 import { getCurrentTask, markTaskDone } from "./services.server";
@@ -12,7 +13,6 @@ import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
-import { cn } from "~/ui/classes";
 import { useScrollIntoView } from "~/ui/scroll-into-view";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -83,7 +83,7 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
         Current to-do
       </PageHeading>
       <div
-        className={cn(
+        className={twJoin(
           "w-full transition-opacity",
           fetcher.state === "submitting" && "opacity-0",
         )}
