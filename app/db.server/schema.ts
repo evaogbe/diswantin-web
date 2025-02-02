@@ -14,8 +14,8 @@ import {
 
 export const user = pgTable("user", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  clientId: char({ length: 11 }).notNull().unique(),
-  googleId: varchar({ length: 255 }).notNull().unique(),
+  clientId: char({ length: 11 }).notNull().unique("user_client_id_unique"),
+  googleId: varchar({ length: 255 }).notNull().unique("user_google_id_unique"),
   email: varchar({ length: 255 }).notNull().unique(),
   timeZone: varchar({ length: 255 }),
 });
@@ -24,7 +24,7 @@ export const task = pgTable(
   "task",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    clientId: char({ length: 11 }).notNull().unique(),
+    clientId: char({ length: 11 }).notNull().unique("task_client_id_unique"),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     userId: integer()
       .notNull()
@@ -39,10 +39,11 @@ export const task = pgTable(
     scheduledTime: time(),
   },
   (table) => [
-    index("name_search_index").using(
+    index("task_name_search_index").using(
       "gin",
       sql`to_tsvector('english', ${table.name})`,
     ),
+    index("task_user_id_index").on(table.userId),
   ],
 );
 
@@ -55,7 +56,7 @@ export const taskCompletion = pgTable(
       .notNull()
       .references(() => task.id, { onUpdate: "cascade", onDelete: "cascade" }),
   },
-  (table) => [unique().on(table.doneAt, table.taskId)],
+  (table) => [unique("task_completion_task_id_done_at_unique").on(table.taskId, table.doneAt)],
 );
 
 export const recurrenceType = pgEnum("recurrence_type", [
@@ -77,7 +78,7 @@ export const taskRecurrence = pgTable(
     type: recurrenceType().notNull(),
     step: integer().notNull(),
   },
-  (table) => [unique().on(table.taskId, table.start)],
+  (table) => [unique("task_recurrence_task_id_start_unique").on(table.taskId, table.start)],
 );
 
 export const userRelations = relations(user, ({ many }) => ({
