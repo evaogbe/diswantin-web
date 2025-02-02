@@ -255,7 +255,7 @@ function FormLegend({
 }
 
 function FormItem({ className, ...props }: React.JSX.IntrinsicElements["p"]) {
-  return <p className={cn("space-y-fl-4xs", className)} {...props} />;
+  return <p className={cn("flex flex-col gap-fl-3xs", className)} {...props} />;
 }
 
 function FormLabel({

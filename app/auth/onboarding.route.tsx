@@ -136,7 +136,7 @@ export default function OnboardingRoute({
               name={fields.timeZone.name}
               kind="select"
               render={({ field, control }) => (
-                <FormItem className="flex w-full max-w-96 flex-col gap-fl-3xs self-center">
+                <FormItem className="w-full max-w-96 self-center">
                   <FormLabel
                     htmlFor={undefined}
                     onClick={() => {

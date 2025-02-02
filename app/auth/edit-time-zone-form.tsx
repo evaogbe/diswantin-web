@@ -109,7 +109,7 @@ export function EditTimeZoneForm({
           name={fields.timeZone.name}
           kind="select"
           render={({ field, control }) => (
-            <FormItem className="flex max-w-96 flex-col gap-fl-3xs">
+            <FormItem className="max-w-96">
               <FormLabel
                 htmlFor={undefined}
                 onClick={() => {
