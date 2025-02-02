@@ -19,6 +19,7 @@
     "/patches",
     "playwright-report",
     "/project-words.txt",
+    "robots.txt",
     "vite.config.ts.timestamp*"
   ]
 }
