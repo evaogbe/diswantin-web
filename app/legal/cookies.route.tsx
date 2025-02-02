@@ -32,9 +32,9 @@ export default function CookiesRoute() {
           describes the choices available to you regarding accepting or
           declining the use of cookies.
         </p>
-        <section aria-labelledby="toc-heading">
+        <section aria-labelledby="toc">
           <h3
-            id="toc-heading"
+            id="toc"
             className="text-balance text-2xl font-semibold tracking-tight"
           >
             Table of contents

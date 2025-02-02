@@ -4,10 +4,10 @@ import { data, Form, redirect } from "react-router";
 import type { Route } from "./+types/sign-in.route";
 import { codeVerifierCookie, google, stateCookie } from "./google.server";
 import { getFlashMessage, redirectAuthenticated } from "./services.server";
+import { GuestFooter } from "~/layout/guest-footer";
 import { getTitle } from "~/layout/meta";
 import { ThemeToggle } from "~/theme/theme-toggle";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
-import { Link } from "~/ui/link";
 import "./sign-in.route.css";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -115,11 +115,7 @@ export default function SignInRoute({ loaderData }: Route.ComponentProps) {
           </p>
         </Form>
       </main>
-      <footer className="border-t p-fl-2xs text-sm">
-        <p>
-          <Link to="/cookies">Cookie policy</Link>
-        </p>
-      </footer>
+      <GuestFooter />
     </div>
   );
 }
