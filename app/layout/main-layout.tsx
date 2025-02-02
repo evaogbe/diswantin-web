@@ -22,7 +22,7 @@ export function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-svh flex-col">
+    <div className="flex min-h-svh min-w-fit flex-col">
       <header className="top-0 z-10 flex flex-wrap items-center gap-fl-xs border-b border-primary-container bg-primary-container p-fl-2xs shadow dark:border-accent sm:sticky">
         <h1 className={cn(!isAuthenticated && "flex-1")}>
           <Link

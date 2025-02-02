@@ -11,7 +11,10 @@ export function meta({ error }: Route.MetaArgs) {
 export default function CookiesRoute() {
   return (
     <MainLayout isAuthenticated={false}>
-      <Page aria-labelledby="cookie-policy" className="space-y-fl-sm">
+      <Page
+        aria-labelledby="cookie-policy"
+        className="[&_>*+*]:mt-fl-sm [&_>h2+*]:mt-fl-2xs"
+      >
         <PageHeading id="cookie-policy">Cookie policy</PageHeading>
         <p className="break-words leading-7">
           This cookie policy (“Policy”) describes what cookies are and how
@@ -66,7 +69,10 @@ export default function CookiesRoute() {
             </li>
           </ol>
         </section>
-        <section aria-labelledby="what-are-cookies" className="space-y-fl-sm">
+        <section
+          aria-labelledby="what-are-cookies"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
+        >
           <h3
             id="what-are-cookies"
             className="scroll-my-[5ex] text-balance text-2xl font-semibold tracking-tight"
@@ -102,7 +108,7 @@ export default function CookiesRoute() {
         </section>
         <section
           aria-labelledby="what-type-of-cookies-do-we-use"
-          className="space-y-fl-sm"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
         >
           <h3
             id="what-type-of-cookies-do-we-use"
@@ -112,7 +118,7 @@ export default function CookiesRoute() {
           </h3>
           <section
             aria-labelledby="necessary-cookies"
-            className="space-y-fl-sm"
+            className="[&_>*+*]:mt-fl-sm [&_>h4+*]:mt-fl-2xs"
           >
             <h4
               id="necessary-cookies"
@@ -128,7 +134,10 @@ export default function CookiesRoute() {
               to access the content.
             </p>
           </section>
-          <section aria-labelledby="functionality-cookies">
+          <section
+            aria-labelledby="functionality-cookies"
+            className="[&_>*+*]:mt-fl-sm [&_>h4+*]:mt-fl-2xs"
+          >
             <h4
               id="functionality-cookies"
               className="text-balance text-xl font-semibold tracking-tight"
@@ -145,7 +154,7 @@ export default function CookiesRoute() {
         </section>
         <section
           aria-labelledby="what-are-your-cookie-options"
-          className="space-y-fl-sm"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
         >
           <h3
             id="what-are-your-cookie-options"
@@ -175,7 +184,7 @@ export default function CookiesRoute() {
         </section>
         <section
           aria-labelledby="changes-and-amendments"
-          className="space-y-fl-sm"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
         >
           <h3
             id="changes-and-amendments"
@@ -202,7 +211,7 @@ export default function CookiesRoute() {
         </section>
         <section
           aria-labelledby="acceptance-of-this-policy"
-          className="space-y-fl-sm"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
         >
           <h3
             id="acceptance-of-this-policy"
@@ -227,7 +236,10 @@ export default function CookiesRoute() {
             .
           </p>
         </section>
-        <section className="space-y-fl-sm">
+        <section
+          aria-labelledby="contacting-us"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
+        >
           <h3
             id="contacting-us"
             className="scroll-my-[5ex] text-balance text-2xl font-semibold tracking-tight"
