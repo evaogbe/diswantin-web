@@ -10,7 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { Form, Link, useNavigation } from "react-router";
+import { Form, Link, useNavigation, useSearchParams } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { twJoin } from "tailwind-merge";
 import { formatRecurrence } from "./format";
@@ -36,7 +36,7 @@ import { Button } from "~/ui/button";
 import { PendingButton } from "~/ui/pending-button";
 import { useScrollIntoView } from "~/ui/scroll-into-view";
 import { Sheet, SheetTrigger } from "~/ui/sheet";
-import { useSearchParams } from "~/url/search-params";
+import { withSearchParam } from "~/url/search-params";
 
 function parseRecurrence(recurrence: FormValue<TaskRecurrence> | string) {
   if (typeof recurrence !== "object") {
@@ -79,7 +79,7 @@ export function TaskForm({
   title: string;
   errorHeading: string;
 }) {
-  const { searchParams, withSearchParam } = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigation = useNavigation();
   const [form, fields] = useForm({
     lastResult,
@@ -294,7 +294,7 @@ export function TaskForm({
                 {showScheduledAt ? (
                   <Button variant="outline" asChild>
                     <Link
-                      to={withSearchParam("scheduled", "0")}
+                      to={withSearchParam(searchParams, "scheduled", "0")}
                       replace
                       preventScrollReset
                       onClick={() => {
@@ -311,7 +311,7 @@ export function TaskForm({
                 ) : (
                   <Button variant="outline" asChild>
                     <Link
-                      to={withSearchParam("scheduled", "1")}
+                      to={withSearchParam(searchParams, "scheduled", "1")}
                       replace
                       preventScrollReset
                       onClick={() => {

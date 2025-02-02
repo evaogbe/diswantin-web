@@ -1,5 +1,5 @@
 import { Eye, EyeOff, LogOut, Pencil } from "lucide-react";
-import { data, Form, Link, useNavigation } from "react-router";
+import { data, Form, Link, useNavigation, useSearchParams } from "react-router";
 import { twJoin } from "tailwind-merge";
 import type { Route } from "./+types/settings.route";
 import { DeleteUserForm } from "./delete-user-form";
@@ -18,7 +18,7 @@ import { Page, PageHeading } from "~/layout/page";
 import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { PendingButton } from "~/ui/pending-button";
-import { useSearchParams } from "~/url/search-params";
+import { withSearchParam, withoutSearchParam } from "~/url/search-params";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const { email, timeZone } = await getAuthenticatedUser(request);
@@ -97,8 +97,7 @@ export default function SettingsRoute({
   actionData,
 }: Route.ComponentProps) {
   const { account, timeZones } = loaderData;
-  const { searchParams, withSearchParam, withoutSearchParam } =
-    useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigation = useNavigation();
   const lastIntent = useIntents();
 
@@ -128,7 +127,7 @@ export default function SettingsRoute({
                     <p className="mt-fl-2xs">
                       <Button variant="outline" size="sm" asChild>
                         <Link
-                          to={withoutSearchParam("email")}
+                          to={withoutSearchParam(searchParams, "email")}
                           replace
                           preventScrollReset
                         >
@@ -141,7 +140,7 @@ export default function SettingsRoute({
                   <p className="mt-fl-2xs">
                     <Button variant="outline" size="sm" asChild>
                       <Link
-                        to={withSearchParam("email")}
+                        to={withSearchParam(searchParams, "email")}
                         replace
                         preventScrollReset
                       >
@@ -157,7 +156,7 @@ export default function SettingsRoute({
                 <p className="mt-fl-2xs">
                   <Button variant="outline" size="sm" asChild>
                     <Link
-                      to={withSearchParam("update-time-zone")}
+                      to={withSearchParam(searchParams, "update-time-zone")}
                       replace
                       preventScrollReset
                     >
