@@ -3,7 +3,7 @@ import { FormProvider, useForm } from "@conform-to/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, Check, ChevronsUpDown, X } from "lucide-react";
 import { useRef } from "react";
-import { Form, Link, useNavigation } from "react-router";
+import { Form, Link, useNavigation, useSearchParams } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { twJoin } from "tailwind-merge";
 import { editTimeZoneSchema } from "./model";
@@ -29,7 +29,7 @@ import {
 import { PendingButton } from "~/ui/pending-button";
 import { Popover, PopoverTrigger, PopoverContent } from "~/ui/popover";
 import { useScrollIntoView } from "~/ui/scroll-into-view";
-import { useSearchParams } from "~/url/search-params";
+import { withoutSearchParam } from "~/url/search-params";
 
 export function EditTimeZoneForm({
   timeZones,
@@ -42,7 +42,7 @@ export function EditTimeZoneForm({
   lastResult?: SubmissionResult | null;
   lastIntent: string | null;
 }) {
-  const { withoutSearchParam } = useSearchParams();
+  const [searchParams] = useSearchParams();
   const timeZoneButtonRef = useRef<HTMLButtonElement>(null);
   const navigation = useNavigation();
   const [formId, genFormId] = useIdGenerator();
@@ -76,7 +76,7 @@ export function EditTimeZoneForm({
             Edit time zone
           </CardTitle>
           <Link
-            to={withoutSearchParam("update-time-zone")}
+            to={withoutSearchParam(searchParams, "update-time-zone")}
             replace
             preventScrollReset
             aria-label="Close"

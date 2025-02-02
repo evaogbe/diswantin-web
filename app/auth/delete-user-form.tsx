@@ -2,7 +2,7 @@ import type { SubmissionResult } from "@conform-to/dom";
 import { FormProvider, useForm } from "@conform-to/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, X } from "lucide-react";
-import { Form, Link, useNavigation } from "react-router";
+import { Form, Link, useNavigation, useSearchParams } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { twJoin } from "tailwind-merge";
 import { deleteUserSchema } from "./model";
@@ -20,7 +20,7 @@ import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { PendingButton } from "~/ui/pending-button";
 import { useScrollIntoView } from "~/ui/scroll-into-view";
-import { useSearchParams } from "~/url/search-params";
+import { withSearchParam, withoutSearchParam } from "~/url/search-params";
 
 export function DeleteUserForm({
   lastResult,
@@ -29,8 +29,7 @@ export function DeleteUserForm({
   lastResult?: SubmissionResult | null;
   lastIntent: string | null;
 }) {
-  const { searchParams, withSearchParam, withoutSearchParam } =
-    useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigation = useNavigation();
   const [formId, genFormId] = useIdGenerator();
   const [form, fields] = useForm({
@@ -63,7 +62,7 @@ export function DeleteUserForm({
               Danger Zone
             </CardTitle>
             <Link
-              to={withoutSearchParam("delete-account")}
+              to={withoutSearchParam(searchParams, "delete-account")}
               replace
               preventScrollReset
               aria-label="Close"
@@ -142,7 +141,7 @@ export function DeleteUserForm({
         <p>
           <Button variant="destructive" asChild>
             <Link
-              to={withSearchParam("delete-account")}
+              to={withSearchParam(searchParams, "delete-account")}
               replace
               preventScrollReset
             >
