@@ -136,7 +136,7 @@ export default function CookiesRoute() {
           </section>
           <section
             aria-labelledby="functionality-cookies"
-            className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
+            className="[&_>*+*]:mt-fl-sm [&_>h4+*]:mt-fl-2xs"
           >
             <h4
               id="functionality-cookies"
