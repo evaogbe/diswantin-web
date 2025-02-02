@@ -220,7 +220,7 @@ export function TaskForm({
                 name={fields.recurrence.name}
                 kind="minimal"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col items-start gap-fl-2xs">
+                  <FormItem className="items-start">
                     <FormLabel>Repeats</FormLabel>
                     {parsedRecurrence != null ? (
                       <span className="flex items-center gap-fl-4xs">
