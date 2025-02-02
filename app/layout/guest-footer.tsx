@@ -9,6 +9,9 @@ export function GuestFooter() {
       <p>
         <Link to="/privacy">Privacy policy</Link>
       </p>
+      <p>
+        <Link to="/terms">Terms of Service</Link>
+      </p>
     </footer>
   );
 }

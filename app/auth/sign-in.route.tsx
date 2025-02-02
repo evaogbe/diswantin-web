@@ -8,6 +8,7 @@ import { GuestFooter } from "~/layout/guest-footer";
 import { getTitle } from "~/layout/meta";
 import { ThemeToggle } from "~/theme/theme-toggle";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
+import { Link } from "~/ui/link";
 import "./sign-in.route.css";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -50,7 +51,7 @@ export default function SignInRoute({ loaderData }: Route.ComponentProps) {
   const { flashMessage } = loaderData;
 
   return (
-    <div className="flex min-h-svh flex-col">
+    <div className="flex min-h-svh min-w-fit flex-col">
       <header className="top-0 z-10 flex justify-end border-b border-primary-container bg-primary-container p-fl-2xs shadow dark:border-accent sm:sticky">
         <ThemeToggle />
       </header>
@@ -112,6 +113,12 @@ export default function SignInRoute({ loaderData }: Route.ComponentProps) {
                 <span className="hidden">Sign in with Google</span>
               </div>
             </button>
+          </p>
+          <p className="mt-xs">
+            <small>
+              By signing in you accept our{" "}
+              <Link to="/terms">Terms of Service</Link>
+            </small>
           </p>
         </Form>
       </main>
