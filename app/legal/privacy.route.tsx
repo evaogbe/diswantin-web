@@ -1,6 +1,12 @@
+import type { Route } from "./+types/privacy.route";
 import { MainLayout } from "~/layout/main-layout";
+import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Link } from "~/ui/link";
+
+export function meta({ error }: Route.MetaArgs) {
+  return [{ title: getTitle({ page: "Privacy Policy", error }) }];
+}
 
 export default function PrivacyRoute() {
   return (
