@@ -4,6 +4,7 @@ import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { AlertCircle, X } from "lucide-react";
 import { Form, Link, useNavigation } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { twJoin } from "tailwind-merge";
 import { deleteUserSchema } from "./model";
 import {
   FormField,
@@ -17,7 +18,6 @@ import { Input } from "~/form/input";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
-import { cn } from "~/ui/classes";
 import { PendingButton } from "~/ui/pending-button";
 import { useScrollIntoView } from "~/ui/scroll-into-view";
 import { useSearchParams } from "~/url/search-params";
@@ -53,7 +53,7 @@ export function DeleteUserForm({
           {...getFormProps(form)}
           method="post"
           aria-labelledby={`${form.id}-title`}
-          className={cn(
+          className={twJoin(
             "relative space-y-fl-xs rounded-xl border bg-card p-fl-sm text-card-foreground shadow",
             navigation.state === "submitting" && "[&_*]:cursor-wait",
           )}

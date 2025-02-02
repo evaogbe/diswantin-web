@@ -5,6 +5,7 @@ import { AlertCircle, Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Form, useNavigation } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { twJoin } from "tailwind-merge";
 import type * as v from "valibot";
 import type { Route } from "./+types/onboarding.route";
 import { onboardingSchema } from "./model";
@@ -21,7 +22,6 @@ import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
-import { cn } from "~/ui/classes";
 import {
   Command,
   CommandEmpty,
@@ -109,7 +109,7 @@ export default function OnboardingRoute({
             {...getFormProps(form)}
             method="post"
             aria-labelledby={`${form.id}-title`}
-            className={cn(
+            className={twJoin(
               "flex flex-col gap-fl-sm",
               navigation.state === "submitting" && "[&_*]:cursor-wait",
             )}
@@ -151,7 +151,7 @@ export default function OnboardingRoute({
                         variant="outline"
                         ref={timeZoneButtonRef}
                         data-testid="time-zone-button"
-                        className={cn(
+                        className={twJoin(
                           "justify-between",
                           !control.value && "text-muted-foreground",
                         )}
@@ -180,7 +180,7 @@ export default function OnboardingRoute({
                                 {timeZone}
                                 <Check
                                   aria-label="Selected"
-                                  className={cn(
+                                  className={twJoin(
                                     "ms-auto",
                                     timeZone === control.value
                                       ? "opacity-100"

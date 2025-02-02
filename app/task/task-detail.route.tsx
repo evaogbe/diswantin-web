@@ -3,6 +3,7 @@ import RemoveDone from "@material-design-icons/svg/filled/remove_done.svg?react"
 import { AlertCircle, EllipsisVertical, Pencil, Trash } from "lucide-react";
 import { data, Form, Link, useFetcher, useNavigation } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { twJoin } from "tailwind-merge";
 import * as v from "valibot";
 import type { Route } from "./+types/task-detail.route";
 import { deleteTaskSchema, markDoneSchema, unmarkDoneSchema } from "./model";
@@ -19,7 +20,6 @@ import { getTitle } from "~/layout/meta";
 import { Page, PageHeading } from "~/layout/page";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { Button } from "~/ui/button";
-import { cn } from "~/ui/classes";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -125,7 +125,7 @@ export default function TaskDetailRoute({
   return (
     <Page
       aria-labelledby="task-detail-heading"
-      className={cn(
+      className={twJoin(
         "space-y-fl-sm transition-opacity",
         navigation.state === "submitting" && "opacity-0",
       )}
@@ -133,7 +133,7 @@ export default function TaskDetailRoute({
       <header className="space-y-fl-xs">
         <PageHeading
           id="task-detail-heading"
-          className={cn(isDone && "line-through")}
+          className={twJoin(isDone && "line-through")}
         >
           {task.name}
           {isDone && <span className="sr-only">Done</span>}
