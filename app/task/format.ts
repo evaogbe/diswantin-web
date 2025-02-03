@@ -1,5 +1,6 @@
 import { addDays, parse } from "date-fns";
 import { toDate } from "date-fns-tz";
+import { escapeRegExp } from "es-toolkit/string";
 import { weekdaysToIndices } from "./model";
 import type { TaskRecurrence } from "./model";
 
@@ -119,4 +120,44 @@ export function formatDateTime(
   }
 
   return null;
+}
+
+export function buildSearchHeadline(str: string, tokens: string[]) {
+  const occurrences = tokens
+    .flatMap((token) =>
+      [...str.matchAll(new RegExp(escapeRegExp(token), "dgi"))].flatMap(
+        (match) => match.indices ?? [],
+      ),
+    )
+    .sort((a, b) => {
+      if (a[0] < b[0]) return -1;
+      if (a[0] > b[0]) return 1;
+      if (a[1] < b[1]) return -1;
+      if (a[1] > b[1]) return 1;
+      return 0;
+    });
+  let last = 0;
+  const headline = [];
+
+  for (const [start, end] of occurrences) {
+    if (last > start) continue;
+
+    if (/^\s+$/.test(str.slice(last, start))) {
+      const lastHeadline = headline[headline.length - 1];
+      if (lastHeadline != null) {
+        lastHeadline.value = `${lastHeadline.value}${str.slice(last, end)}`;
+      }
+    } else {
+      if (last < start) {
+        headline.push({ value: str.slice(last, start), highlight: false });
+      }
+      headline.push({ value: str.slice(start, end), highlight: true });
+    }
+    last = end;
+  }
+
+  if (last < str.length) {
+    headline.push({ value: str.slice(last), highlight: false });
+  }
+  return headline;
 }

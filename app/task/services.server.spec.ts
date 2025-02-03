@@ -1,12 +1,13 @@
 import { faker } from "@faker-js/faker";
 import { parseISO } from "date-fns";
 import { eq } from "drizzle-orm";
-import { uid } from "uid";
 import { describe, expect, test } from "vitest";
 import type { TaskForm } from "./model";
 import * as services from "./services.server";
 import { db } from "~/db.server";
 import * as table from "~/db.server/schema";
+
+const uid = services.seqId;
 
 describe("getCurrentTask", () => {
   test("returns nullish without tasks", async () => {
@@ -744,35 +745,41 @@ describe("searchTasks", () => {
     };
     await services.createTask(taskForm5, user);
 
-    const result1 = await services.searchTasks(
-      query!,
+    const [results1, nextCursor1] = await services.searchTasks({
+      query: query!,
       user,
-      parseISO("2025-01-22T08:00:00Z"),
-    );
+      cursor: null,
+      size: 10,
+      now: parseISO("2025-01-22T08:00:00Z"),
+    });
 
     expect(
-      result1.map(({ id, name, isDone }) => ({ id, name, isDone })),
+      results1.map(({ id, name, isDone }) => ({ id, name, isDone })),
     ).toIncludeSameMembers([
       { id: taskForm1.id, name: taskForm1.name, isDone: true },
       { id: taskForm2.id, name: taskForm2.name, isDone: true },
       { id: taskForm3.id, name: taskForm3.name, isDone: false },
       { id: taskForm4.id, name: taskForm4.name, isDone: false },
     ]);
+    expect(nextCursor1).toBeNil();
 
-    const result2 = await services.searchTasks(
-      query!,
+    const [results2, nextCursor2] = await services.searchTasks({
+      query: query!,
       user,
-      parseISO("2025-01-23T08:00:00Z"),
-    );
+      cursor: null,
+      size: 10,
+      now: parseISO("2025-01-23T08:00:00Z"),
+    });
 
     expect(
-      result2.map(({ id, name, isDone }) => ({ id, name, isDone })),
+      results2.map(({ id, name, isDone }) => ({ id, name, isDone })),
     ).toIncludeSameMembers([
       { id: taskForm1.id, name: taskForm1.name, isDone: true },
       { id: taskForm2.id, name: taskForm2.name, isDone: false },
       { id: taskForm3.id, name: taskForm3.name, isDone: false },
       { id: taskForm4.id, name: taskForm4.name, isDone: false },
     ]);
+    expect(nextCursor2).toBeNil();
   });
 });
 

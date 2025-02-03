@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-const clientIdSchema = v.pipe(v.string(), v.regex(/^[0-9a-f]{11}$/));
+const clientIdSchema = v.pipe(v.string(), v.nonEmpty(), v.maxLength(16));
 
 export const nameSchema = v.pipe(
   v.string("Required"),
