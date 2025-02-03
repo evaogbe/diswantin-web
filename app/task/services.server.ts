@@ -232,7 +232,7 @@ export async function searchTasks({
 }: {
   query: string;
   user: User;
-  cursor: { rank: string; clientId: string } | null;
+  cursor: string | null;
   size: number;
   now?: Date;
 }) {
@@ -240,6 +240,7 @@ export async function searchTasks({
     startOfDay(toZonedTime(now, user.timeZone)),
     user.timeZone,
   );
+  const [cursorRank, cursorId] = cursor?.split(":") ?? [];
   const tsquery = `${query
     .replace(/[^\w\s]/g, " ")
     .trim()
@@ -252,7 +253,7 @@ export async function searchTasks({
     .from(table.taskCompletion)
     .groupBy(table.taskCompletion.taskId)
     .as("com");
-  return db
+  const page = await db
     .select({
       id: table.task.clientId,
       name: table.task.name,
@@ -274,19 +275,28 @@ export async function searchTasks({
       and(
         eq(table.task.userId, user.id),
         sql`to_tsvector('simple', ${table.task.name}) @@ to_tsquery('simple', ${tsquery})`,
-        cursor != null
+        cursorRank != null && cursorId != null
           ? or(
-              lt(t.rank, cursor.rank),
-              and(eq(t.rank, cursor.rank), gt(t.id, cursor.clientId)),
+              lt(t.rank, cursorRank),
+              and(eq(t.rank, cursorRank), gt(t.id, cursorId)),
             )
           : undefined,
       ),
     )
     .orderBy((t) => [desc(t.rank), t.id])
-    .limit(size);
+    .limit(size + 1);
+
+  return page.length <= size
+    ? ([page, null] as const)
+    : ([
+        page.slice(0, -1),
+        `${page[page.length - 2]?.rank}:${page[page.length - 2]?.id}`,
+      ] as const);
 }
 
-export type TaskSearchResult = Awaited<ReturnType<typeof searchTasks>>[number];
+export type TaskSearchResult = Awaited<
+  ReturnType<typeof searchTasks>
+>[0][number];
 
 function recurrenceDbToRecurrence(
   recurrences: Array<

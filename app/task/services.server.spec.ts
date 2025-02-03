@@ -745,7 +745,7 @@ describe("searchTasks", () => {
     };
     await services.createTask(taskForm5, user);
 
-    const result1 = await services.searchTasks({
+    const [results1, nextCursor1] = await services.searchTasks({
       query: query!,
       user,
       cursor: null,
@@ -754,15 +754,16 @@ describe("searchTasks", () => {
     });
 
     expect(
-      result1.map(({ id, name, isDone }) => ({ id, name, isDone })),
+      results1.map(({ id, name, isDone }) => ({ id, name, isDone })),
     ).toIncludeSameMembers([
       { id: taskForm1.id, name: taskForm1.name, isDone: true },
       { id: taskForm2.id, name: taskForm2.name, isDone: true },
       { id: taskForm3.id, name: taskForm3.name, isDone: false },
       { id: taskForm4.id, name: taskForm4.name, isDone: false },
     ]);
+    expect(nextCursor1).toBeNil();
 
-    const result2 = await services.searchTasks({
+    const [results2, nextCursor2] = await services.searchTasks({
       query: query!,
       user,
       cursor: null,
@@ -771,13 +772,14 @@ describe("searchTasks", () => {
     });
 
     expect(
-      result2.map(({ id, name, isDone }) => ({ id, name, isDone })),
+      results2.map(({ id, name, isDone }) => ({ id, name, isDone })),
     ).toIncludeSameMembers([
       { id: taskForm1.id, name: taskForm1.name, isDone: true },
       { id: taskForm2.id, name: taskForm2.name, isDone: false },
       { id: taskForm3.id, name: taskForm3.name, isDone: false },
       { id: taskForm4.id, name: taskForm4.name, isDone: false },
     ]);
+    expect(nextCursor2).toBeNil();
   });
 });
 

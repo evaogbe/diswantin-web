@@ -1,5 +1,6 @@
+import useResizeObserver from "@react-hook/resize-observer";
 import { Plus, Search, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Form,
   Link,
@@ -42,24 +43,15 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 
   const pageSize = 50;
-  const [cursorRank, cursorId] =
-    url.searchParams.get("cursor")?.split(":") ?? [];
-  const searchResults = await searchTasks({
+  const [searchResults, nextCursor] = await searchTasks({
     query,
     user,
-    cursor:
-      cursorRank != null && cursorId != null
-        ? { rank: cursorRank, clientId: cursorId }
-        : null,
+    cursor: url.searchParams.get("cursor"),
     size: pageSize,
   });
-  const lastResult = searchResults[searchResults.length - 1];
   return {
     searchResults,
-    nextCursor:
-      searchResults.length < pageSize
-        ? null
-        : `${lastResult?.rank}:${lastResult?.id}`,
+    nextCursor,
     query: q,
     isAuthenticated: true,
   };
@@ -68,6 +60,139 @@ export async function loader({ request }: Route.LoaderArgs) {
 export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ page: "To-do search", error }) }];
 }
+
+type SearchResultComponents = Components<
+  TaskSearchResult,
+  {
+    query: string;
+    loading: boolean;
+    hasMore: boolean;
+    loadMore: () => void;
+    setFooterHeight: (height: number) => void;
+    setListHeight: (height: number) => void;
+  }
+>;
+
+class NullResizeObserver {
+  disconnect() {
+    // Do nothing
+  }
+  observe() {
+    // Do nothing
+  }
+  unobserve() {
+    // Do nothing
+  }
+}
+
+function noop() {
+  // Do nothing
+}
+
+function useHeight(
+  target: Element | null,
+  setHeight: (height: number) => void,
+) {
+  useLayoutEffect(() => {
+    const height = target?.getBoundingClientRect().height;
+    if (height != null) {
+      setHeight(height);
+    }
+  }, [target, setHeight]);
+  useResizeObserver(
+    target,
+    (entry) => {
+      const height = entry.borderBoxSize[0]?.blockSize;
+      if (height != null) {
+        setHeight(height);
+      }
+    },
+    {
+      polyfill:
+        typeof document === "undefined" ? NullResizeObserver : undefined,
+    },
+  );
+}
+
+// ESLint is not picking up Typescript types from React Virtuoso
+/* eslint-disable react/prop-types */
+const SearchResultList: SearchResultComponents["List"] = ({
+  context,
+  ref,
+  ...props
+}) => {
+  const [listRef, setListRef] = useState<HTMLUListElement | null>(null);
+  useHeight(listRef, context?.setListHeight ?? noop);
+
+  return (
+    <ul
+      className="space-y-fl-2xs"
+      ref={(node) => {
+        if (typeof ref === "function") {
+          ref(node as HTMLDivElement | null);
+        } else if (ref != null) {
+          ref.current = node as HTMLDivElement | null;
+        }
+        setListRef(node);
+      }}
+      {...props}
+    />
+  );
+};
+
+const SearchResultItem: SearchResultComponents["Item"] = ({
+  context,
+  item,
+  ...props
+}) => {
+  return <li {...props} />;
+};
+
+const SearchResultFooter: SearchResultComponents["Footer"] = ({ context }) => {
+  const [ref, setRef] = useState<HTMLButtonElement | null>(null);
+  useHeight(ref, context?.setFooterHeight ?? noop);
+
+  if (!context?.hasMore) {
+    return null;
+  }
+
+  return (
+    <PendingButton
+      pending={context.loading}
+      pendingText="Loading…"
+      variant="secondary"
+      type="button"
+      ref={setRef}
+      onClick={context.loadMore}
+      className="my-fl-2xs"
+    >
+      Load more
+    </PendingButton>
+  );
+};
+
+const EmptySearchResultsPlaceholder: SearchResultComponents["EmptyPlaceholder"] =
+  ({ context }) => {
+    return (
+      <div className="flex flex-col items-center">
+        <Search
+          aria-hidden="true"
+          className="mt-fl-xs size-fl-2xl text-muted-foreground"
+        />
+        <p className="mt-fl-sm text-xl text-muted-foreground">
+          No matching to-dos
+        </p>
+        <p className="mt-fl-sm">
+          <Button asChild>
+            <Link to={`/new-todo?name=${context?.query.trim()}`}>
+              <Plus aria-hidden="true" /> Add to-do
+            </Link>
+          </Button>
+        </p>
+      </div>
+    );
+  };
+/* eslint-enable react/prop-types */
 
 function useSearch(query: string | null) {
   const submit = useSubmit();
@@ -105,72 +230,6 @@ function usePaginate(page: TaskSearchResult[], isInitial: boolean) {
   return data;
 }
 
-type SearchResultComponents = Components<
-  TaskSearchResult,
-  { query: string; loading: boolean; hasMore: boolean; loadMore: () => void }
->;
-
-// ESLint is not picking up Typescript types from React Virtuoso
-/* eslint-disable react/prop-types */
-const SearchResultList: SearchResultComponents["List"] = ({
-  ref,
-  ...props
-}) => {
-  return (
-    <ul
-      className="mt-fl-2xs space-y-fl-2xs"
-      ref={ref as React.Ref<HTMLUListElement>}
-      {...props}
-    />
-  );
-};
-
-const SearchResultItem: SearchResultComponents["Item"] = (props) => {
-  return <li {...props} />;
-};
-
-const SearchResultFooter: SearchResultComponents["Footer"] = ({ context }) => {
-  if (!context?.hasMore) {
-    return null;
-  }
-
-  return (
-    <PendingButton
-      pending={context.loading}
-      pendingText="Loading…"
-      variant="secondary"
-      type="button"
-      onClick={context.loadMore}
-      className="mt-fl-2xs"
-    >
-      Load more
-    </PendingButton>
-  );
-};
-
-const EmptySearchResultsPlaceholder: SearchResultComponents["EmptyPlaceholder"] =
-  ({ context }) => {
-    return (
-      <div className="flex flex-col items-center">
-        <Search
-          aria-hidden="true"
-          className="mt-fl-xs size-fl-2xl text-muted-foreground"
-        />
-        <p className="mt-fl-sm text-xl text-muted-foreground">
-          No matching to-dos
-        </p>
-        <p className="mt-fl-sm">
-          <Button asChild>
-            <Link to={`/new-todo?name=${context?.query.trim()}`}>
-              <Plus aria-hidden="true" /> Add to-do
-            </Link>
-          </Button>
-        </p>
-      </div>
-    );
-  };
-/* eslint-enable react/prop-types */
-
 export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
   const { query, searchResults: searchResultPage, nextCursor } = loaderData;
   const [searchParams, setSearchParams] = useSearchParams();
@@ -178,6 +237,8 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
   const { queryRef, search } = useSearch(query);
   const searchResults = usePaginate(searchResultPage, isInitial);
   const navigation = useNavigation();
+  const [listHeight, setListHeight] = useState<number | null>(null);
+  const [footerHeight, setFooterHeight] = useState<number | null>(null);
   const tokens = query?.split(/\s+/) ?? [];
 
   return (
@@ -233,75 +294,95 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
       {query != null && query.trim().length > 1 && (
         <main className="mx-auto flex w-full max-w-prose flex-1 flex-col p-fl-sm">
           <Page aria-labelledby="search-results-heading">
-            <PageHeading id="search-results-heading">
+            <PageHeading id="search-results-heading" className="mb-fl-2xs">
               Search results
             </PageHeading>
-            <Virtuoso
-              useWindowScroll
-              increaseViewportBy={200}
-              data={searchResults}
-              initialItemCount={isInitial ? searchResultPage.length : undefined}
-              // React Virtuoso sends undefined sometimes
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              computeItemKey={(index, result) => result?.id ?? index}
-              context={{
-                query,
-                loading:
-                  navigation.state === "loading" &&
-                  new URLSearchParams(navigation.location.search).get("q") ===
-                    query,
-                hasMore: nextCursor != null,
-                loadMore: () => {
-                  if (nextCursor != null) {
-                    setSearchParams((prev) => {
-                      prev.set("cursor", nextCursor);
-                      return prev;
-                    });
-                  }
-                },
+            <div
+              style={{
+                height:
+                  listHeight != null
+                    ? listHeight + (footerHeight ?? 0)
+                    : undefined,
               }}
-              itemContent={(_, result) =>
+              className="mb-fl-2xs"
+            >
+              <Virtuoso
+                useWindowScroll
+                increaseViewportBy={200}
+                data={searchResults}
+                initialItemCount={
+                  isInitial ? searchResultPage.length : undefined
+                }
                 // React Virtuoso sends undefined sometimes
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                result != null && (
-                  <Link
-                    to={`/todo/${result.id}`}
-                    className={twJoin(
-                      "flex w-full rounded-sm transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none max-sm:min-w-max",
-                      result.isDone && "line-through",
-                    )}
-                  >
-                    <div className="mx-fl-2xs my-fl-3xs inline-flex overflow-hidden">
-                      {buildSearchHeadline(result.name, tokens).map(
-                        ({ value, highlight }, i) =>
-                          highlight ? (
-                            <b
-                              key={i}
-                              className="flex-none bg-primary/50 font-normal"
-                            >
-                              {value}
-                            </b>
-                          ) : (
-                            <span
-                              key={i}
-                              className="flex-none whitespace-pre-wrap"
-                            >
-                              {value}
-                            </span>
-                          ),
+                computeItemKey={(index, result) => result?.id ?? index}
+                context={{
+                  query,
+                  loading:
+                    navigation.state === "loading" &&
+                    new URLSearchParams(navigation.location.search).get("q") ===
+                      query,
+                  hasMore: nextCursor != null,
+                  loadMore: () => {
+                    if (nextCursor != null) {
+                      setSearchParams(
+                        (prev) => {
+                          prev.set("cursor", nextCursor);
+                          return prev;
+                        },
+                        {
+                          replace: true,
+                          preventScrollReset: true,
+                        },
+                      );
+                    }
+                  },
+                  setListHeight,
+                  setFooterHeight,
+                }}
+                itemContent={(_, result) =>
+                  // React Virtuoso sends undefined sometimes
+                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                  result != null && (
+                    <Link
+                      to={`/todo/${result.id}`}
+                      className={twJoin(
+                        "flex w-full rounded-sm transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none max-sm:min-w-max",
+                        result.isDone && "line-through",
                       )}
-                    </div>
-                    {result.isDone && <span className="sr-only">Done</span>}
-                  </Link>
-                )
-              }
-              components={{
-                List: SearchResultList,
-                Item: SearchResultItem,
-                Footer: SearchResultFooter,
-                EmptyPlaceholder: EmptySearchResultsPlaceholder,
-              }}
-            />
+                    >
+                      <div className="mx-fl-2xs my-fl-3xs inline-flex overflow-hidden">
+                        {buildSearchHeadline(result.name, tokens).map(
+                          ({ value, highlight }, i) =>
+                            highlight ? (
+                              <b
+                                key={i}
+                                className="flex-none bg-primary/50 font-normal"
+                              >
+                                {value}
+                              </b>
+                            ) : (
+                              <span
+                                key={i}
+                                className="flex-none whitespace-pre-wrap"
+                              >
+                                {value}
+                              </span>
+                            ),
+                        )}
+                      </div>
+                      {result.isDone && <span className="sr-only">Done</span>}
+                    </Link>
+                  )
+                }
+                components={{
+                  List: SearchResultList,
+                  Item: SearchResultItem,
+                  Footer: SearchResultFooter,
+                  EmptyPlaceholder: EmptySearchResultsPlaceholder,
+                }}
+              />
+            </div>
           </Page>
         </main>
       )}
