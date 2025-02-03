@@ -1,12 +1,13 @@
 import { faker } from "@faker-js/faker";
 import { parseISO } from "date-fns";
 import { eq } from "drizzle-orm";
-import { uid } from "uid";
 import { describe, expect, test } from "vitest";
 import type { TaskForm } from "./model";
 import * as services from "./services.server";
 import { db } from "~/db.server";
 import * as table from "~/db.server/schema";
+
+const uid = services.seqId;
 
 describe("getCurrentTask", () => {
   test("returns nullish without tasks", async () => {
@@ -744,11 +745,13 @@ describe("searchTasks", () => {
     };
     await services.createTask(taskForm5, user);
 
-    const result1 = await services.searchTasks(
-      query!,
+    const result1 = await services.searchTasks({
+      query: query!,
       user,
-      parseISO("2025-01-22T08:00:00Z"),
-    );
+      cursor: null,
+      size: 10,
+      now: parseISO("2025-01-22T08:00:00Z"),
+    });
 
     expect(
       result1.map(({ id, name, isDone }) => ({ id, name, isDone })),
@@ -759,11 +762,13 @@ describe("searchTasks", () => {
       { id: taskForm4.id, name: taskForm4.name, isDone: false },
     ]);
 
-    const result2 = await services.searchTasks(
-      query!,
+    const result2 = await services.searchTasks({
+      query: query!,
       user,
-      parseISO("2025-01-23T08:00:00Z"),
-    );
+      cursor: null,
+      size: 10,
+      now: parseISO("2025-01-23T08:00:00Z"),
+    });
 
     expect(
       result2.map(({ id, name, isDone }) => ({ id, name, isDone })),

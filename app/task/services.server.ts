@@ -9,6 +9,7 @@ import {
   and,
   desc,
   eq,
+  gt,
   gte,
   inArray,
   isNotNull,
@@ -222,51 +223,19 @@ export async function getCurrentTask(user: User, now = new Date()) {
   return currentTask;
 }
 
-function escapeRegExp(str: string) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function buildSearchHeadline(str: string, tokens: string[]) {
-  const occurrences = tokens
-    .flatMap((token) =>
-      [...str.matchAll(new RegExp(escapeRegExp(token), "dgi"))].flatMap(
-        (match) => match.indices ?? [],
-      ),
-    )
-    .sort((a, b) => {
-      if (a[0] < b[0]) return -1;
-      if (a[0] > b[0]) return 1;
-      if (a[1] < b[1]) return -1;
-      if (a[1] > b[1]) return 1;
-      return 0;
-    });
-  let last = 0;
-  const headline = [];
-
-  for (const [start, end] of occurrences) {
-    if (last > start) continue;
-
-    if (/^\s+$/.test(str.slice(last, start))) {
-      const lastHeadline = headline[headline.length - 1];
-      if (lastHeadline != null) {
-        lastHeadline.value = `${lastHeadline.value}${str.slice(last, end)}`;
-      }
-    } else {
-      if (last < start) {
-        headline.push({ value: str.slice(last, start), highlight: false });
-      }
-      headline.push({ value: str.slice(start, end), highlight: true });
-    }
-    last = end;
-  }
-
-  if (last < str.length) {
-    headline.push({ value: str.slice(last), highlight: false });
-  }
-  return headline;
-}
-
-export async function searchTasks(query: string, user: User, now = new Date()) {
+export async function searchTasks({
+  query,
+  user,
+  cursor,
+  size,
+  now = new Date(),
+}: {
+  query: string;
+  user: User;
+  cursor: { rank: string; clientId: string } | null;
+  size: number;
+  now?: Date;
+}) {
   const midnight = fromZonedTime(
     startOfDay(toZonedTime(now, user.timeZone)),
     user.timeZone,
@@ -283,12 +252,17 @@ export async function searchTasks(query: string, user: User, now = new Date()) {
     .from(table.taskCompletion)
     .groupBy(table.taskCompletion.taskId)
     .as("com");
-  const searchResults = await db
+  return db
     .select({
       id: table.task.clientId,
       name: table.task.name,
       isDone: sql<boolean>`${isNotNull(completionQuery.doneAt)}
         AND ${or(isNull(table.taskRecurrence.taskId), gte(completionQuery.doneAt, midnight))}`,
+      rank: sql<number>`ts_rank_cd(
+        to_tsvector('simple', ${table.task.name}),
+        to_tsquery('simple', ${tsquery}),
+        1
+      )`,
     })
     .from(table.task)
     .leftJoin(completionQuery, eq(completionQuery.taskId, table.task.id))
@@ -296,28 +270,23 @@ export async function searchTasks(query: string, user: User, now = new Date()) {
       table.taskRecurrence,
       eq(table.taskRecurrence.taskId, table.task.id),
     )
-    .where(
+    .where((t) =>
       and(
         eq(table.task.userId, user.id),
         sql`to_tsvector('simple', ${table.task.name}) @@ to_tsquery('simple', ${tsquery})`,
+        cursor != null
+          ? or(
+              lt(t.rank, cursor.rank),
+              and(eq(t.rank, cursor.rank), gt(t.id, cursor.clientId)),
+            )
+          : undefined,
       ),
     )
-    .orderBy(
-      desc(
-        sql`ts_rank_cd(
-          to_tsvector('simple', ${table.task.name}),
-          to_tsquery('simple', ${tsquery}),
-          1
-        )`,
-      ),
-    )
-    .limit(30);
-  const tokens = query.split(/\s+/);
-  return searchResults.map((result) => ({
-    ...result,
-    headline: buildSearchHeadline(result.name, tokens),
-  }));
+    .orderBy((t) => [desc(t.rank), t.id])
+    .limit(size);
 }
+
+export type TaskSearchResult = Awaited<ReturnType<typeof searchTasks>>[number];
 
 function recurrenceDbToRecurrence(
   recurrences: Array<
@@ -482,11 +451,15 @@ export async function getTaskDetail(
   };
 }
 
+export function seqId() {
+  return `${Math.floor(Date.now() / 1000)}${uid(6)}`;
+}
+
 export function getNewTaskForm(request: Request) {
   const url = new URL(request.url);
   const nameParseResult = v.safeParse(nameSchema, url.searchParams.get("name"));
   return {
-    id: uid(),
+    id: seqId(),
     name: nameParseResult.success ? nameParseResult.output : "",
   };
 }

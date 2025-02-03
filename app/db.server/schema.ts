@@ -1,6 +1,5 @@
 import { relations, sql } from "drizzle-orm";
 import {
-  char,
   date,
   index,
   integer,
@@ -14,7 +13,7 @@ import {
 
 export const user = pgTable("user", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  clientId: char({ length: 11 }).notNull().unique("user_client_id_unique"),
+  clientId: varchar({ length: 16 }).notNull().unique("user_client_id_unique"),
   googleId: varchar({ length: 255 }).notNull().unique("user_google_id_unique"),
   email: varchar({ length: 255 }).notNull().unique(),
   timeZone: varchar({ length: 255 }),
@@ -24,7 +23,7 @@ export const task = pgTable(
   "task",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    clientId: char({ length: 11 }).notNull().unique("task_client_id_unique"),
+    clientId: varchar({ length: 16 }).notNull().unique("task_client_id_unique"),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     userId: integer()
       .notNull()

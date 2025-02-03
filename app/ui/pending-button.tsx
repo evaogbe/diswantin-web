@@ -11,7 +11,7 @@ export function PendingButton({
   ...props
 }: ButtonProps & {
   pending: boolean;
-  pendingText?: React.ReactNode;
+  pendingText: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
@@ -20,7 +20,7 @@ export function PendingButton({
         <Button {...props} className={className} asChild>
           <span role="status">
             <Loader2 aria-hidden="true" className="animate-spin" />
-            {pendingText ?? children}
+            {pendingText}
           </span>
         </Button>
       )}
