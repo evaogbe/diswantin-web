@@ -71,7 +71,7 @@ export default function CookiesRoute() {
         </section>
         <section
           aria-labelledby="what-are-cookies"
-          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs [&_>h4+*]:mt-fl-2xs"
         >
           <h3
             id="what-are-cookies"
@@ -108,7 +108,7 @@ export default function CookiesRoute() {
         </section>
         <section
           aria-labelledby="what-type-of-cookies-do-we-use"
-          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs [&_>h4+*]:mt-fl-2xs"
         >
           <h3
             id="what-type-of-cookies-do-we-use"
@@ -116,45 +116,29 @@ export default function CookiesRoute() {
           >
             What type of cookies do we use?
           </h3>
-          <section
-            aria-labelledby="necessary-cookies"
-            className="[&_>*+*]:mt-fl-sm [&_>h4+*]:mt-fl-2xs"
-          >
-            <h4
-              id="necessary-cookies"
-              className="text-balance text-xl font-semibold tracking-tight"
-            >
-              Necessary cookies
-            </h4>
-            <p className="break-words leading-7">
-              Necessary cookies allow us to offer you the best possible
-              experience when accessing and navigating through our Website and
-              using its features. For example, these cookies let us recognize
-              that you have created an account and have logged into that account
-              to access the content.
-            </p>
-          </section>
-          <section
-            aria-labelledby="functionality-cookies"
-            className="[&_>*+*]:mt-fl-sm [&_>h4+*]:mt-fl-2xs"
-          >
-            <h4
-              id="functionality-cookies"
-              className="text-balance text-xl font-semibold tracking-tight"
-            >
-              Functionality cookies
-            </h4>
-            <p className="break-words leading-7">
-              Functionality cookies let us operate the Website and Services in
-              accordance with the choices you make. For example, we will
-              recognize your color theme and remember how you customized the
-              Website and Services during future visits.
-            </p>
-          </section>
+          <h4 className="text-balance text-xl font-semibold tracking-tight">
+            Necessary cookies
+          </h4>
+          <p className="break-words leading-7">
+            Necessary cookies allow us to offer you the best possible experience
+            when accessing and navigating through our Website and using its
+            features. For example, these cookies let us recognize that you have
+            created an account and have logged into that account to access the
+            content.
+          </p>
+          <h4 className="text-balance text-xl font-semibold tracking-tight">
+            Functionality cookies
+          </h4>
+          <p className="break-words leading-7">
+            Functionality cookies let us operate the Website and Services in
+            accordance with the choices you make. For example, we will recognize
+            your color theme and remember how you customized the Website and
+            Services during future visits.
+          </p>
         </section>
         <section
           aria-labelledby="what-are-your-cookie-options"
-          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs [&_>h4+*]:mt-fl-2xs"
         >
           <h3
             id="what-are-your-cookie-options"
@@ -184,7 +168,7 @@ export default function CookiesRoute() {
         </section>
         <section
           aria-labelledby="changes-and-amendments"
-          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs [&_>h4+*]:mt-fl-2xs"
         >
           <h3
             id="changes-and-amendments"
@@ -211,7 +195,7 @@ export default function CookiesRoute() {
         </section>
         <section
           aria-labelledby="acceptance-of-this-policy"
-          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs [&_>h4+*]:mt-fl-2xs"
         >
           <h3
             id="acceptance-of-this-policy"
@@ -238,7 +222,7 @@ export default function CookiesRoute() {
         </section>
         <section
           aria-labelledby="contacting-us"
-          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs"
+          className="[&_>*+*]:mt-fl-sm [&_>h3+*]:mt-fl-2xs [&_>h4+*]:mt-fl-2xs"
         >
           <h3
             id="contacting-us"
