@@ -261,9 +261,7 @@ function FormItem({ className, ...props }: React.JSX.IntrinsicElements["p"]) {
 function FormLabel({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof Label> & {
-  ref?: React.RefObject<React.ComponentRef<typeof Label>>;
-}) {
+}: React.ComponentProps<typeof Label>) {
   const field = useFormField();
 
   return (

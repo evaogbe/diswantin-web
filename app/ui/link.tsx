@@ -4,9 +4,7 @@ import { cn } from "~/ui/classes";
 function Link({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof LinkPrimitive> & {
-  ref?: React.RefObject<React.ComponentRef<typeof LinkPrimitive>>;
-}) {
+}: React.ComponentProps<typeof LinkPrimitive>) {
   return (
     <LinkPrimitive
       className={cn(

@@ -8,11 +8,7 @@ function NavigationMenu({
   className,
   children,
   ...props
-}: React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Root> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof NavigationMenuPrimitive.Root>
-  >;
-}) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Root>) {
   return (
     <NavigationMenuPrimitive.Root
       className={cn(
@@ -30,11 +26,7 @@ function NavigationMenu({
 function NavigationMenuList({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.List> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof NavigationMenuPrimitive.List>
-  >;
-}) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {
   return (
     <NavigationMenuPrimitive.List
       className={cn(
@@ -57,11 +49,7 @@ function NavigationMenuTrigger({
   className,
   children,
   ...props
-}: React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Trigger> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof NavigationMenuPrimitive.Trigger>
-  >;
-}) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Trigger>) {
   return (
     <NavigationMenuPrimitive.Trigger
       className={cn(navigationMenuTriggerStyle(), "group", className)}
@@ -79,11 +67,7 @@ function NavigationMenuTrigger({
 function NavigationMenuContent({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Content> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof NavigationMenuPrimitive.Content>
-  >;
-}) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Content>) {
   return (
     <NavigationMenuPrimitive.Content
       className={cn(
@@ -98,9 +82,8 @@ function NavigationMenuContent({
 function NavigationMenuLink({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof NavLink> & {
+}: React.ComponentProps<typeof NavLink> & {
   className?: string;
-  ref?: React.RefObject<React.ComponentRef<typeof NavLink>>;
 }) {
   const location = useLocation();
 
@@ -120,11 +103,7 @@ function NavigationMenuLink({
 function NavigationMenuViewport({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Viewport> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof NavigationMenuPrimitive.Viewport>
-  >;
-}) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Viewport>) {
   return (
     <div className="absolute start-0 top-full flex justify-center">
       <NavigationMenuPrimitive.Viewport
@@ -141,11 +120,7 @@ function NavigationMenuViewport({
 function NavigationMenuIndicator({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Indicator> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof NavigationMenuPrimitive.Indicator>
-  >;
-}) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Indicator>) {
   return (
     <NavigationMenuPrimitive.Indicator
       className={cn(

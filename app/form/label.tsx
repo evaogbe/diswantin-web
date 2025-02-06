@@ -4,9 +4,7 @@ import { cn } from "~/ui/classes";
 function Label({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & {
-  ref?: React.RefObject<React.ComponentRef<typeof LabelPrimitive.Root>>;
-}) {
+}: React.ComponentProps<typeof LabelPrimitive.Root>) {
   return (
     <LabelPrimitive.Root
       className={cn(
