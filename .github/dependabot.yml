@@ -13,3 +13,23 @@ updates:
       interval: "weekly"
     commit-message:
       prefix: "⬆️ "
+    groups:
+      radix-ui:
+        patterns:
+          - "@radix-ui/*"
+      react:
+        patterns:
+          - react
+          - react-dom
+      react-router:
+        patterns:
+          - "@react-router/*"
+          - react-router
+      sentry:
+        patterns:
+          - "@sentry/*"
+        exclude-patterns:
+          - "@sentry/vite-plugin"
+      typescript-eslint:
+        patterns:
+          - "@typescript-eslint/*"
