@@ -10,9 +10,7 @@ function PopoverContent({
   align = "center",
   sideOffset = 4,
   ...props
-}: React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> & {
-  ref?: React.RefObject<React.ComponentRef<typeof PopoverPrimitive.Content>>;
-}) {
+}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content

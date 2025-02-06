@@ -17,10 +17,8 @@ function ToggleGroup({
   size,
   children,
   ...props
-}: React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Root> &
-  VariantProps<typeof toggleVariants> & {
-    ref?: React.RefObject<React.ComponentRef<typeof ToggleGroupPrimitive.Root>>;
-  }) {
+}: React.ComponentProps<typeof ToggleGroupPrimitive.Root> &
+  VariantProps<typeof toggleVariants>) {
   return (
     <ToggleGroupPrimitive.Root
       className={cn(
@@ -43,10 +41,8 @@ function ToggleGroupItem({
   variant,
   size,
   ...props
-}: React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Item> &
-  VariantProps<typeof toggleVariants> & {
-    ref?: React.RefObject<React.ComponentRef<typeof ToggleGroupPrimitive.Item>>;
-  }) {
+}: React.ComponentProps<typeof ToggleGroupPrimitive.Item> &
+  VariantProps<typeof toggleVariants>) {
   const context = React.useContext(ToggleGroupContext);
 
   return (

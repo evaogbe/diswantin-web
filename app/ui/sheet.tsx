@@ -15,9 +15,7 @@ const SheetPortal = SheetPrimitive.Portal;
 function SheetOverlay({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay> & {
-  ref?: React.RefObject<React.ComponentRef<typeof SheetPrimitive.Overlay>>;
-}) {
+}: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
   return (
     <SheetPrimitive.Overlay
       className={cn(
@@ -50,12 +48,8 @@ const sheetVariants = cva(
   },
 );
 
-type SheetContentProps = React.ComponentPropsWithoutRef<
-  typeof SheetPrimitive.Content
-> &
-  VariantProps<typeof sheetVariants> & {
-    ref?: React.RefObject<React.ComponentRef<typeof SheetPrimitive.Content>>;
-  };
+type SheetContentProps = React.ComponentProps<typeof SheetPrimitive.Content> &
+  VariantProps<typeof sheetVariants>;
 
 function SheetContent({
   side = "compact",
@@ -107,9 +101,7 @@ const SheetFooter = ({
 function SheetTitle({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title> & {
-  ref?: React.RefObject<React.ComponentRef<typeof SheetPrimitive.Title>>;
-}) {
+}: React.ComponentProps<typeof SheetPrimitive.Title>) {
   return (
     <SheetPrimitive.Title
       className={cn(
@@ -124,9 +116,7 @@ function SheetTitle({
 function SheetDescription({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof SheetPrimitive.Description> & {
-  ref?: React.RefObject<React.ComponentRef<typeof SheetPrimitive.Description>>;
-}) {
+}: React.ComponentProps<typeof SheetPrimitive.Description>) {
   return (
     <SheetPrimitive.Description
       className={cn("break-words text-sm text-muted-foreground", className)}

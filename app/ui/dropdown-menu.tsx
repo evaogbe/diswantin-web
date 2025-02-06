@@ -19,10 +19,7 @@ function DropdownMenuSubTrigger({
   inset,
   children,
   ...props
-}: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof DropdownMenuPrimitive.SubTrigger>
-  >;
+}: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & {
   inset?: boolean;
 }) {
   return (
@@ -43,11 +40,7 @@ function DropdownMenuSubTrigger({
 function DropdownMenuSubContent({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof DropdownMenuPrimitive.SubContent>
-  >;
-}) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
   return (
     <DropdownMenuPrimitive.SubContent
       className={cn(
@@ -63,11 +56,7 @@ function DropdownMenuContent({
   className,
   sideOffset = 4,
   ...props
-}: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof DropdownMenuPrimitive.Content>
-  >;
-}) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
   return (
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
@@ -86,8 +75,7 @@ function DropdownMenuItem({
   className,
   inset,
   ...props
-}: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
-  ref?: React.RefObject<React.ComponentRef<typeof DropdownMenuPrimitive.Item>>;
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
   inset?: boolean;
 }) {
   return (
@@ -107,11 +95,7 @@ function DropdownMenuCheckboxItem({
   children,
   checked,
   ...props
-}: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof DropdownMenuPrimitive.CheckboxItem>
-  >;
-}) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>) {
   return (
     <DropdownMenuPrimitive.CheckboxItem
       className={cn(
@@ -135,11 +119,7 @@ function DropdownMenuRadioItem({
   className,
   children,
   ...props
-}: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof DropdownMenuPrimitive.RadioItem>
-  >;
-}) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem>) {
   return (
     <DropdownMenuPrimitive.RadioItem
       className={cn(
@@ -162,8 +142,7 @@ function DropdownMenuLabel({
   className,
   inset,
   ...props
-}: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & {
-  ref?: React.RefObject<React.ComponentRef<typeof DropdownMenuPrimitive.Label>>;
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Label> & {
   inset?: boolean;
 }) {
   return (
@@ -181,11 +160,7 @@ function DropdownMenuLabel({
 function DropdownMenuSeparator({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator> & {
-  ref?: React.RefObject<
-    React.ComponentRef<typeof DropdownMenuPrimitive.Separator>
-  >;
-}) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
   return (
     <DropdownMenuPrimitive.Separator
       className={cn("-mx-fl-3xs my-fl-3xs h-px bg-muted", className)}
