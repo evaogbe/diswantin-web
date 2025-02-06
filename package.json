@@ -120,7 +120,7 @@
     "vite-env-only": "^3.0.3",
     "vite-plugin-svgr": "^4.3.0",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.0.4"
+    "vitest": "^3.0.5"
   },
   "overrides": {
     "valibot": "$valibot"
