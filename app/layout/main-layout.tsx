@@ -24,7 +24,7 @@ export function MainLayout({
 }) {
   return (
     <div className="flex min-h-svh min-w-fit flex-col">
-      <header className="top-0 z-10 flex flex-wrap items-center gap-fl-xs border-b border-primary-container bg-primary-container p-fl-2xs shadow dark:border-accent sm:sticky">
+      <header className="gap-fl-xs border-primary-container bg-primary-container p-fl-2xs dark:border-accent top-0 z-10 flex flex-wrap items-center border-b shadow sm:sticky">
         <h1 className={twJoin(!isAuthenticated && "flex-1")}>
           <Link
             to={isAuthenticated ? "/home" : "/"}
@@ -84,7 +84,7 @@ export function MainLayout({
         )}
         <ThemeToggle />
       </header>
-      <main className="mx-auto flex w-full max-w-prose flex-1 flex-col p-fl-sm max-sm:min-w-fit">
+      <main className="p-fl-sm mx-auto flex w-full max-w-prose flex-1 flex-col max-sm:min-w-fit">
         {children}
       </main>
       {!isAuthenticated && <GuestFooter />}

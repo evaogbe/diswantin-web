@@ -223,7 +223,7 @@ export function TaskForm({
                   <FormItem className="items-start">
                     <FormLabel>Repeats</FormLabel>
                     {parsedRecurrence != null ? (
-                      <span className="flex items-center gap-fl-4xs">
+                      <span className="gap-fl-4xs flex items-center">
                         <input
                           type="hidden"
                           name={recurrence.start.name}
@@ -335,17 +335,17 @@ export function TaskForm({
                 <>
                   <FormFieldSet
                     name={fields.deadline.name}
-                    className="border p-fl-xs"
+                    className="p-fl-xs border"
                   >
                     <FormLegend>Deadline</FormLegend>
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(clamp(100%/3+0.1%,(25rem-100%)*1000,100%/2+0.1%),1fr))] gap-fl-2xs">
+                    <div className="gap-fl-2xs grid grid-cols-[repeat(auto-fill,minmax(clamp(100%/3+0.1%,(25rem-100%)*1000,100%/2+0.1%),1fr))]">
                       {!fields.recurrence.value && (
                         <FormField
                           name={deadline.date.name}
                           render={({ field, control }) => (
                             <FormItem>
                               <FormLabel>Date</FormLabel>
-                              <span className="flex items-center gap-fl-4xs">
+                              <span className="gap-fl-4xs flex items-center">
                                 <Input
                                   {...field}
                                   value={control.value}
@@ -375,7 +375,7 @@ export function TaskForm({
                         render={({ field, control }) => (
                           <FormItem>
                             <FormLabel>Time</FormLabel>
-                            <span className="flex items-center gap-fl-4xs">
+                            <span className="gap-fl-4xs flex items-center">
                               <Input
                                 {...field}
                                 value={control.value}
@@ -404,17 +404,17 @@ export function TaskForm({
                   </FormFieldSet>
                   <FormFieldSet
                     name={fields.startAfter.name}
-                    className="border p-fl-xs"
+                    className="p-fl-xs border"
                   >
                     <FormLegend>Start after</FormLegend>
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(clamp(100%/3+0.1%,(25rem-100%)*1000,100%/2+0.1%),1fr))] gap-fl-2xs">
+                    <div className="gap-fl-2xs grid grid-cols-[repeat(auto-fill,minmax(clamp(100%/3+0.1%,(25rem-100%)*1000,100%/2+0.1%),1fr))]">
                       {!fields.recurrence.value && (
                         <FormField
                           name={startAfter.date.name}
                           render={({ field, control }) => (
                             <FormItem>
                               <FormLabel>Date</FormLabel>
-                              <span className="flex items-center gap-fl-4xs">
+                              <span className="gap-fl-4xs flex items-center">
                                 <Input
                                   {...field}
                                   value={control.value}
@@ -444,7 +444,7 @@ export function TaskForm({
                         render={({ field, control }) => (
                           <FormItem>
                             <FormLabel>Time</FormLabel>
-                            <span className="flex items-center gap-fl-4xs">
+                            <span className="gap-fl-4xs flex items-center">
                               <Input
                                 {...field}
                                 value={control.value}
@@ -476,17 +476,17 @@ export function TaskForm({
               {showScheduledAt && (
                 <FormFieldSet
                   name={fields.scheduledAt.name}
-                  className="border p-fl-xs"
+                  className="p-fl-xs border"
                 >
                   <FormLegend>Scheduled at</FormLegend>
-                  <div className="grid grid-cols-[repeat(auto-fill,minmax(clamp(100%/3+0.1%,(25rem-100%)*1000,100%/2+0.1%),1fr))] gap-fl-2xs">
+                  <div className="gap-fl-2xs grid grid-cols-[repeat(auto-fill,minmax(clamp(100%/3+0.1%,(25rem-100%)*1000,100%/2+0.1%),1fr))]">
                     {!fields.recurrence.value && (
                       <FormField
                         name={scheduledAt.date.name}
                         render={({ field, control }) => (
                           <FormItem>
                             <FormLabel>Date</FormLabel>
-                            <span className="flex items-center gap-fl-4xs">
+                            <span className="gap-fl-4xs flex items-center">
                               <Input
                                 {...field}
                                 value={control.value}
@@ -519,7 +519,7 @@ export function TaskForm({
                         render={({ field, control }) => (
                           <FormItem>
                             <FormLabel>Time</FormLabel>
-                            <span className="flex items-center gap-fl-4xs">
+                            <span className="gap-fl-4xs flex items-center">
                               <Input
                                 {...field}
                                 value={control.value}

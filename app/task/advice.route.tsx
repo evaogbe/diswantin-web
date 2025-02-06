@@ -16,7 +16,7 @@ export default function AdviceRoute() {
   return (
     <Page aria-labelledby="advice-heading">
       <PageHeading id="advice-heading">Advice</PageHeading>
-      <ul className="my-fl-sm ms-fl-sm list-disc space-y-fl-2xs">
+      <ul className="my-fl-sm ms-fl-sm space-y-fl-2xs list-disc">
         <li>
           <strong>STOP</strong>. Take a deep breath. Observe your distress
           level, body sensations, thoughts, and feelings. Proceed honoring your
@@ -32,7 +32,7 @@ export default function AdviceRoute() {
         </li>
         <li>
           <strong>Check the Facts</strong>
-          <ol className="my-fl-2xs ms-fl-sm list-decimal space-y-fl-2xs">
+          <ol className="my-fl-2xs ms-fl-sm space-y-fl-2xs list-decimal">
             <li>Name the emotion and rate the intensity</li>
             <li>Describe the prompting event</li>
             <li>List the possible interpretations</li>
@@ -51,7 +51,7 @@ export default function AdviceRoute() {
         </li>
         <li>
           <strong>Move</strong> your body
-          <ul className="my-fl-2xs ms-fl-sm list-disc space-y-fl-2xs">
+          <ul className="my-fl-2xs ms-fl-sm space-y-fl-2xs list-disc">
             <li>wiggle</li>
             <li>stretch</li>
             <li>dance</li>

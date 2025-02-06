@@ -179,7 +179,7 @@ const EmptySearchResultsPlaceholder: SearchResultComponents["EmptyPlaceholder"] 
           aria-hidden="true"
           className="mt-fl-xs size-fl-2xl text-muted-foreground"
         />
-        <p className="mt-fl-sm text-xl text-muted-foreground">
+        <p className="mt-fl-sm text-muted-foreground text-xl">
           No matching to-dos
         </p>
         <p className="mt-fl-sm">
@@ -243,7 +243,7 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="top-0 z-10 flex flex-wrap items-center gap-fl-xs border-b border-primary-container bg-primary-container p-fl-2xs shadow dark:border-accent sm:sticky">
+      <header className="gap-fl-xs border-primary-container bg-primary-container p-fl-2xs dark:border-accent top-0 z-10 flex flex-wrap items-center border-b shadow sm:sticky">
         <h1>
           <Link
             to="/home"
@@ -259,7 +259,7 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
               search(e.currentTarget);
             }}
           >
-            <p className="flex h-fl-lg items-center gap-fl-2xs rounded-md border border-input py-fl-3xs ps-fl-xs shadow-sm ring-offset-primary-container transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+            <p className="h-fl-lg gap-fl-2xs border-input py-fl-3xs ps-fl-xs ring-offset-primary-container focus-within:ring-ring flex items-center rounded-md border shadow-sm transition-colors focus-within:ring-2 focus-within:ring-offset-2">
               <label htmlFor="search-form-query">
                 <Search aria-hidden="true" className="size-fl-xs" />
                 <span className="sr-only">Search</span>
@@ -272,7 +272,7 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
                 placeholder="Search to-dos…"
                 maxLength={256}
                 ref={queryRef}
-                className="w-full flex-1 bg-transparent text-base placeholder:text-muted-foreground focus-visible:outline-none md:text-sm"
+                className="placeholder:text-muted-foreground w-full flex-1 bg-transparent text-base focus-visible:outline-none md:text-sm"
               />
               {query != null && query !== "" && (
                 <Button
@@ -292,7 +292,7 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
         <ThemeToggle />
       </header>
       {query != null && query.trim().length > 1 && (
-        <main className="mx-auto flex w-full max-w-prose flex-1 flex-col p-fl-sm">
+        <main className="p-fl-sm mx-auto flex w-full max-w-prose flex-1 flex-col">
           <Page aria-labelledby="search-results-heading">
             <PageHeading id="search-results-heading" className="mb-fl-2xs">
               Search results
@@ -347,7 +347,7 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
                     <Link
                       to={`/todo/${result.id}`}
                       className={twJoin(
-                        "flex w-full rounded-sm transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none max-sm:min-w-max",
+                        "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground flex w-full rounded-sm transition-colors focus:outline-none max-sm:min-w-max",
                         result.isDone && "line-through",
                       )}
                     >
@@ -357,7 +357,7 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
                             highlight ? (
                               <b
                                 key={i}
-                                className="flex-none bg-primary/50 font-normal"
+                                className="bg-primary/50 flex-none font-normal"
                               >
                                 {value}
                               </b>

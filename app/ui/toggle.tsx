@@ -4,15 +4,15 @@ import type { VariantProps } from "class-variance-authority";
 import { cn } from "~/ui/classes";
 
 const toggleVariants = cva(
-  "inline-flex items-center justify-center gap-fl-2xs text-sm font-medium ring-offset-background transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:size-fl-xs [&_svg]:shrink-0",
+  "gap-fl-2xs ring-offset-background hover:bg-muted hover:text-muted-foreground focus-visible:ring-ring data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:size-fl-xs inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default: "rounded-md bg-transparent",
         outline:
-          "rounded-md border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
+          "border-input hover:bg-accent hover:text-accent-foreground rounded-md border bg-transparent",
         segmented:
-          "border border-input bg-transparent first:rounded-es-md first:rounded-ss-md last:rounded-ee-md last:rounded-se-md hover:bg-accent hover:text-accent-foreground",
+          "border-input hover:bg-accent hover:text-accent-foreground border bg-transparent first:rounded-ss-md first:rounded-es-md last:rounded-se-md last:rounded-ee-md",
       },
       size: {
         default: "min-h-fl-lg min-w-fl-lg px-fl-xs py-fl-2xs",

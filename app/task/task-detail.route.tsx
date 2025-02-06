@@ -152,7 +152,7 @@ export default function TaskDetailRoute({
             <AlertDescription>{formError}</AlertDescription>
           </Alert>
         )}
-        <div className="flex justify-end gap-fl-2xs">
+        <div className="gap-fl-2xs flex justify-end">
           <fetcher.Form
             method="post"
             aria-describedby={
@@ -211,7 +211,7 @@ export default function TaskDetailRoute({
                     <button
                       name="intent"
                       value="delete"
-                      className="inline-flex items-center gap-fl-2xs"
+                      className="gap-fl-2xs inline-flex items-center"
                     >
                       <Trash aria-hidden="true" className="size-fl-xs" />
                       Delete

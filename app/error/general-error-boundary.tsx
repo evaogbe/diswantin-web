@@ -21,7 +21,7 @@ export function GeneralErrorBoundary({
           <PageHeading id="incorrect-input-heading">
             Incorrect input
           </PageHeading>
-          <p className="break-words leading-7">
+          <p className="leading-7 break-words">
             Your browser sent something we don&apos;t understand
           </p>
         </Page>
@@ -31,7 +31,7 @@ export function GeneralErrorBoundary({
       return (
         <Page aria-labelledby="access-denied-heading" className="space-y-fl-sm">
           <PageHeading id="access-denied-heading">Access denied</PageHeading>
-          <p className="break-words leading-7">
+          <p className="leading-7 break-words">
             You are not allowed to do that
           </p>
         </Page>
@@ -49,7 +49,7 @@ export function GeneralErrorBoundary({
           <PageHeading id="too-many-requests-heading">
             Rate limit exceeded
           </PageHeading>
-          <p className="break-words leading-7">
+          <p className="leading-7 break-words">
             Please wait a few moments then try again
           </p>
         </Page>
@@ -64,7 +64,7 @@ export function GeneralErrorBoundary({
           <PageHeading id="unexpected-error-heading">
             Unexpected error
           </PageHeading>
-          <p className="break-words leading-7">
+          <p className="leading-7 break-words">
             We&apos;re experiencing unexpected technical difficulties. Please
             try again later. Thank you for your patience.
           </p>

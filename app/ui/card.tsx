@@ -4,7 +4,7 @@ function Card({ className, ...props }: React.JSX.IntrinsicElements["section"]) {
   return (
     <section
       className={cn(
-        "min-w-fit rounded-lg border bg-card text-card-foreground shadow-sm",
+        "bg-card text-card-foreground min-w-fit rounded-lg border shadow-sm",
         className,
       )}
       {...props}
@@ -18,7 +18,7 @@ function CardHeader({
 }: React.JSX.IntrinsicElements["header"]) {
   return (
     <header
-      className={cn("flex flex-col gap-fl-3xs p-fl-sm", className)}
+      className={cn("gap-fl-3xs p-fl-sm flex flex-col", className)}
       {...props}
     />
   );
@@ -47,7 +47,7 @@ function CardTitle({
   return (
     <Comp
       className={cn(
-        "text-balance text-lg font-semibold leading-none tracking-tight",
+        "text-lg leading-none font-semibold tracking-tight text-balance",
         className,
       )}
       {...props}
@@ -63,7 +63,7 @@ function CardDescription({
 }: React.JSX.IntrinsicElements["p"]) {
   return (
     <p
-      className={cn("break-words text-sm text-muted-foreground", className)}
+      className={cn("text-muted-foreground text-sm break-words", className)}
       {...props}
     />
   );
@@ -82,7 +82,7 @@ function CardFooter({
 }: React.JSX.IntrinsicElements["footer"]) {
   return (
     <footer
-      className={cn("flex items-center p-fl-sm pt-0", className)}
+      className={cn("p-fl-sm flex items-center pt-0", className)}
       {...props}
     />
   );

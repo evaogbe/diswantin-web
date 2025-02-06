@@ -156,7 +156,7 @@
   }
 
   body {
-    @apply bg-primary-container font-body text-base text-primary-container-foreground;
+    @apply bg-primary-container font-body text-primary-container-foreground text-base;
   }
 
   :target {

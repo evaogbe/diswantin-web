@@ -110,7 +110,7 @@ export default function OnboardingRoute({
             method="post"
             aria-labelledby={`${form.id}-title`}
             className={twJoin(
-              "flex flex-col gap-fl-sm",
+              "gap-fl-sm flex flex-col",
               navigation.state === "submitting" && "[&_*]:cursor-wait",
             )}
           >
