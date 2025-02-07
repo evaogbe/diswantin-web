@@ -8,7 +8,7 @@ function Link({
   return (
     <LinkPrimitive
       className={cn(
-        "text-link underline transition-colors hover:text-link/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+        "text-link hover:text-link/80 focus-visible:ring-ring underline transition-colors focus-visible:ring-1 focus-visible:outline-hidden",
         className,
       )}
       {...props}

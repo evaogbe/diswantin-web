@@ -152,7 +152,7 @@ export default function TaskDetailRoute({
             <AlertDescription>{formError}</AlertDescription>
           </Alert>
         )}
-        <div className="flex justify-end gap-fl-2xs">
+        <div className="gap-fl-2xs flex justify-end">
           <fetcher.Form
             method="post"
             aria-describedby={
@@ -211,7 +211,7 @@ export default function TaskDetailRoute({
                     <button
                       name="intent"
                       value="delete"
-                      className="inline-flex items-center gap-fl-2xs"
+                      className="gap-fl-2xs inline-flex items-center"
                     >
                       <Trash aria-hidden="true" className="size-fl-xs" />
                       Delete
@@ -232,7 +232,7 @@ export default function TaskDetailRoute({
       <dl>
         {task.recurrence != null && (
           <>
-            <dt className="text-muted-foreground [&:not(:first-child)]:mt-fl-2xs">
+            <dt className="text-muted-foreground not-first:mt-fl-2xs">
               Repeats
             </dt>
             <dd>{task.recurrence}</dd>
@@ -240,7 +240,7 @@ export default function TaskDetailRoute({
         )}
         {task.deadline != null && (
           <>
-            <dt className="text-muted-foreground [&:not(:first-child)]:mt-fl-2xs">
+            <dt className="text-muted-foreground not-first:mt-fl-2xs">
               Deadline
             </dt>
             <dd>
@@ -250,7 +250,7 @@ export default function TaskDetailRoute({
         )}
         {task.startAfter != null && (
           <>
-            <dt className="text-muted-foreground [&:not(:first-child)]:mt-fl-2xs">
+            <dt className="text-muted-foreground not-first:mt-fl-2xs">
               Start after
             </dt>
             <dd>
@@ -262,7 +262,7 @@ export default function TaskDetailRoute({
         )}
         {task.scheduledAt != null && (
           <>
-            <dt className="text-muted-foreground [&:not(:first-child)]:mt-fl-2xs">
+            <dt className="text-muted-foreground not-first:mt-fl-2xs">
               Scheduled at
             </dt>
             <dd>

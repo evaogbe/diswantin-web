@@ -1,5 +1,6 @@
 import { reactRouter } from "@react-router/dev/vite";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
+import tailwindcss from "@tailwindcss/vite";
 import dotenv from "dotenv";
 import { defineConfig } from "vite";
 import { envOnlyMacros } from "vite-env-only";
@@ -19,6 +20,7 @@ export default defineConfig({
         },
       },
     }),
+    tailwindcss(),
     reactRouter(),
     tsconfigPaths(),
     sentryVitePlugin({

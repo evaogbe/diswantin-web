@@ -245,7 +245,7 @@ function FormLegend({
   return (
     <legend
       className={cn(
-        "text-sm font-medium leading-none",
+        "text-sm leading-none font-medium",
         field.error != null && "text-destructive",
         className,
       )}
@@ -255,7 +255,7 @@ function FormLegend({
 }
 
 function FormItem({ className, ...props }: React.JSX.IntrinsicElements["p"]) {
-  return <p className={cn("flex flex-col gap-fl-3xs", className)} {...props} />;
+  return <p className={cn("gap-fl-3xs flex flex-col", className)} {...props} />;
 }
 
 function FormLabel({
@@ -282,7 +282,7 @@ function FormDescription({
   return (
     <span
       id={field.descriptionId}
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-muted-foreground text-sm", className)}
       {...props}
     />
   );
@@ -305,7 +305,7 @@ function FormMessage({
       id={field.errorId}
       role="alert"
       className={cn(
-        "inline-block text-sm font-medium text-destructive",
+        "text-destructive inline-block text-sm font-medium",
         className,
       )}
       {...props}

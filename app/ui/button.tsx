@@ -4,25 +4,25 @@ import type { VariantProps } from "class-variance-authority";
 import { cn } from "~/ui/classes";
 
 const buttonVariants = cva(
-  "inline-flex min-w-fit items-center justify-center gap-fl-2xs text-balance rounded-md text-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-fl-xs [&_svg]:shrink-0",
+  "gap-fl-2xs focus-visible:ring-ring [&_svg]:size-fl-xs inline-flex min-w-fit items-center justify-center rounded-md text-center text-sm font-medium text-balance transition-colors focus-visible:ring-1 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-xs",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+          "border-input bg-background hover:bg-accent hover:text-accent-foreground border shadow-xs",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-xs",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "min-h-fl-lg px-fl-xs py-fl-2xs",
-        sm: "min-h-fl-md rounded-md px-fl-2xs py-fl-3xs text-xs",
-        lg: "min-h-fl-xl rounded-md px-fl-md py-fl-sm",
+        sm: "min-h-fl-md px-fl-2xs py-fl-3xs rounded-md text-xs",
+        lg: "min-h-fl-xl px-fl-md py-fl-sm rounded-md",
         icon: "size-fl-lg",
       },
     },

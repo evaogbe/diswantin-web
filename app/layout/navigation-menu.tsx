@@ -30,7 +30,7 @@ function NavigationMenuList({
   return (
     <NavigationMenuPrimitive.List
       className={cn(
-        "group flex flex-1 list-none items-center justify-center gap-fl-3xs",
+        "group gap-fl-3xs flex flex-1 list-none items-center justify-center",
         className,
       )}
       role="list"
@@ -42,7 +42,7 @@ function NavigationMenuList({
 const NavigationMenuItem = NavigationMenuPrimitive.Item;
 
 const navigationMenuTriggerStyle = cva(
-  "group inline-flex min-h-fl-lg w-max items-center justify-center gap-fl-3xs rounded-md px-fl-xs py-fl-2xs text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
+  "group min-h-fl-lg gap-fl-3xs px-fl-xs py-fl-2xs hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground inline-flex w-max items-center justify-center rounded-md text-sm font-medium transition-colors focus:outline-hidden disabled:pointer-events-none disabled:opacity-50",
 );
 
 function NavigationMenuTrigger({
@@ -57,7 +57,7 @@ function NavigationMenuTrigger({
     >
       {children}
       <ChevronDown
-        className="relative top-[1px] ms-fl-3xs size-fl-2xs transition duration-300 group-data-[state=open]:rotate-180"
+        className="ms-fl-3xs size-fl-2xs relative top-[1px] transition duration-300 group-data-[state=open]:rotate-180"
         aria-hidden="true"
       />
     </NavigationMenuPrimitive.Trigger>
@@ -71,7 +71,7 @@ function NavigationMenuContent({
   return (
     <NavigationMenuPrimitive.Content
       className={cn(
-        "start-0 top-0 w-full data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 md:absolute md:w-auto",
+        "data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 start-0 top-0 w-full md:absolute md:w-auto",
         className,
       )}
       {...props}
@@ -108,7 +108,7 @@ function NavigationMenuViewport({
     <div className="absolute start-0 top-full flex justify-center">
       <NavigationMenuPrimitive.Viewport
         className={cn(
-          "origin-top-center relative mt-fl-3xs h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 md:w-[var(--radix-navigation-menu-viewport-width)]",
+          "origin-top-center mt-fl-3xs bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 relative h-(--radix-navigation-menu-viewport-height) w-full overflow-hidden rounded-md border shadow-lg md:w-(--radix-navigation-menu-viewport-width)",
           className,
         )}
         {...props}
@@ -124,12 +124,12 @@ function NavigationMenuIndicator({
   return (
     <NavigationMenuPrimitive.Indicator
       className={cn(
-        "top-full z-[1] flex min-h-fl-3xs items-end justify-center overflow-hidden data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in",
+        "min-h-fl-3xs data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in top-full z-1 flex items-end justify-center overflow-hidden",
         className,
       )}
       {...props}
     >
-      <div className="relative top-[60%] size-fl-2xs rotate-45 rounded-tl-sm bg-border shadow-md" />
+      <div className="size-fl-2xs bg-border relative top-[60%] rotate-45 rounded-tl-sm shadow-md" />
     </NavigationMenuPrimitive.Indicator>
   );
 }

@@ -11,7 +11,7 @@ function Page({
   return (
     <Comp
       className={cn(
-        "flex-1 rounded-sm bg-background p-fl-sm pt-fl-2xs max-sm:min-w-fit",
+        "bg-background p-fl-sm pt-fl-2xs flex-1 rounded-sm max-sm:min-w-fit",
         className,
       )}
       {...props}
@@ -27,7 +27,7 @@ function PageHeading({
   return (
     <h2
       className={cn(
-        "text-balance font-display text-3xl font-extrabold leading-tight tracking-tight",
+        "font-display text-3xl leading-tight font-extrabold tracking-tight text-balance",
         className,
       )}
       {...props}

@@ -53,8 +53,8 @@ export function DeleteUserForm({
           method="post"
           aria-labelledby={`${form.id}-title`}
           className={twJoin(
-            "relative space-y-fl-xs rounded-xl border bg-card p-fl-sm text-card-foreground shadow",
-            navigation.state === "submitting" && "[&_*]:cursor-wait",
+            "space-y-fl-xs bg-card p-fl-sm text-card-foreground relative rounded-xl border shadow-sm",
+            navigation.state === "submitting" && "**:cursor-wait",
           )}
         >
           <header>
@@ -69,7 +69,7 @@ export function DeleteUserForm({
               onClick={() => {
                 genFormId();
               }}
-              className="absolute end-fl-xs top-fl-xs rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+              className="end-fl-xs top-fl-xs ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
             >
               <X className="size-fl-xs" />
             </Link>
