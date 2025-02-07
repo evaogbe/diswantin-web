@@ -60,7 +60,7 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
           aria-hidden="true"
           className="mt-fl-xs size-fl-2xl text-muted-foreground"
         />
-        <p className="mt-fl-sm text-center text-xl text-muted-foreground">
+        <p className="mt-fl-sm text-muted-foreground text-center text-xl">
           No upcoming to-dos
         </p>
         <p className="mt-fl-sm">
@@ -112,11 +112,11 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
           {currentTask.name}
         </p>
         {currentTask.note != null && (
-          <p className="mt-fl-sm whitespace-pre-wrap text-center text-lg text-muted-foreground">
+          <p className="mt-fl-sm text-muted-foreground text-center text-lg whitespace-pre-wrap">
             {currentTask.note}
           </p>
         )}
-        <footer className="mt-fl-md flex justify-around gap-fl-3xs">
+        <footer className="mt-fl-md gap-fl-3xs flex justify-around">
           <p>
             <Button asChild variant="outline">
               <Link to={`/todo/${currentTask.id}`}>

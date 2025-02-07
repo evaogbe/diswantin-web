@@ -2,7 +2,7 @@ import { Link } from "~/ui/link";
 
 export function GuestFooter() {
   return (
-    <footer className="flex gap-fl-xs border-t p-fl-2xs text-sm">
+    <footer className="gap-fl-xs p-fl-2xs flex border-t text-sm">
       <p>
         <Link to="/cookies">Cookie policy</Link>
       </p>

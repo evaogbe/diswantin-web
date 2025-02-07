@@ -172,7 +172,7 @@ export default function SettingsRoute({
       <Form
         method="post"
         className={twJoin(
-          navigation.state === "submitting" && "[&_*]:cursor-wait",
+          navigation.state === "submitting" && "**:cursor-wait",
         )}
       >
         <p>

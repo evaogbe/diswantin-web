@@ -3,7 +3,7 @@ import type { VariantProps } from "class-variance-authority";
 import { cn } from "~/ui/classes";
 
 const alertVariants = cva(
-  "relative w-full scroll-my-[5ex] rounded-lg border p-fl-xs text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:start-fl-xs [&>svg]:top-fl-xs [&>svg]:text-foreground [&>svg~*]:ps-fl-md",
+  "p-fl-xs [&>svg]:start-fl-xs [&>svg]:top-fl-xs [&>svg]:text-foreground [&>svg~*]:ps-fl-md relative w-full scroll-my-[5ex] rounded-lg border text-sm [&>svg]:absolute [&>svg+div]:translate-y-[-3px]",
   {
     variants: {
       variant: {
@@ -58,7 +58,7 @@ function AlertTitle({
   return (
     <Comp
       className={cn(
-        "mb-fl-3xs text-balance font-medium leading-none tracking-tight",
+        "mb-fl-3xs leading-none font-medium tracking-tight text-balance",
         className,
       )}
       {...props}
@@ -74,7 +74,7 @@ function AlertDescription({
 }: React.JSX.IntrinsicElements["p"]) {
   return (
     <p
-      className={cn("break-words text-sm leading-relaxed", className)}
+      className={cn("text-sm leading-relaxed break-words", className)}
       {...props}
     />
   );

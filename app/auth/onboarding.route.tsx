@@ -110,8 +110,8 @@ export default function OnboardingRoute({
             method="post"
             aria-labelledby={`${form.id}-title`}
             className={twJoin(
-              "flex flex-col gap-fl-sm",
-              navigation.state === "submitting" && "[&_*]:cursor-wait",
+              "gap-fl-sm flex flex-col",
+              navigation.state === "submitting" && "**:cursor-wait",
             )}
           >
             <PageHeading id={`${form.id}-title`}>Account setup</PageHeading>

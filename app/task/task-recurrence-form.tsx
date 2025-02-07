@@ -112,7 +112,7 @@ export function TaskRecurrenceForm({
           method="post"
           className={twJoin(
             "space-y-fl-sm",
-            fetcher.state === "submitting" && "[&_*]:cursor-wait",
+            fetcher.state === "submitting" && "**:cursor-wait",
           )}
         >
           <SheetHeader>
@@ -156,7 +156,7 @@ export function TaskRecurrenceForm({
           />
           <FormFieldSet name={fields.step.name} className="space-y-fl-3xs">
             <FormLegend>Every</FormLegend>
-            <div className="flex flex-wrap gap-fl-2xs">
+            <div className="gap-fl-2xs flex flex-wrap">
               <FormField
                 name={step.value.name}
                 render={({ field, control }) => (
@@ -232,7 +232,7 @@ export function TaskRecurrenceForm({
               className="space-y-fl-2xs"
             >
               <FormLegend>Weekdays</FormLegend>
-              <div className="flex flex-wrap gap-fl-2xs">
+              <div className="gap-fl-2xs flex flex-wrap">
                 {getCollectionProps(fields.weekdays, form, {
                   type: "checkbox",
                   options: weekdays,
@@ -240,7 +240,7 @@ export function TaskRecurrenceForm({
                 }).map((field) => (
                   <label
                     key={field.value}
-                    className="inline-flex size-fl-lg items-center justify-center whitespace-nowrap rounded-full border text-sm font-medium transition-colors focus-within:ring-1 focus-within:ring-ring hover:bg-muted hover:text-muted-foreground has-[:checked]:bg-accent has-[:checked]:text-accent-foreground"
+                    className="size-fl-lg focus-within:ring-ring hover:bg-muted hover:text-muted-foreground has-checked:bg-accent has-checked:text-accent-foreground inline-flex items-center justify-center rounded-full border text-sm font-medium whitespace-nowrap transition-colors focus-within:ring-1"
                   >
                     <input {...field} className="sr-only" />
                     {field.value}

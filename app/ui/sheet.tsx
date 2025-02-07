@@ -19,7 +19,7 @@ function SheetOverlay({
   return (
     <SheetPrimitive.Overlay
       className={cn(
-        "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/80",
         className,
       )}
       {...props}
@@ -28,18 +28,18 @@ function SheetOverlay({
 }
 
 const sheetVariants = cva(
-  "fixed z-50 max-h-svh gap-fl-xs bg-background p-fl-sm shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out",
+  "gap-fl-xs bg-background p-fl-sm data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 max-h-svh shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
   {
     variants: {
       side: {
-        top: "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
+        top: "data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top inset-x-0 top-0 border-b",
         bottom:
-          "inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
+          "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 border-t",
         start:
-          "inset-y-0 start-0 w-3/4 min-w-80 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
-        end: "inset-y-0 end-0 w-3/4 min-w-80 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
+          "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left inset-y-0 start-0 w-3/4 min-w-80 border-r sm:max-w-sm",
+        end: "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 end-0 w-3/4 min-w-80 border-l sm:max-w-sm",
         compact:
-          "max-sm:inset-x-0 max-sm:bottom-0 max-sm:border-t max-sm:data-[state=closed]:slide-out-to-bottom max-sm:data-[state=open]:slide-in-from-bottom sm:inset-y-0 sm:end-0 sm:w-3/4 sm:max-w-sm sm:border-l sm:data-[state=closed]:slide-out-to-right sm:data-[state=open]:slide-in-from-right",
+          "max-sm:data-[state=closed]:slide-out-to-bottom max-sm:data-[state=open]:slide-in-from-bottom sm:data-[state=closed]:slide-out-to-right sm:data-[state=open]:slide-in-from-right max-sm:inset-x-0 max-sm:bottom-0 max-sm:border-t sm:inset-y-0 sm:end-0 sm:w-3/4 sm:max-w-sm sm:border-l",
       },
     },
     defaultVariants: {
@@ -65,7 +65,7 @@ function SheetContent({
           {...props}
         >
           {children}
-          <SheetPrimitive.Close className="absolute end-fl-xs top-fl-xs rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+          <SheetPrimitive.Close className="end-fl-xs top-fl-xs ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
             <X className="size-fl-xs" />
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>
@@ -80,7 +80,7 @@ const SheetHeader = ({
   ...props
 }: React.JSX.IntrinsicElements["header"]) => (
   <header
-    className={cn("flex flex-col gap-fl-2xs max-sm:text-center", className)}
+    className={cn("gap-fl-2xs flex flex-col max-sm:text-center", className)}
     {...props}
   />
 );
@@ -91,7 +91,7 @@ const SheetFooter = ({
 }: React.JSX.IntrinsicElements["footer"]) => (
   <footer
     className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:gap-fl-2xs",
+      "sm:gap-fl-2xs flex flex-col-reverse sm:flex-row sm:justify-end",
       className,
     )}
     {...props}
@@ -105,7 +105,7 @@ function SheetTitle({
   return (
     <SheetPrimitive.Title
       className={cn(
-        "text-balance text-lg font-semibold text-foreground",
+        "text-foreground text-lg font-semibold text-balance",
         className,
       )}
       {...props}
@@ -119,7 +119,7 @@ function SheetDescription({
 }: React.ComponentProps<typeof SheetPrimitive.Description>) {
   return (
     <SheetPrimitive.Description
-      className={cn("break-words text-sm text-muted-foreground", className)}
+      className={cn("text-muted-foreground text-sm break-words", className)}
       {...props}
     />
   );

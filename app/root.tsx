@@ -74,7 +74,14 @@ function BaseLayout({ children }: { children: React.ReactNode }) {
   const [theme] = useTheme();
 
   return (
-    <html lang="en" dir="ltr" className={twJoin(theme)}>
+    <html
+      lang="en"
+      dir="ltr"
+      className={twJoin(
+        "bg-primary-container font-body text-primary-container-foreground text-base",
+        theme,
+      )}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

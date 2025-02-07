@@ -52,15 +52,15 @@ export default function SignInRoute({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="flex min-h-svh min-w-fit flex-col">
-      <header className="top-0 z-10 flex justify-end border-b border-primary-container bg-primary-container p-fl-2xs shadow dark:border-accent sm:sticky">
+      <header className="border-primary-container bg-primary-container p-fl-2xs dark:border-accent top-0 z-10 flex justify-end border-b shadow-sm sm:sticky">
         <ThemeToggle />
       </header>
-      <main className="flex-1 p-fl-sm">
+      <main className="p-fl-sm flex-1">
         {flashMessage != null && (
           <Alert
             variant="success"
             aria-labelledby="flash-heading"
-            className="mx-auto max-w-prose"
+            className="mb-fl-xs mx-auto max-w-prose"
           >
             <CircleCheck aria-hidden="true" className="size-fl-xs" />
             <AlertTitle level={2} id="flash-heading">

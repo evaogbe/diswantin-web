@@ -7,7 +7,7 @@ function Select({
   return (
     <select
       className={cn(
-        "flex h-fl-lg min-w-32 rounded-md border border-input bg-transparent py-fl-3xs text-base shadow-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        "h-fl-lg border-input py-fl-3xs ring-offset-background focus-visible:ring-ring flex min-w-32 rounded-md border bg-transparent text-base shadow-xs transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
         className,
       )}
       {...props}

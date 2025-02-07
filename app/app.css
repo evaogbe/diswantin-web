@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   :root {
@@ -144,8 +142,91 @@
   }
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: "Nunito Sans Variable", "ui-sans-serif", "system-ui",
+    "sans-serif";
+  --font-body: "Nunito Sans Variable", "ui-sans-serif", "system-ui",
+    "sans-serif";
+  --font-mono: "ui-monospace", "monospace";
+
+  --radius-sm: var(--radius);
+  --radius-md: calc(var(--radius) + 2px);
+  --radius-lg: calc(var(--radius) + 4px);
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-container: hsl(var(--primary-container));
+  --color-primary-container-foreground: hsl(
+    var(--primary-container-foreground)
+  );
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+  --color-link: hsl(var(--link));
+
+  --text-xs: var(--step--2);
+  --text-sm: var(--step--1);
+  --text-base: var(--step-0);
+  --text-lg: var(--step-1);
+  --text-xl: var(--step-2);
+  --text-2xl: var(--step-3);
+  --text-3xl: var(--step-4);
+  --text-4xl: var(--step-5);
+
+  --spacing-fl-4xs: var(--space-4xs);
+  --spacing-fl-3xs: var(--space-3xs);
+  --spacing-fl-2xs: var(--space-2xs);
+  --spacing-fl-xs: var(--space-xs);
+  --spacing-fl-sm: var(--space-s);
+  --spacing-fl-md: var(--space-m);
+  --spacing-fl-lg: var(--space-l);
+  --spacing-fl-xl: var(--space-xl);
+  --spacing-fl-2xl: var(--space-2xl);
+  --spacing-fl-3xl: var(--space-3xl);
+  --spacing-fl-4xs-3xs: var(--space-4xs-3xs);
+  --spacing-fl-3xs-2xs: var(--space-3xs-2xs);
+  --spacing-fl-2xs-xs: var(--space-2xs-xs);
+  --spacing-fl-xs-sm: var(--space-xs-s);
+  --spacing-fl-sm-md: var(--space-s-m);
+  --spacing-fl-md-lg: var(--space-m-l);
+  --spacing-fl-lg-xl: var(--space-l-xl);
+  --spacing-fl-xl-2xl: var(--space-xl-2xl);
+  --spacing-fl-2xl-3xl: var(--space-2xl-3xl);
+  --spacing-fl-sm-lg: var(--space-s-l);
+  --spacing-fl-sm-2xl: var(--space-s-2xl);
+}
+
+@plugin "tailwindcss-animate";
+
 @layer base {
-  * {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
     @apply border-border;
   }
 
@@ -153,10 +234,6 @@
     * {
       @apply scroll-smooth;
     }
-  }
-
-  body {
-    @apply bg-primary-container font-body text-base text-primary-container-foreground;
   }
 
   :target {
