@@ -160,6 +160,13 @@ const dateTimeSchema = v.object(
   "Invalid input",
 );
 
+export const parentSchema = v.object({
+  parentId: clientIdSchema,
+  childId: clientIdSchema,
+});
+
+export type TaskParent = v.InferOutput<typeof parentSchema>;
+
 export const taskSchema = v.pipe(
   v.object({
     id: clientIdSchema,
@@ -171,6 +178,12 @@ export const taskSchema = v.pipe(
     deadline: v.optional(dateTimeSchema),
     startAfter: v.optional(dateTimeSchema),
     scheduledAt: v.optional(dateTimeSchema),
+    parent: v.optional(
+      v.object({
+        id: clientIdSchema,
+        name: nameSchema,
+      }),
+    ),
   }),
   v.forward(
     v.partialCheck(
@@ -224,6 +237,10 @@ export const taskSchema = v.pipe(
 );
 
 export type TaskForm = v.InferOutput<typeof taskSchema>;
+
+export const partialTaskSchema = v.partial(taskSchema.pipe[0], ["name"]);
+
+export type PartialTaskForm = v.InferOutput<typeof partialTaskSchema>;
 
 export const markDoneSchema = v.object({
   id: clientIdSchema,

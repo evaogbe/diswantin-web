@@ -90,6 +90,24 @@ export const taskRecurrence = pgTable(
   ],
 );
 
+export const taskPath = pgTable(
+  "task_path",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    ancestor: integer()
+      .notNull()
+      .references(() => task.id, { onUpdate: "cascade", onDelete: "cascade" }),
+    descendant: integer()
+      .notNull()
+      .references(() => task.id, { onUpdate: "cascade", onDelete: "cascade" }),
+    depth: integer().notNull(),
+  },
+  (table) => [
+    unique().on(table.ancestor, table.descendant),
+    index().on(table.descendant),
+  ],
+);
+
 export const userRelations = relations(user, ({ many }) => ({
   tasks: many(task),
 }));
@@ -101,6 +119,8 @@ export const taskRelations = relations(task, ({ one, many }) => ({
   }),
   completions: many(taskCompletion),
   recurrences: many(taskRecurrence),
+  ancestorPaths: many(taskPath, { relationName: "ancestor" }),
+  descendantPaths: many(taskPath, { relationName: "descendant" }),
 }));
 
 export const taskCompletionRelations = relations(taskCompletion, ({ one }) => ({
@@ -114,5 +134,18 @@ export const taskRecurrenceRelations = relations(taskRecurrence, ({ one }) => ({
   task: one(task, {
     fields: [taskRecurrence.taskId],
     references: [task.id],
+  }),
+}));
+
+export const taskPathRelations = relations(taskPath, ({ one }) => ({
+  ancestor: one(task, {
+    fields: [taskPath.ancestor],
+    references: [task.id],
+    relationName: "ancestor",
+  }),
+  descendant: one(task, {
+    fields: [taskPath.descendant],
+    references: [task.id],
+    relationName: "descendant",
   }),
 }));

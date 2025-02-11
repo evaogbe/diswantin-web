@@ -30,7 +30,15 @@ export async function formAction<Schema extends v.GenericSchema>({
 
   if (submission.status === "error") {
     console.error("Invalid input", submission.error);
-    if (hiddenFields?.some((field) => submission.error?.[field] != null)) {
+    if (
+      hiddenFields?.some(
+        (field) =>
+          submission.error != null &&
+          Object.entries(submission.error).some(
+            ([name, value]) => name.startsWith(field) && value != null,
+          ),
+      )
+    ) {
       Sentry.captureMessage("Invalid hidden field", {
         extra: { errors: submission.error, humanName },
       });
