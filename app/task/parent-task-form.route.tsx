@@ -29,6 +29,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
   const query = q?.trim();
+  const childId = params.id;
 
   let searchResults: TaskSearchResult[] = [];
   let nextCursor = null;
@@ -37,6 +38,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
       query,
       user,
       cursor: url.searchParams.get("cursor"),
+      excludeClientIds: [childId],
     });
   }
 
@@ -44,7 +46,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     searchResults,
     nextCursor,
     query: q?.slice(0, 256) ?? null,
-    childId: params.id,
+    childId,
   };
 }
 

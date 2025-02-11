@@ -19,6 +19,7 @@ import {
   lte,
   max,
   notExists,
+  notInArray,
   or,
   sql,
 } from "drizzle-orm";
@@ -309,11 +310,13 @@ export async function searchTasks({
   user,
   cursor,
   now = new Date(),
+  excludeClientIds = [],
 }: {
   query: string;
   user: User;
   cursor: string | null;
   now?: Date;
+  excludeClientIds?: string[];
 }) {
   const size = 50;
   const midnight = fromZonedTime(
@@ -366,6 +369,9 @@ export async function searchTasks({
               lt(t.rank, cursorRank),
               and(eq(t.rank, cursorRank), gt(t.id, cursorId)),
             )
+          : undefined,
+        excludeClientIds.length > 0
+          ? notInArray(table.task.clientId, excludeClientIds)
           : undefined,
       ),
     )
