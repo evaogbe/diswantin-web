@@ -47,3 +47,7 @@ Copyright © 2024 Evawere Ogbe
 
 Distributed under the MIT License. See LICENSE or
 http://opensource.org/licenses/MIT.
+
+## Credits
+
+Thank you to Lunatoon for designing the logo
