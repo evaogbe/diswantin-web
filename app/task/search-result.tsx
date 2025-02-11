@@ -1,5 +1,4 @@
 import useResizeObserver from "@react-hook/resize-observer";
-import { noop } from "es-toolkit/function";
 import { Plus, Search } from "lucide-react";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Link } from "react-router";
@@ -82,7 +81,7 @@ export const SearchResultList: SearchResultComponents["List"] = ({
   ...props
 }) => {
   const [listRef, setListRef] = useState<HTMLUListElement | null>(null);
-  useSize(listRef, context?.setListSize ?? noop);
+  useSize(listRef, context.setListSize);
 
   return (
     <ul
@@ -112,9 +111,9 @@ export const SearchResultFooter: SearchResultComponents["Footer"] = ({
   context,
 }) => {
   const [ref, setRef] = useState<HTMLButtonElement | null>(null);
-  useSize(ref, context?.setFooterSize ?? noop);
+  useSize(ref, context.setFooterSize);
 
-  if (!context?.hasMore) {
+  if (!context.hasMore) {
     return null;
   }
 
@@ -144,7 +143,7 @@ export const EmptySearchResultsPlaceholder: SearchResultComponents["EmptyPlaceho
         <p className="mt-fl-sm text-muted-foreground text-xl">
           No matching to-dos
         </p>
-        {context?.query != null && (
+        {context.query != null && (
           <p className="mt-fl-sm">
             <Button asChild>
               <Link to={`/new-todo?name=${context.query.trim()}`}>
