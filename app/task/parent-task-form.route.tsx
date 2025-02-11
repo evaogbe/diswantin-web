@@ -149,9 +149,7 @@ export default function NewParentTaskRoute({
             increaseViewportBy={200}
             data={searchResults}
             initialItemCount={isInitial ? searchResultPage.length : undefined}
-            // React Virtuoso sends undefined sometimes
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            computeItemKey={(index, result) => result?.id ?? index}
+            computeItemKey={(_, result) => result.id}
             context={{
               query: null,
               loading:
@@ -176,42 +174,35 @@ export default function NewParentTaskRoute({
               setListSize,
               setFooterSize,
             }}
-            itemContent={(_, result) =>
-              // React Virtuoso sends undefined sometimes
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              result != null && (
-                <button
-                  name="parentId"
-                  value={result.id}
-                  className={twJoin(
-                    "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground px-fl-2xs py-fl-3xs flex w-full rounded-sm transition-colors focus:outline-hidden",
-                    result.isDone && "line-through",
+            itemContent={(_, result) => (
+              <button
+                name="parentId"
+                value={result.id}
+                className={twJoin(
+                  "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground px-fl-2xs py-fl-3xs flex w-full rounded-sm transition-colors focus:outline-hidden",
+                  result.isDone && "line-through",
+                )}
+              >
+                <span className="inline-flex max-w-fit flex-none overflow-hidden">
+                  {buildSearchHeadline(result.name, tokens).map(
+                    ({ value, highlight }, i) =>
+                      highlight ? (
+                        <b
+                          key={i}
+                          className="bg-primary/50 flex-none font-normal"
+                        >
+                          {value}
+                        </b>
+                      ) : (
+                        <span key={i} className="flex-none whitespace-pre-wrap">
+                          {value}
+                        </span>
+                      ),
                   )}
-                >
-                  <span className="inline-flex max-w-fit flex-none overflow-hidden">
-                    {buildSearchHeadline(result.name, tokens).map(
-                      ({ value, highlight }, i) =>
-                        highlight ? (
-                          <b
-                            key={i}
-                            className="bg-primary/50 flex-none font-normal"
-                          >
-                            {value}
-                          </b>
-                        ) : (
-                          <span
-                            key={i}
-                            className="flex-none whitespace-pre-wrap"
-                          >
-                            {value}
-                          </span>
-                        ),
-                    )}
-                  </span>
-                  {result.isDone && <span className="sr-only">Done</span>}
-                </button>
-              )
-            }
+                </span>
+                {result.isDone && <span className="sr-only">Done</span>}
+              </button>
+            )}
             components={{
               List: SearchResultList,
               Item: SearchResultItem,

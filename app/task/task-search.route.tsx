@@ -81,9 +81,7 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
           increaseViewportBy={200}
           data={searchResults}
           initialItemCount={isInitial ? searchResultPage.length : undefined}
-          // React Virtuoso sends undefined sometimes
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          computeItemKey={(index, result) => result?.id ?? index}
+          computeItemKey={(_, result) => result.id}
           context={{
             query,
             loading:
@@ -108,38 +106,34 @@ export default function TaskSearchRoute({ loaderData }: Route.ComponentProps) {
             setListSize,
             setFooterSize,
           }}
-          itemContent={(_, result) =>
-            // React Virtuoso sends undefined sometimes
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            result != null && (
-              <Link
-                to={`/todo/${result.id}`}
-                className={twJoin(
-                  "hover:bg-accent hover:text-accent-foreground px-fl-2xs py-fl-3xs focus:bg-accent focus:text-accent-foreground flex w-full rounded-sm transition-colors focus:outline-hidden",
-                  result.isDone && "line-through",
+          itemContent={(_, result) => (
+            <Link
+              to={`/todo/${result.id}`}
+              className={twJoin(
+                "hover:bg-accent hover:text-accent-foreground px-fl-2xs py-fl-3xs focus:bg-accent focus:text-accent-foreground flex w-full rounded-sm transition-colors focus:outline-hidden",
+                result.isDone && "line-through",
+              )}
+            >
+              <span className="inline-flex max-w-fit flex-none overflow-hidden">
+                {buildSearchHeadline(result.name, tokens).map(
+                  ({ value, highlight }, i) =>
+                    highlight ? (
+                      <b
+                        key={i}
+                        className="bg-primary/50 flex-none font-normal"
+                      >
+                        {value}
+                      </b>
+                    ) : (
+                      <span key={i} className="flex-none whitespace-pre-wrap">
+                        {value}
+                      </span>
+                    ),
                 )}
-              >
-                <span className="inline-flex max-w-fit flex-none overflow-hidden">
-                  {buildSearchHeadline(result.name, tokens).map(
-                    ({ value, highlight }, i) =>
-                      highlight ? (
-                        <b
-                          key={i}
-                          className="bg-primary/50 flex-none font-normal"
-                        >
-                          {value}
-                        </b>
-                      ) : (
-                        <span key={i} className="flex-none whitespace-pre-wrap">
-                          {value}
-                        </span>
-                      ),
-                  )}
-                </span>
-                {result.isDone && <span className="sr-only">Done</span>}
-              </Link>
-            )
-          }
+              </span>
+              {result.isDone && <span className="sr-only">Done</span>}
+            </Link>
+          )}
           components={{
             List: SearchResultList,
             Item: SearchResultItem,
