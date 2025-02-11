@@ -55,7 +55,7 @@
     "close-with-grace": "^2.2.0",
     "cmdk": "^1.0.4",
     "compression": "^1.8.0",
-    "conform-to-valibot": "^1.14.1",
+    "conform-to-valibot": "^1.14.2",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
