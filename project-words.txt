@@ -5,6 +5,7 @@ Evawere
 internetcookies
 isbot
 lightningcss
+Lunatoon
 Nunito
 Ogbe
 pg_isready
