@@ -30,6 +30,10 @@ updates:
           - "@sentry/*"
         exclude-patterns:
           - "@sentry/vite-plugin"
+      tailwind:
+        patterns:
+          - "@tailwindcss/vite"
+          - tailwindcss
       typescript-eslint:
         patterns:
           - "@typescript-eslint/*"
