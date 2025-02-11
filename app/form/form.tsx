@@ -12,7 +12,6 @@ function getFormProps<FormValue extends Record<string, unknown>>(
     id: form.id,
     noValidate: form.noValidate,
     onSubmit: form.onSubmit,
-    "aria-describedby": form.errors != null ? form.errorId : undefined,
   };
 }
 
@@ -104,10 +103,9 @@ function useFormField() {
   return field;
 }
 
-type FieldKind = "input" | "textarea" | "select" | "minimal";
+type FieldKind = "input" | "textarea" | "select" | "button";
 
 type FieldRenderProps = Constraint & {
-  key?: string;
   id: string;
   name: string;
   form: string;
@@ -145,8 +143,9 @@ function getFieldProps(kind: FieldKind, allProps: FieldRenderProps) {
         allProps;
       return props;
     }
-    case "minimal": {
+    case "button": {
       const {
+        required,
         minLength,
         maxLength,
         min,

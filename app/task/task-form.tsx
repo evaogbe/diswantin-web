@@ -2,6 +2,7 @@ import type { FormValue, SubmissionResult } from "@conform-to/dom";
 import { FormProvider, useForm } from "@conform-to/react";
 import * as Sentry from "@sentry/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
+import { omit } from "es-toolkit/object";
 import {
   AlertCircle,
   CalendarDays,
@@ -10,7 +11,13 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { Form, Link, useNavigation, useSearchParams } from "react-router";
+import {
+  Form,
+  Link,
+  useNavigation,
+  useSearchParams,
+  useSubmit,
+} from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { twJoin } from "tailwind-merge";
 import { formatRecurrence } from "./format";
@@ -79,6 +86,7 @@ export function TaskForm({
   title: string;
   errorHeading: string;
 }) {
+  const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const navigation = useNavigation();
   const [form, fields] = useForm({
@@ -105,7 +113,7 @@ export function TaskForm({
       const submission = parseWithValibot(formData, { schema: taskSchema });
       if (submission.status === "error") {
         const hasHiddenError = (
-          ["id", "deadline", "startAfter", "scheduledAt"] as const
+          ["id", "deadline", "startAfter", "scheduledAt", "parent"] as const
         ).some((prefix) =>
           Object.keys(submission.error ?? {}).some((name) =>
             name.startsWith(prefix),
@@ -124,6 +132,7 @@ export function TaskForm({
   const deadline = fields.deadline.getFieldset();
   const startAfter = fields.startAfter.getFieldset();
   const scheduledAt = fields.scheduledAt.getFieldset();
+  const parent = fields.parent.getFieldset();
   const parsedRecurrence = parseRecurrence(fields.recurrence.value);
   const showScheduledAt =
     searchParams.get("scheduled") === "1" ||
@@ -138,9 +147,11 @@ export function TaskForm({
       (deadline.date.errors != null ||
         startAfter.date.errors != null ||
         scheduledAt.date.errors != null)) ||
-    (fields.deadline.errors != null && showScheduledAt) ||
-    (fields.startAfter.errors != null && showScheduledAt) ||
-    (fields.scheduledAt.errors != null && !showScheduledAt)
+    (showScheduledAt && Object.keys(fields.deadline.allErrors).length > 0) ||
+    (showScheduledAt && Object.keys(fields.startAfter.allErrors).length > 0) ||
+    (!showScheduledAt &&
+      Object.keys(fields.scheduledAt.allErrors).length > 0) ||
+    Object.keys(fields.parent.allErrors).length > 0
       ? generalError(humanName)
       : null);
   const formErrorRef = useScrollIntoView<HTMLElement>(formError);
@@ -160,6 +171,7 @@ export function TaskForm({
               {...getFormProps(form)}
               method="post"
               aria-labelledby={`${form.id}-title`}
+              aria-describedby={formError != null ? form.errorId : undefined}
               autoComplete="off"
               className={twJoin(
                 "space-y-fl-sm",
@@ -216,7 +228,7 @@ export function TaskForm({
               />
               <FormField
                 name={fields.recurrence.name}
-                kind="minimal"
+                kind="button"
                 render={({ field }) => (
                   <FormItem className="items-start">
                     <FormLabel>Repeats</FormLabel>
@@ -546,6 +558,96 @@ export function TaskForm({
                   <FormMessage />
                 </FormFieldSet>
               )}
+              <FormField
+                name={fields.parent.name}
+                kind="button"
+                render={({ field }) => (
+                  <FormItem className="items-start">
+                    <FormLabel>Previous to-do</FormLabel>
+                    {parent.id.value && parent.name.value ? (
+                      <span className="gap-fl-4xs flex items-center">
+                        <input
+                          type="hidden"
+                          name={parent.id.name}
+                          value={parent.id.value}
+                        />
+                        <input
+                          type="hidden"
+                          name={parent.name.name}
+                          value={parent.name.value}
+                        />
+                        <Button
+                          {...omit(field, ["aria-describedby"])}
+                          variant="outline"
+                          name="intent"
+                          value="select-parent-task"
+                          onClick={(e) => {
+                            if (!(e.target instanceof HTMLButtonElement)) {
+                              return;
+                            }
+
+                            const form = e.target.form;
+                            if (form == null) return;
+
+                            e.preventDefault();
+                            const formData = new FormData(form);
+                            formData.set(e.target.name, e.target.value);
+                            void submit(formData, { method: "post" });
+                          }}
+                        >
+                          {parent.name.value}
+                        </Button>
+                        <Button
+                          {...form.update.getButtonProps({
+                            name: field.name,
+                            value: "",
+                          })}
+                          variant="ghost"
+                          size="icon"
+                          aria-label="Clear"
+                          onClick={(e) => {
+                            if (!(e.target instanceof HTMLButtonElement)) {
+                              return;
+                            }
+
+                            const form = e.target.form;
+                            if (form == null) return;
+
+                            e.preventDefault();
+                            const formData = new FormData(form);
+                            formData.set(e.target.name, e.target.value);
+                            void submit(formData, { method: "post" });
+                          }}
+                        >
+                          <X />
+                        </Button>
+                      </span>
+                    ) : (
+                      <Button
+                        {...omit(field, ["aria-describedby"])}
+                        variant="outline"
+                        name="intent"
+                        value="select-parent-task"
+                        onClick={(e) => {
+                          if (!(e.target instanceof HTMLButtonElement)) {
+                            return;
+                          }
+
+                          const form = e.target.form;
+                          if (form == null) return;
+
+                          e.preventDefault();
+                          const formData = new FormData(form);
+                          formData.set(e.target.name, e.target.value);
+                          void submit(formData, { method: "post" });
+                        }}
+                      >
+                        Add previous to-do
+                      </Button>
+                    )}
+                  </FormItem>
+                )}
+              />
               <p className="flex justify-end">
                 <PendingButton
                   pending={navigation.state === "submitting"}

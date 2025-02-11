@@ -101,7 +101,7 @@ export function formatDateTime(
   if (date != null) {
     const dateTime = toDate(`${date}T00:00:00`, { timeZone });
     return {
-      iso: dateTime.toISOString(),
+      iso: date,
       human: new Intl.DateTimeFormat("en-US", {
         dateStyle: "full",
         timeZone,
@@ -112,7 +112,7 @@ export function formatDateTime(
   if (time != null) {
     const dateTime = parse(time, "HH:mm:ss", new Date());
     return {
-      iso: dateTime.toISOString(),
+      iso: time,
       human: new Intl.DateTimeFormat("en-US", {
         timeStyle: "short",
       }).format(dateTime),

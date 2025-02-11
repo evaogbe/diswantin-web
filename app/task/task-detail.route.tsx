@@ -272,6 +272,49 @@ export default function TaskDetailRoute({
             </dd>
           </>
         )}
+        {task.parent != null && (
+          <>
+            <dt className="text-muted-foreground not-first:mt-fl-2xs">
+              Previous to-do
+            </dt>
+            <dd>
+              <p className={twJoin(task.parent.isDone && "line-through")}>
+                {task.parent.name}
+                {task.parent.isDone && <span className="sr-only">Done</span>}
+              </p>
+              <p>
+                <Button variant="link" size="sm" asChild>
+                  <Link to={`/todo/${task.parent.id}`}>View parent</Link>
+                </Button>
+              </p>
+            </dd>
+          </>
+        )}
+        {task.children.length > 0 && (
+          <>
+            <dt className="text-muted-foreground not-first:mt-fl-2xs">
+              Next to-dos
+            </dt>
+            <dd>
+              <ul>
+                {task.children.map((child) => (
+                  <li key={child.id} className="border-b">
+                    <Link
+                      to={`/todo/${child.id}`}
+                      className={twJoin(
+                        "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground px-fl-2xs py-fl-3xs flex w-full min-w-fit rounded-sm transition-colors focus:outline-hidden",
+                        child.isDone && "line-through",
+                      )}
+                    >
+                      {child.name}
+                      {child.isDone && <span className="sr-only">Done</span>}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </>
+        )}
       </dl>
     </Page>
   );

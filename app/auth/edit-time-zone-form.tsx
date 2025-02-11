@@ -66,6 +66,7 @@ export function EditTimeZoneForm({
         {...getFormProps(form)}
         method="post"
         aria-labelledby={`${form.id}-title`}
+        aria-describedby={formError != null ? form.errorId : undefined}
         className={twJoin(
           "space-y-fl-xs bg-card p-fl-sm text-card-foreground relative rounded-xl border shadow-sm",
           navigation.state === "submitting" && "**:cursor-wait",

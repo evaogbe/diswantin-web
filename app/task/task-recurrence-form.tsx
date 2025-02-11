@@ -110,6 +110,7 @@ export function TaskRecurrenceForm({
         <fetcher.Form
           {...getFormProps(form)}
           method="post"
+          aria-describedby={form.errors != null ? form.errorId : undefined}
           className={twJoin(
             "space-y-fl-sm",
             fetcher.state === "submitting" && "**:cursor-wait",

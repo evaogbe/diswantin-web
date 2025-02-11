@@ -10,7 +10,6 @@ export default [
   route("cookies", "legal/cookies.route.tsx"),
   route("privacy", "legal/privacy.route.tsx"),
   route("terms", "legal/terms.route.tsx"),
-  route("search", "task/task-search.route.tsx"),
   layout("auth/auth-layout.route.tsx", [
     route("onboarding", "auth/onboarding.route.tsx"),
     route("home", "task/current-task.route.tsx"),
@@ -20,5 +19,9 @@ export default [
     route("advice", "task/advice.route.tsx"),
     route("settings", "auth/settings.route.tsx"),
     route("*", "not-found.route.tsx"),
+  ]),
+  layout("task/task-search-layout.route.tsx", [
+    route("search", "task/task-search.route.tsx"),
+    route("todo-form/:id/previous", "task/parent-task-form.route.tsx"),
   ]),
 ] satisfies RouteConfig;

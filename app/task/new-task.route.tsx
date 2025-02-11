@@ -1,9 +1,15 @@
 import { INTENT } from "@conform-to/dom";
 import { parseWithValibot } from "conform-to-valibot";
 import { data } from "react-router";
+import * as v from "valibot";
 import type { Route } from "./+types/new-task.route";
-import { recurrenceFormSchema, taskSchema } from "./model";
-import { createTask, getNewTaskForm } from "./services.server";
+import { partialTaskSchema, recurrenceFormSchema, taskSchema } from "./model";
+import {
+  createTask,
+  deleteTaskParent,
+  getNewTaskForm,
+  savePartialTask,
+} from "./services.server";
 import { TaskForm } from "./task-form";
 import { getAuthenticatedUser } from "~/auth/services.server";
 import { formAction } from "~/form/action.server";
@@ -11,15 +17,19 @@ import { getTitle } from "~/layout/meta";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await getAuthenticatedUser(request);
-  const taskForm = getNewTaskForm(request);
-  return { taskForm, timeZone: user.timeZone };
+  const [taskForm, cookie] = await getNewTaskForm(request);
+  return data(
+    { taskForm, timeZone: user.timeZone },
+    { headers: { "Set-Cookie": cookie } },
+  );
 }
 
 export async function action({ request }: Route.ActionArgs) {
   const user = await getAuthenticatedUser(request);
   const formData = await request.formData();
 
-  if (formData.has(INTENT)) {
+  const intent = formData.get(INTENT);
+  if (typeof intent === "string") {
     const submission = parseWithValibot(formData, {
       schema: (intent) =>
         [
@@ -33,10 +43,38 @@ export async function action({ request }: Route.ActionArgs) {
           ? recurrenceFormSchema
           : taskSchema,
     });
-    return submission.reply();
+    const clearParent = v.is(
+      v.object({
+        type: v.literal("update"),
+        payload: v.object({ name: v.literal("parent"), value: v.literal("") }),
+      }),
+      JSON.parse(intent),
+    );
+    return data(
+      submission.reply(),
+      clearParent
+        ? { headers: { "Set-Cookie": await deleteTaskParent() } }
+        : undefined,
+    );
   }
 
   switch (formData.get("intent")) {
+    case "select-parent-task": {
+      return formAction({
+        formData,
+        requestHeaders: request.headers,
+        schema: partialTaskSchema,
+        mutation: async (values) => {
+          return {
+            status: "success",
+            path: `/todo-form/${values.id}/previous`,
+            init: { headers: { "Set-Cookie": await savePartialTask(values) } },
+          };
+        },
+        humanName: "select the previous to-do",
+        hiddenFields: ["id"],
+      });
+    }
     case "save-recurrence": {
       return formAction({
         formData,
@@ -57,7 +95,7 @@ export async function action({ request }: Route.ActionArgs) {
           return { status: "success", path: "/home" };
         },
         humanName: "create the to-do",
-        hiddenFields: ["id"],
+        hiddenFields: ["id", "parent"],
       });
     }
     default: {
