@@ -47,7 +47,10 @@ export default function AdviceRoute() {
           </ol>
         </li>
         <li>
-          Write in a <strong>journal</strong>
+          Hungry? Grab a <strong>snack</strong>
+        </li>
+        <li>
+          Sleepy? Take a <strong>nap</strong>
         </li>
         <li>
           <strong>Move</strong> your body
@@ -62,10 +65,11 @@ export default function AdviceRoute() {
           </ul>
         </li>
         <li>
-          Hungry? Grab a <strong>snack</strong>
+          <strong>Body double</strong>. Find someone to be present, either
+          physically or virtually, while you do the task.
         </li>
         <li>
-          Sleepy? Take a <strong>nap</strong>
+          Write in a <strong>journal</strong>
         </li>
         <li>
           Call/text/video chat/visit a <strong>friend</strong>. Try to brighten
