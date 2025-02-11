@@ -145,10 +145,10 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-display: "Nunito Sans Variable", "ui-sans-serif", "system-ui",
-    "sans-serif";
-  --font-body: "Nunito Sans Variable", "ui-sans-serif", "system-ui",
-    "sans-serif";
+  --font-display:
+    "Nunito Sans Variable", "ui-sans-serif", "system-ui", "sans-serif";
+  --font-body:
+    "Nunito Sans Variable", "ui-sans-serif", "system-ui", "sans-serif";
   --font-mono: "ui-monospace", "monospace";
 
   --radius-sm: var(--radius);
