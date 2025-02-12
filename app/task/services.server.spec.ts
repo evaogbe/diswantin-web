@@ -32,6 +32,7 @@ describe("getCurrentTask", () => {
       id: taskForm1.id,
       name: taskForm1.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm2: TaskForm = {
@@ -47,6 +48,7 @@ describe("getCurrentTask", () => {
       id: taskForm2.id,
       name: taskForm2.name,
       note: null,
+      isRecurring: true,
     });
 
     await db
@@ -59,6 +61,7 @@ describe("getCurrentTask", () => {
       id: taskForm1.id,
       name: taskForm1.name,
       note: null,
+      isRecurring: false,
     });
     await expect(
       services.getCurrentTask(user, parseISO("2025-01-23T08:00:00Z")),
@@ -66,6 +69,7 @@ describe("getCurrentTask", () => {
       id: taskForm2.id,
       name: taskForm2.name,
       note: null,
+      isRecurring: true,
     });
 
     await db
@@ -81,6 +85,59 @@ describe("getCurrentTask", () => {
       id: taskForm2.id,
       name: taskForm2.name,
       note: null,
+      isRecurring: true,
+    });
+  });
+  test("returns first unskipped task", async () => {
+    const user = await createTestUser("America/Los_Angeles");
+    const now = parseISO("2025-01-23T08:00:00Z");
+
+    const taskForm1: TaskForm = {
+      id: uid(),
+      name: faker.lorem.words(),
+      recurrence: { start: "2025-01-23", type: "day" as const, step: 1 },
+    };
+    const taskId1 = (await services.createTask(taskForm1, user))!;
+
+    await expect(services.getCurrentTask(user, now)).resolves.toStrictEqual({
+      id: taskForm1.id,
+      name: taskForm1.name,
+      note: null,
+      isRecurring: true,
+    });
+
+    const taskForm2: TaskForm = {
+      id: uid(),
+      name: faker.lorem.words(),
+    };
+    await services.createTask(taskForm2, user);
+
+    await expect(services.getCurrentTask(user, now)).resolves.toStrictEqual({
+      id: taskForm1.id,
+      name: taskForm1.name,
+      note: null,
+      isRecurring: true,
+    });
+
+    await db.insert(table.taskSkip).values({ skippedAt: now, taskId: taskId1 });
+
+    await expect(services.getCurrentTask(user, now)).resolves.toStrictEqual({
+      id: taskForm2.id,
+      name: taskForm2.name,
+      note: null,
+      isRecurring: false,
+    });
+
+    await services.updateTask(
+      { ...taskForm2, parent: { id: taskForm1.id, name: taskForm1.name } },
+      user,
+    );
+
+    await expect(services.getCurrentTask(user, now)).resolves.toStrictEqual({
+      id: taskForm2.id,
+      name: taskForm2.name,
+      note: null,
+      isRecurring: false,
     });
   });
   test("returns first scheduled task when task scheduled in past", async () => {
@@ -121,6 +178,7 @@ describe("getCurrentTask", () => {
       id: taskForm3.id,
       name: taskForm3.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm4: TaskForm = {
@@ -134,6 +192,7 @@ describe("getCurrentTask", () => {
       id: taskForm4.id,
       name: taskForm4.name,
       note: null,
+      isRecurring: true,
     });
 
     const taskForm5: TaskForm = {
@@ -150,6 +209,7 @@ describe("getCurrentTask", () => {
       id: taskForm5.id,
       name: taskForm5.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm6: TaskForm = {
@@ -166,6 +226,7 @@ describe("getCurrentTask", () => {
       id: taskForm6.id,
       name: taskForm6.name,
       note: null,
+      isRecurring: true,
     });
 
     const taskForm7: TaskForm = {
@@ -181,6 +242,7 @@ describe("getCurrentTask", () => {
       id: taskForm7.id,
       name: taskForm7.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm8: TaskForm = {
@@ -197,6 +259,7 @@ describe("getCurrentTask", () => {
       id: taskForm8.id,
       name: taskForm8.name,
       note: null,
+      isRecurring: false,
     });
   });
   test("returns task when task starts after past", async () => {
@@ -253,6 +316,7 @@ describe("getCurrentTask", () => {
       id: taskForm4.id,
       name: taskForm4.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm5: TaskForm = {
@@ -268,6 +332,7 @@ describe("getCurrentTask", () => {
       id: taskForm5.id,
       name: taskForm5.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm6: TaskForm = {
@@ -283,6 +348,7 @@ describe("getCurrentTask", () => {
       id: taskForm6.id,
       name: taskForm6.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm7: TaskForm = {
@@ -295,6 +361,7 @@ describe("getCurrentTask", () => {
       id: taskForm7.id,
       name: taskForm7.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm8: TaskForm = {
@@ -311,6 +378,7 @@ describe("getCurrentTask", () => {
       id: taskForm8.id,
       name: taskForm8.name,
       note: null,
+      isRecurring: true,
     });
 
     const taskForm9: TaskForm = {
@@ -324,6 +392,7 @@ describe("getCurrentTask", () => {
       id: taskForm9.id,
       name: taskForm9.name,
       note: null,
+      isRecurring: true,
     });
   });
   test("returns task when task recurs daily", async () => {
@@ -350,6 +419,7 @@ describe("getCurrentTask", () => {
       id: taskForm2.id,
       name: taskForm2.name,
       note: null,
+      isRecurring: true,
     });
   });
   test.each([
@@ -436,6 +506,7 @@ describe("getCurrentTask", () => {
         id: taskForm.id,
         name: taskForm.name,
         note: null,
+        isRecurring: true,
       });
     },
   );
@@ -475,6 +546,7 @@ describe("getCurrentTask", () => {
         id: taskForm.id,
         name: taskForm.name,
         note: null,
+        isRecurring: true,
       });
     },
   );
@@ -541,6 +613,7 @@ describe("getCurrentTask", () => {
         id: taskForm.id,
         name: taskForm.name,
         note: null,
+        isRecurring: true,
       });
     },
   );
@@ -594,6 +667,7 @@ describe("getCurrentTask", () => {
       id: taskForm2.id,
       name: taskForm2.name,
       note: null,
+      isRecurring: false,
     });
   });
   test("orders tasks by priorities", async () => {
@@ -610,6 +684,7 @@ describe("getCurrentTask", () => {
       id: taskForm1.id,
       name: taskForm1.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm2: TaskForm = {
@@ -622,6 +697,7 @@ describe("getCurrentTask", () => {
       id: taskForm1.id,
       name: taskForm1.name,
       note: null,
+      isRecurring: false,
     });
 
     await services.updateTask(
@@ -637,6 +713,7 @@ describe("getCurrentTask", () => {
       id: taskForm2.id,
       name: taskForm2.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm3: TaskForm = {
@@ -652,6 +729,7 @@ describe("getCurrentTask", () => {
       id: taskForm3.id,
       name: taskForm3.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm4: TaskForm = {
@@ -667,6 +745,7 @@ describe("getCurrentTask", () => {
       id: taskForm4.id,
       name: taskForm4.name,
       note: null,
+      isRecurring: false,
     });
 
     await services.updateTask(
@@ -678,6 +757,7 @@ describe("getCurrentTask", () => {
       id: taskForm3.id,
       name: taskForm3.name,
       note: null,
+      isRecurring: false,
     });
 
     await services.updateTask(
@@ -697,6 +777,7 @@ describe("getCurrentTask", () => {
       id: taskForm2.id,
       name: taskForm2.name,
       note: null,
+      isRecurring: false,
     });
 
     await services.updateTask(
@@ -713,6 +794,7 @@ describe("getCurrentTask", () => {
       id: taskForm3.id,
       name: taskForm3.name,
       note: null,
+      isRecurring: false,
     });
 
     await services.updateTask(
@@ -732,6 +814,7 @@ describe("getCurrentTask", () => {
       id: taskForm2.id,
       name: taskForm2.name,
       note: null,
+      isRecurring: false,
     });
 
     await services.updateTask(
@@ -751,6 +834,7 @@ describe("getCurrentTask", () => {
       id: taskForm3.id,
       name: taskForm3.name,
       note: null,
+      isRecurring: false,
     });
 
     await services.updateTask(
@@ -769,6 +853,7 @@ describe("getCurrentTask", () => {
       id: taskForm2.id,
       name: taskForm2.name,
       note: null,
+      isRecurring: false,
     });
   });
   test("does not order task by descendant not recurring today", async () => {
@@ -785,6 +870,7 @@ describe("getCurrentTask", () => {
       id: taskForm1.id,
       name: taskForm1.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm2: TaskForm = {
@@ -802,6 +888,7 @@ describe("getCurrentTask", () => {
       id: taskForm1.id,
       name: taskForm1.name,
       note: null,
+      isRecurring: false,
     });
 
     const taskForm3: TaskForm = {
@@ -817,6 +904,7 @@ describe("getCurrentTask", () => {
       id: taskForm3.id,
       name: taskForm3.name,
       note: null,
+      isRecurring: false,
     });
   });
 });

@@ -68,6 +68,14 @@ export async function getCurrentTask(user: User, now = new Date()) {
     .from(table.taskCompletion)
     .groupBy(table.taskCompletion.taskId)
     .as("com");
+  const lastSkippedQuery = db
+    .select({
+      taskId: table.taskSkip.taskId,
+      skippedAt: max(table.taskSkip.skippedAt).as("skipped_at"),
+    })
+    .from(table.taskSkip)
+    .groupBy(table.taskSkip.taskId)
+    .as("skp");
   const availableTasksQuery = db
     .select({
       id: table.task.id,
@@ -78,6 +86,7 @@ export async function getCurrentTask(user: User, now = new Date()) {
       table.taskRecurrence,
       eq(table.taskRecurrence.taskId, table.task.id),
     )
+    .leftJoin(lastSkippedQuery, eq(lastSkippedQuery.taskId, table.task.id))
     .where(
       and(
         eq(table.task.userId, user.id),
@@ -195,6 +204,10 @@ export async function getCurrentTask(user: User, now = new Date()) {
           isNull(table.task.startAfterTime),
           lte(table.task.startAfterTime, currentTime),
         ),
+        or(
+          isNull(lastSkippedQuery.skippedAt),
+          lt(lastSkippedQuery.skippedAt, midnight),
+        ),
       ),
     );
   const leafQuery = db
@@ -222,6 +235,10 @@ export async function getCurrentTask(user: User, now = new Date()) {
       id: table.task.clientId,
       name: table.task.name,
       note: table.task.note,
+      isRecurring:
+        sql<boolean>`${uniqueRecurrenceQuery.as("ra").taskId} IS NOT NULL`.as(
+          "is_recurring",
+        ),
     })
     .from(table.task)
     .innerJoin(table.taskPath, eq(table.taskPath.ancestor, table.task.id))
@@ -1278,4 +1295,48 @@ export async function unmarkTaskDone(
         ),
       ),
     );
+}
+
+export async function skipTask(
+  taskClientId: string,
+  user: User,
+  now = new Date(),
+) {
+  const lastSkippedQuery = db
+    .select({
+      taskId: table.taskSkip.taskId,
+      skippedAt: max(table.taskSkip.skippedAt).as("skipped_at"),
+    })
+    .from(table.taskSkip)
+    .groupBy(table.taskSkip.taskId)
+    .as("s");
+  const [task] = await db
+    .select({ id: table.task.id, lastSkippedAt: lastSkippedQuery.skippedAt })
+    .from(table.task)
+    .innerJoin(
+      table.taskRecurrence,
+      eq(table.taskRecurrence.taskId, table.task.id),
+    )
+    .leftJoin(lastSkippedQuery, eq(lastSkippedQuery.taskId, table.task.id))
+    .where(
+      and(
+        eq(table.task.clientId, taskClientId),
+        eq(table.task.userId, user.id),
+      ),
+    )
+    .limit(1);
+  if (task == null) {
+    console.error(
+      `Recurring task not found: ${taskClientId} for user: ${user.id}`,
+    );
+    return;
+  }
+
+  const midnight = fromZonedTime(
+    startOfDay(toZonedTime(now, user.timeZone)),
+    user.timeZone,
+  );
+  if (task.lastSkippedAt == null || task.lastSkippedAt < midnight) {
+    await db.insert(table.taskSkip).values({ taskId: task.id });
+  }
 }

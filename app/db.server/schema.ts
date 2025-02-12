@@ -90,6 +90,23 @@ export const taskRecurrence = pgTable(
   ],
 );
 
+export const taskSkip = pgTable(
+  "task_skip",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    skippedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    taskId: integer()
+      .notNull()
+      .references(() => task.id, { onUpdate: "cascade", onDelete: "cascade" }),
+  },
+  (table) => [
+    unique("task_skip_task_id_skipped_at_unique").on(
+      table.taskId,
+      table.skippedAt,
+    ),
+  ],
+);
+
 export const taskPath = pgTable(
   "task_path",
   {
@@ -119,6 +136,7 @@ export const taskRelations = relations(task, ({ one, many }) => ({
   }),
   completions: many(taskCompletion),
   recurrences: many(taskRecurrence),
+  skips: many(taskSkip),
   ancestorPaths: many(taskPath, { relationName: "ancestor" }),
   descendantPaths: many(taskPath, { relationName: "descendant" }),
 }));
@@ -133,6 +151,13 @@ export const taskCompletionRelations = relations(taskCompletion, ({ one }) => ({
 export const taskRecurrenceRelations = relations(taskRecurrence, ({ one }) => ({
   task: one(task, {
     fields: [taskRecurrence.taskId],
+    references: [task.id],
+  }),
+}));
+
+export const taskSkipRelations = relations(taskSkip, ({ one }) => ({
+  task: one(task, {
+    fields: [taskSkip.taskId],
     references: [task.id],
   }),
 }));

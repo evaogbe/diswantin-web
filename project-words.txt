@@ -18,6 +18,7 @@ tsvector
 typegen
 unmark
 unmarking
+unskipped
 valibot
 viewports
 vite
