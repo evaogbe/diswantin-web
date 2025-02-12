@@ -90,7 +90,6 @@ describe("getCurrentTask", () => {
   });
   test("returns first unskipped task", async () => {
     const user = await createTestUser("America/Los_Angeles");
-    const now = parseISO("2025-01-23T08:00:00Z");
 
     const taskForm1: TaskForm = {
       id: uid(),
@@ -99,7 +98,9 @@ describe("getCurrentTask", () => {
     };
     const taskId1 = (await services.createTask(taskForm1, user))!;
 
-    await expect(services.getCurrentTask(user, now)).resolves.toStrictEqual({
+    await expect(
+      services.getCurrentTask(user, parseISO("2025-01-23T08:00:00Z")),
+    ).resolves.toStrictEqual({
       id: taskForm1.id,
       name: taskForm1.name,
       note: null,
@@ -112,16 +113,22 @@ describe("getCurrentTask", () => {
     };
     await services.createTask(taskForm2, user);
 
-    await expect(services.getCurrentTask(user, now)).resolves.toStrictEqual({
+    await expect(
+      services.getCurrentTask(user, parseISO("2025-01-23T08:00:00Z")),
+    ).resolves.toStrictEqual({
       id: taskForm1.id,
       name: taskForm1.name,
       note: null,
       isRecurring: true,
     });
 
-    await db.insert(table.taskSkip).values({ skippedAt: now, taskId: taskId1 });
+    await db
+      .insert(table.taskSkip)
+      .values({ skippedAt: parseISO("2025-01-23T08:00:00Z"), taskId: taskId1 });
 
-    await expect(services.getCurrentTask(user, now)).resolves.toStrictEqual({
+    await expect(
+      services.getCurrentTask(user, parseISO("2025-01-23T08:00:01Z")),
+    ).resolves.toStrictEqual({
       id: taskForm2.id,
       name: taskForm2.name,
       note: null,
@@ -133,11 +140,21 @@ describe("getCurrentTask", () => {
       user,
     );
 
-    await expect(services.getCurrentTask(user, now)).resolves.toStrictEqual({
+    await expect(
+      services.getCurrentTask(user, parseISO("2025-01-23T08:00:01Z")),
+    ).resolves.toStrictEqual({
       id: taskForm2.id,
       name: taskForm2.name,
       note: null,
       isRecurring: false,
+    });
+    await expect(
+      services.getCurrentTask(user, parseISO("2025-01-24T08:00:00Z")),
+    ).resolves.toStrictEqual({
+      id: taskForm1.id,
+      name: taskForm1.name,
+      note: null,
+      isRecurring: true,
     });
   });
   test("returns first scheduled task when task scheduled in past", async () => {
