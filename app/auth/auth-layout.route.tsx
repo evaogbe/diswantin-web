@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import type { Route } from "./+types/auth-layout.route";
 import { isFullyAuthenticated } from "./services.server";
 import { GeneralErrorBoundary } from "~/error/general-error-boundary";
@@ -16,9 +16,13 @@ export function meta({ error }: Route.MetaArgs) {
 
 export default function AuthLayoutRoute({ loaderData }: Route.ComponentProps) {
   const { isAuthenticated } = loaderData;
+  const location = useLocation();
 
   return (
-    <MainLayout isAuthenticated={isAuthenticated}>
+    <MainLayout
+      isAuthenticated={isAuthenticated}
+      showFooter={!isAuthenticated || location.pathname === "/settings"}
+    >
       <Outlet />
     </MainLayout>
   );
