@@ -1,7 +1,8 @@
 import AddTask from "@material-design-icons/svg/filled/add_task.svg?react";
 import Check from "@material-design-icons/svg/filled/check.svg?react";
 import { AlertCircle, Microscope, Plus } from "lucide-react";
-import { Link, useFetcher } from "react-router";
+import { useEffect } from "react";
+import { Link, useFetcher, useLocation } from "react-router";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { twJoin } from "tailwind-merge";
 import type { Route } from "./+types/current-task.route";
@@ -41,10 +42,27 @@ export function meta({ error }: Route.MetaArgs) {
   return [{ title: getTitle({ error }) }];
 }
 
+function useReloadInterval(delayMs = 1000 * 60 * 60) {
+  const location = useLocation();
+  const currentTaskFetcher = useFetcher<typeof loader>();
+  useEffect(() => {
+    const id = setInterval(() => {
+      void currentTaskFetcher.load(`${location.pathname}?${location.search}`);
+    }, delayMs);
+    return () => {
+      clearInterval(id);
+    };
+  }, [delayMs, location, currentTaskFetcher]);
+  return currentTaskFetcher.data;
+}
+
 export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
-  const { currentTask } = loaderData;
-  const fetcher = useFetcher<typeof action>();
-  const markDoneFormError = Object.values(fetcher.data?.error ?? {})[0]?.[0];
+  const currentTaskFetcherData = useReloadInterval();
+  const { currentTask } = currentTaskFetcherData ?? loaderData;
+  const markDoneFetcher = useFetcher<typeof action>();
+  const markDoneFormError = Object.values(
+    markDoneFetcher.data?.error ?? {},
+  )[0]?.[0];
   const formErrorRef = useScrollIntoView<HTMLElement>(markDoneFormError);
 
   if (currentTask == null) {
@@ -85,10 +103,10 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
       <div
         className={twJoin(
           "w-full transition-opacity",
-          fetcher.state === "submitting" && "opacity-0",
+          markDoneFetcher.state === "submitting" && "opacity-0",
         )}
       >
-        {fetcher.state === "submitting" && (
+        {markDoneFetcher.state === "submitting" && (
           <p role="status" className="sr-only">
             Marking done…
           </p>
@@ -124,7 +142,7 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
               </Link>
             </Button>
           </p>
-          <fetcher.Form
+          <markDoneFetcher.Form
             method="post"
             aria-describedby={
               markDoneFormError != null ? "mark-done-form-error" : undefined
@@ -139,7 +157,7 @@ export default function CurrentTaskRoute({ loaderData }: Route.ComponentProps) {
                 <Check aria-hidden="true" /> Done
               </Button>
             </p>
-          </fetcher.Form>
+          </markDoneFetcher.Form>
         </footer>
       </div>
     </Page>
