@@ -250,6 +250,10 @@ export const unmarkDoneSchema = v.object({
   id: clientIdSchema,
 });
 
+export const skipTaskSchema = v.object({
+  id: clientIdSchema,
+});
+
 export const deleteTaskSchema = v.object({
   id: clientIdSchema,
 });
