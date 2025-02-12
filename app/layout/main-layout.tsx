@@ -19,9 +19,11 @@ import { Link } from "~/ui/link";
 
 export function MainLayout({
   isAuthenticated,
+  showFooter = !isAuthenticated,
   children,
 }: {
   isAuthenticated: boolean;
+  showFooter?: boolean;
   children: React.ReactNode;
 }) {
   const [searchParams] = useSearchParams();
@@ -115,7 +117,7 @@ export function MainLayout({
       >
         {children}
       </main>
-      {!isAuthenticated && <GuestFooter />}
+      {showFooter && <GuestFooter />}
     </div>
   );
 }
