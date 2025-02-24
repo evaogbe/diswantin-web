@@ -138,7 +138,7 @@ jobs:
       - name: 🎭 Run end-to-end tests
         run: npm run test:e2e
       - name: 📊 Upload report
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4.6.1
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
