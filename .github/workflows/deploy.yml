@@ -73,7 +73,7 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4.2.2
       - name: ✏️ Spell check
-        uses: streetsidesoftware/cspell-action@v6.10.0
+        uses: streetsidesoftware/cspell-action@v6.10.1
 
   unit-test:
     name: ⚡ Unit tests
